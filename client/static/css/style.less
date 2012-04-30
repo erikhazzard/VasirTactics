@@ -14,31 +14,10 @@
  * LESS Declarations
  *
  * ======================================================================== */
-/* Colors */
-@color_black: #2c2d32;
-@grey_border_color: #cdcdcd;
-@inner_content_background_color: #fdfdfd;
-@inner_content_grey_border: #d7d7d7;
-
 /* Fonts */
 @normal_font: 'Cantarell', Arial, Verdana, sans-serif;
 @header_font_h1:  'IM Fell English SC', Arial, Verdana, sans-serif;
 @header_font :  'Averia Serif Libre', Arial, Verdana, sans-serif;
-
-.normal_button_background(){
-    background: #dedede;
-    background: -webkit-gradient(linear, left top, left bottom, from(#f0f0f0), to(#d1d1d1));
-    background: -moz-linear-gradient(top, #f0f0f0, #d1d1d1);
-}
-
-/*Styles*/
-@light_box_shadow: 0 -1px 2px rgba(0, 0, 0, 0.2);
-@dark_box_shadow: 0 0 22px rgba(0, 0, 0, 0.9);
-.rounded_corners(@radius: 3px){
-    border-radius: @radius !important;
-    -webkit-border-radius: @radius !important;
-    -moz-border-radius: @radius !important;
-}
 
 /* ------------------------------------------------------------------------
  *
@@ -54,11 +33,37 @@
 
 @entity_information_header_height: 30px;
 
-/* Chat / Player list related */
+/* ------------------------------------------------------------------------
+ * Chat / Player list related 
+ * ------------------------------------------------------------------------ */
+@player_list_chat_wrapper_height: 120px;
 @player_list_chat_width: 30%;
-@player_list_height: 85px;
-@chat_message_height: 40px;
+@player_list_width: 300px;
+@chat_message_height: 26px;
 
+/* ------------------------------------------------------------------------
+ *
+ * Reusable classes
+ * 
+ * ------------------------------------------------------------------------ */
+/* Colors */
+@color_black: #2c2d32;
+@grey_border_color: #cdcdcd;
+@inner_content_background_color: #fdfdfd;
+@inner_content_grey_border: #d7d7d7;
+
+/*Styles*/
+@light_box_shadow: 0 -1px 2px rgba(0, 0, 0, 0.2);
+@dark_box_shadow: 0 0 22px rgba(0, 0, 0, 0.9);
+.rounded_corners(@radius: 3px){
+    border-radius: @radius !important;
+    -webkit-border-radius: @radius !important;
+    -moz-border-radius: @radius !important;
+}
+
+/* ------------------------------------------------------------------------
+ * Reusable Layout
+ * ------------------------------------------------------------------------ */
 /* full width / height positioned absolute */
 .absolute_full_layout(@padding: 0){
     bottom:@padding;
@@ -66,6 +71,12 @@
     position:absolute;
     right:@padding;
     top:@padding;
+}
+
+.normal_button_background(){
+    background: #dedede;
+    background: -webkit-gradient(linear, left top, left bottom, from(#f0f0f0), to(#d1d1d1));
+    background: -moz-linear-gradient(top, #f0f0f0, #d1d1d1);
 }
 /* ========================================================================    
  *
@@ -243,19 +254,17 @@ input:focus, textarea:focus {
  *
  * ======================================================================== */
 #content_wrapper {
-    bottom: @footer_height;
-    left:0;
-    position:absolute;
-    top: @header_height;
-    right:0;
+    /* bottom: @footer_height; */
+    .absolute_full_layout;
+    top: @header_height !important;
 }
     #content {
-        bottom: @content_top_padding + @engine_log_height - 7;
-        left: @inner_padding_width;
+        bottom:  @player_list_chat_wrapper_height;
+        left: 0;
         position:absolute;
         overflow: scroll;
         right: .5%;
-        top: @content_top_padding;
+        top: 0;
     }
 
 /* ===================================================================== 
@@ -368,18 +377,20 @@ input:focus, textarea:focus {
  *
  * ===================================================================== */
 #player_list_chat_wrapper {
-    bottom:0;
-    position: absolute;
-    right: 0;
-    top:0;
-    width: @player_list_chat_width;
+    .absolute_full_layout;
+
+    /* TODO: background with border image */
+    border-top: 2px solid #343434;
+    background: #505050;
+
+    height: @player_list_chat_wrapper_height;
+    top: auto !important;
+    z-index: 100;
 }
 #player_list_wrapper {
-    left:0;
-    height: @player_list_height;
-    position: absolute;
-    right: 0;
-    top:0;
+    .absolute_full_layout;
+    right: auto !important;
+    width: @player_list_width;
 }
     #player_list {
         .absolute_full_layout;
@@ -403,38 +414,49 @@ input:focus, textarea:focus {
 
 /* Chat */
 #chat_wrapper {
-    bottom:0;
-    left:0;
-    position: absolute;
-    right: 0;
-    top:@player_list_height + 1%;
+    .absolute_full_layout;
+    left: @player_list_width + 1%;
 }
     #chat_inner {
         .absolute_full_layout;
-        top: 2em;
+        color: @color_black;
+        text-shadow: 0 1px 2px #ffffff;
     }
    
         #chat_log_wrapper {
             .absolute_full_layout;
-        
+
             background: #f0f0f0;
             border: 1px solid #cdcdcd;
             bottom: @chat_message_height;
-            font-size: .9em;
+            font-size: .8em;
         }
             #chat_log {
                 .absolute_full_layout;
-                overflow: scroll;
+                overflow: auto;
+                overflow-y: scroll;
                 padding: 4px;
             }
 
         #chat_message_wrapper {
-            bottom:0;
+            .absolute_full_layout;
+            background: #ffffff;
+            font-size:.8em;
             height: @chat_message_height;
-            left:0;
-            position:absolute; 
-            right:0;
+            top: auto !important;
         }
+            #chat_message {
+                .absolute_full_layout;
+                margin: 0;
+                width: 100%;
+                z-index: 9;
+            }
+            #chat_message_send {
+                position: absolute;
+                right: 2px;
+                top: 2px;
+                z-index: 10;
+            }
 
 /* ========================================================================    
 * Engine Log
