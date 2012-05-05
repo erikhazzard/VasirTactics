@@ -6,6 +6,9 @@
     ========================================================================'''
 #Global namespace
 GAME_NAME = {
+    #Events
+    events: {}
+
     #Views and Model Classes
     Views: {},
     Models: {},
@@ -14,15 +17,17 @@ GAME_NAME = {
     game: {
         #State is retrieved from server and sent back to server for checks.  
         #  If client sends bad state to server, server will disconnect them
+        #This state is not modifiable
         _state: {},
         
         #Used to render the game
         render: ()-> {}
     },
     
-    #Page functions (elements user interacts with on page, including
+    #Interface related stuff 
+    #   (elements user interacts with on page, including
     #  engine action buttons)
-    page_functions: {
+    interface: {
 
     },
 

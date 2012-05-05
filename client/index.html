@@ -44,13 +44,15 @@
             <!-- ================================ 
                 Engine Actions
                 ================================= -->
-            <div id='engine_action_wrapper'>
-                <h2>Engine Actions</h2>
-                <div id='engine_actions'>
-                    <div id='engine_action_buttons' class='buttons'>
-                        <a id='add_entity' href='#' 
-                            class='button add-big'>Add Entity</a>
-                        <br />
+            <div id='game_left_side_wrapper'>
+                <div id='game_left_side'>
+                    <h2>Engine Actions</h2>
+                    <div id='engine_actions'>
+                        <div id='engine_action_buttons' class='buttons'>
+                            <a id='add_entity' href='#' 
+                                class='button add-big'>Add Entity</a>
+                            <br />
+                        </div>
                     </div>
                 </div>
             </div>
@@ -59,9 +61,25 @@
                 Canvas (World representation)
                 ================================= -->
             <div id='game_wrapper'>
-                <div id='canvas_wrapper'>
-                    <canvas id='canvas' 
-                    width='600' height='350'></canvas>
+                <div id='game'>
+                    <div id='canvas_wrapper'>
+                        <svg id='game_canvas'></svg>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ================================ 
+                Right Side (info) wrapper
+                ================================= -->
+            <div id='game_right_side_wrapper'>
+                <div id='game_right_side'>
+
+                    <!-- Player info -->
+                    <div id='game_player_info_wrapper'>
+                        <h2>Player InfoWrapper</h2>
+                        <!-- insert template here -->
+                    </div>
+
                 </div>
             </div>
         </div>
@@ -164,16 +182,18 @@
     Vasir Engine Scripts
 
     ======================================================================= -->
-<!-- Main VasirEngine Interaction Script -->
+<!-- Main namespace script, sets up all the namespaces -->
 <script src='/static/script/namespace.js'></script>
+
 <!-- Logger -->
 <script src='/static/script/logger.js'></script>
 
+<!-- Player -->
 <script src='/static/script/player.js'></script>
-<!-- VasirEngine localStorage utils -->
-<script src='/static/script/local_storage.js'></script>
+<!-- Renderer -->
+<script src='/static/script/renderer.js'></script>
 
-<!-- Page Setup (calls initialization functions and sets up page elements -->
+<!-- Init / Page setup -->
 <script src='/static/script/init.js'></script>
 
 </body>

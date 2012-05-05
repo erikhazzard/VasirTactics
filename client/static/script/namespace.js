@@ -2,6 +2,7 @@
 var GAME_NAME;
 
 GAME_NAME = {
+  events: {},
   Views: {},
   Models: {},
   game: {
@@ -10,7 +11,7 @@ GAME_NAME = {
       return {};
     }
   },
-  page_functions: {},
+  interface: {},
   logger: {},
   init: function() {
     return {};

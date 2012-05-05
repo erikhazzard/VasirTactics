@@ -1,14 +1,14 @@
 ''' ========================================================================    
-    player.coffee
+    creature.coffee
 
-    Contains the class (view and model) definitions for the player class
+    Contains the class definitions for creatures
 
     ======================================================================== '''
 ''' ========================================================================    
     Add logging types
     ======================================================================== '''
 #Add a log type
-GAME_NAME.logger.options.log_types.push('Player')
+GAME_NAME.logger.options.log_types.push('Creature')
 #Add it as a log type
 GAME_NAME.logger.options.setup_log_types()
 
@@ -17,27 +17,34 @@ GAME_NAME.logger.options.setup_log_types()
     VIEW 
 
     ======================================================================== '''
-class GAME_NAME.Views.Player extends Backbone.View
-    '''The Player view.  This is basically just an empty class, as 
-    there are no elements directly tied to the player'''
+class GAME_NAME.Views.Creature extends Backbone.View
+    '''The Creature view. Handles drawing functions for the creatures'''
 
 ''' ========================================================================    
     
     Model    
 
     ======================================================================== '''
-class GAME_NAME.Models.Player extends Backbone.Model
+class GAME_NAME.Models.Creature extends Backbone.Model
     defaults: {
-        name: 'Soandso',
+        name: 'Toestubber'
 
-        power: 1,
-        health: 20,
+        attack: 1,
+        health: 1,
         
         #current target will point to a creature or player object
         target: {},
 
-        #Spels is a collection of spells this player can use
-        spells: []
+        #Effects contains effects this creature has
+        effects: []
+
+        #Abilities are activated or passive things this creature has
+        abilities: []
+        
+        #Position properties
+        #   Stores x,y
+        location: [0,0]
+
     }
 
     initialize: ()=>

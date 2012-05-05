@@ -29,8 +29,15 @@
 @inner_padding_width: 2%;
 @content_top_padding: 10px;
 
-@engine_log_height: 80px;
+/* ------------------------------------------------------------------------
+ * Game Page
+ * ------------------------------------------------------------------------ */
+@game_right_side_width: 22%;
+@game_left_side_width: 20%;
+@game_canvas_width: 45%;
+@game_content_margin_top: 10px;
 
+@engine_log_height: 80px;
 @entity_information_header_height: 30px;
 
 /* ------------------------------------------------------------------------
@@ -83,6 +90,12 @@
  * Base Styles 
  *
  * ======================================================================== */
+/* apply a natural box layout model to all elements */
+* { 
+    -moz-box-sizing: border-box; 
+    -webkit-box-sizing: border-box; 
+    box-sizing: border-box; 
+}
 html, body {
     background:#f4f4f4 url(../image/bg.jpg);
     bottom:0;
@@ -267,22 +280,25 @@ input:focus, textarea:focus {
         top: 0;
     }
 
-/* ===================================================================== 
- * Canvas
- * ===================================================================== */
-#canvas_wrapper {
-    float:left;
-    height:100%;
-    margin:0 2% 0 0;
-    position:relative;
-    width:600px;
+/* **********************************************************************
+ *
+ * Game Page
+ *
+ * ********************************************************************** */
+/* ----------------------------------------------------------------------
+ *
+ * Game Left Side
+ *
+ * ---------------------------------------------------------------------- */
+#game_left_side_wrapper {
+    .absolute_full_layout;
+    right: auto !important;
+    width: @game_left_side_width;
 }
-    #canvas {
-        background:#ffffff url(../image/grass_bg.png);
-        border: 1px solid #cdcdcd;
-        position:relative;
+    #game_left_side {
+        .absolute_full_layout;
+        top: @game_content_margin_top !important;
     }
-
 /* ===================================================================== 
  * Entity Actions, List, and Actions - Shared properties
  * ===================================================================== */
@@ -305,6 +321,12 @@ input:focus, textarea:focus {
     letter-spacing: .1em;
     margin: 0 0 .5em 0;
     padding:0 0 2px 0;
+}
+/* ===================================================================== 
+ * Engine Actions
+ * ===================================================================== */
+#engine_action_wrapper {
+    margin:0;
 }
 /* ===================================================================== 
  * Entity Actions
@@ -345,37 +367,65 @@ input:focus, textarea:focus {
                 color: @color_black;
             }
 
-/* ===================================================================== 
- * Entities List
- * ===================================================================== */
-#entities_list_wrapper {
+
+/* ----------------------------------------------------------------------
+ *
+ * Game Canvas
+ *
+ * ----------------------------------------------------------------------*/
+#game_wrapper {
+    .absolute_full_layout;
+    left: @game_left_side_width;
+    right: @game_right_side_width;
 }
-    #entities_list {
-        font-size:.8em;
-        height:90%;
-        overflow:auto;
+#game {
+    .absolute_full_layout;
+    top: @game_content_margin_top !important;
+}
+    #canvas_wrapper {
+        @absolute_full_layout;
     }
-    #entities_list_ul {
-        margin:0;
-        padding:0;
-    }
-        #entities_list_ul li {
-            cursor: pointer;
+        #game_canvas {
+            background:#ffffff url(../image/grass_bg.png);
+            border: 1px solid #cdcdcd;
+            height: 100%;
+            position:relative;
+            width: 100%;
         }
 
 /* ===================================================================== 
- * Engine Actions
+ *
+ * Game Right Side
+ *
  * ===================================================================== */
-#engine_action_wrapper {
-    margin:0;
+#game_right_side_wrapper {
+    .absolute_full_layout;
+
+    left: auto !important;
+    width: @game_right_side_width;
+}
+    #game_right_side {
+        .absolute_full_layout;
+        top: @game_content_margin_top !important;
+    }
+
+    #game_player_info_wrapper {
+        .absolute_full_layout;
+
+        background: url(../image/ui/border_top.png) repeat-x;
+    }
+/* ===================================================================== 
+ * Player Info 
+ * ===================================================================== */
+#game_player_info_wrapper {
+    .absolute_full_layout;
 }
 
-
-/* ===================================================================== 
+/* ----------------------------------------------------------------------
  *
  * Player List / Chat Wrapper
  *
- * ===================================================================== */
+ * --------------------------------------------------------------------- */
 #player_list_chat_wrapper {
     .absolute_full_layout;
 
@@ -742,7 +792,9 @@ circle {
         }
 
 /* ========================================================================    
+ *
  * Popup
+ *
  * ======================================================================== */
 #popup_container_wrapper{
     background:rgba(255,255,255,.8);
