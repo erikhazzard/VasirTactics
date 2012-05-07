@@ -46,23 +46,51 @@ class GAME_NAME.Views.Cell extends Backbone.View
 
         return @
 
-    render: ()=>
+    render: (params)=>
+        '''Render creates the map tile cells and the group containing them
+        Expects a renderer model object to be passed in'''
+        params = params || {}
+        if params.renderer == undefined
+            GAME_NAME.logger.error('ERROR', 'cell render(): renderer not passed in')
+            return false
+
+        #TODO: Abstract this out so we can render individual cells
+        
         #Draw the map cell
-        el = @group.append('svg:rect')
-            .attr('class', 'map_tile tile_' + @x + ',' + @y)
-            .attr('x', @x)
-            .attr('y', @y)
+        @tile_group = @group.append('svg:g')
+            .attr('class', 'tile_group tile_group_' + @model.get('i') + ',' + @model.get('j'))
+            .attr('transform', 'translate(' + [@x, @y] + ')')
+
+        #Draw the graphic
+        @tile_bg = @tile_group.append('svg:image')
+            .attr('class', 'map_tile_image')
+            .attr('x', 0)
+            .attr('y', 0)
             .attr('width', @options.cellSize.width)
             .attr('height', @options.cellSize.height)
+            .attr('xlink:href', params.renderer.getCellImageSrc({cell: @model}) )
+
+        #el and @el will be the background rect (it may be invisible), which will take up
+        #   100% width and height of the cell
+        el = @tile_group.append('svg:rect')
+            .attr('class', 'map_tile tile_' + @model.get('i') + ',' + @model.get('j'))
+            .attr('x', 0)
+            .attr('y', 0)
+            .attr('width', @options.cellSize.width)
+            .attr('height', @options.cellSize.height)
+
+        #Store ref to DOM node
         @el = el.node()
+        #Store ref to d3 selection 
+        @$el = el
 
         #Setup events, using the events listed above
         @delegateEvents()
 
     mouseEnter: ()=>
-        d3.select(@el).style('fill', '#6699cc')
+        @$el.attr('class', @$el.attr('class') + ' map_tile_mouse_over')
     mouseLeave: ()=>
-        d3.select(@el).style('fill', '#336699')
+        @$el.attr('class', @$el.attr('class').replace(/\ map_tile_mouse_over/gi,''))
 
 ''' ========================================================================    
     

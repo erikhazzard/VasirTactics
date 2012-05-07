@@ -59,7 +59,9 @@
         val.set({
           'view': cell
         });
-        cell.render();
+        cell.render({
+          renderer: this.model
+        });
       }
       return GAME_NAME.logger.Render('renderer: map rendering complete');
     };
@@ -79,6 +81,7 @@
     __extends(Renderer, _super);
 
     function Renderer() {
+      this.getCellImageSrc = __bind(this.getCellImageSrc, this);
       this.initialize = __bind(this.initialize, this);
       Renderer.__super__.constructor.apply(this, arguments);
     }
@@ -87,13 +90,25 @@
 
     Renderer.prototype.defaults = {
       cellSize: {
-        height: 42,
-        width: 42
+        height: 48,
+        width: 48
+      },
+      cellSprites: {
+        '0': '/static/image/grass_bg.png'
       }
     };
 
     Renderer.prototype.initialize = function() {
       'When this renderer model is instaniated, store a reference to the\ngame object';      return this;
+    };
+
+    Renderer.prototype.getCellImageSrc = function(params) {
+      'Returns the SRC for the cell image based on the passed in cell';      params = params || {};
+      if (params.renderer === void 0) {
+        GAME_NAME.logger.error('ERROR', 'render: getCellImageSrc(): cell not passed in');
+        return false;
+      }
+      return this.get('cellSprites')[params.cell.get('type')];
     };
 
     return Renderer;

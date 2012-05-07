@@ -203,9 +203,12 @@ input:focus, textarea:focus {
  *
  * ======================================================================== */
 .game_map .map_tile {
-    fill: rgba(100,100,100,.8);
+    fill: rgba(100,100,100,.6);
     stroke-opacity: .4;
 }
+    .game_map .map_tile_mouse_over {
+        fill: rgba(170,170,170,.8) !important;
+    }
 
 /* ========================================================================    
  *
@@ -396,7 +399,6 @@ input:focus, textarea:focus {
         @absolute_full_layout;
     }
         #game_canvas {
-            background:#ffffff url(../image/grass_bg.png);
             border: 1px solid #cdcdcd;
             height: 100%;
             position:relative;

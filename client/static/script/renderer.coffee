@@ -66,6 +66,7 @@ class GAME_NAME.Views.Renderer extends Backbone.View
         mapGroup = @$el.append('svg:g')
             .attr('class', 'game_map')
 
+        #TODO: Abstract this into Map.render?
         #Loop through each cell of the map and draw it
         for key, val of @model.get('game').get('map').get('cells')
             cell = new GAME_NAME.Views.Cell({
@@ -80,7 +81,7 @@ class GAME_NAME.Views.Renderer extends Backbone.View
             })
 
             #Draw it
-            cell.render()
+            cell.render({renderer: @model})
 
         #Notify the logger we're finished
         GAME_NAME.logger.Render('renderer: map rendering complete')
@@ -100,15 +101,46 @@ class GAME_NAME.Views.Renderer extends Backbone.View
     ======================================================================== '''
 class GAME_NAME.Models.Renderer extends Backbone.Model
     '''Keeps track of the renderer state'''
+
+    #TODO: Pre load all images
     defaults: {
+
+        #--------------------------------
+        #Map Related
+        #--------------------------------
         cellSize: {
-            height: 42,
-            width: 42
+            height: 48,
+            width: 48
+        },
+        #--------------------------------
+        #Cell sprites
+        #--------------------------------
+        cellSprites: {
+            '0': '/static/image/grass_bg.png'
         }
+
     }
 
+    #------------------------------------
+    #
+    #Functions
+    #
+    #------------------------------------
     initialize: ()=>
         '''When this renderer model is instaniated, store a reference to the
         game object'''
 
         return @
+
+    #------------------------------------
+    #Get cell image src
+    #------------------------------------
+    getCellImageSrc: (params)=>
+        '''Returns the SRC for the cell image based on the passed in cell'''
+        params = params || {}
+        if params.renderer == undefined
+            GAME_NAME.logger.error('ERROR', 'render: getCellImageSrc(): cell not passed in')
+            return false
+    
+        #Return the appropriate image src
+        return @get('cellSprites')[params.cell.get('type')]
