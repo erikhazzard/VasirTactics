@@ -14,15 +14,8 @@ GAME_NAME = {
     Models: {},
 
     #Game stuff
-    game: {
-        #State is retrieved from server and sent back to server for checks.  
-        #  If client sends bad state to server, server will disconnect them
-        #This state is not modifiable
-        _state: {},
-        
-        #Used to render the game
-        render: ()-> {}
-    },
+    #   game will contain the game model
+    game: { },
     
     #Interface related stuff 
     #   (elements user interacts with on page, including

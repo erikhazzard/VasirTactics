@@ -24,12 +24,12 @@ class GAME_NAME.Models.Map extends Backbone.Model
         #Default properties
         name: 'Faydwer'
 
-        #map_array is the raw map json returned from the server
+        #map is the raw map json returned from the server
         #   Each cell is formatted lie [ [{}, {}], [{}, {}] ] 
         #   (example of a 2x2 grid). The contents of each cell
         #   returned from the server represent a cell's parameters,
         #   which get passed into the Cell class.
-        map_array: [
+        map: [
             [ {type: 0}, {type: 0} ],
             [ {type: 0}, {type: 0} ]
         ]
@@ -41,7 +41,21 @@ class GAME_NAME.Models.Map extends Backbone.Model
     }
 
     initialize: ()=>
-        setupCells({cells:@map_array})
+        '''A Map object is created in the Game class'''
+        #Create some map tiles
+        map = []
+        for i in [0..20]
+            #Reset the row
+            row = []
+            for j in [0..10]
+                row.push({type:0})
+            #Add row to the map tiles
+            map.push(row)
+        #Set the map tiles
+        @set({map: map})
+
+        #When map is created, create its cells based on the map array
+        @setupCells({map:@map})
         return @
 
     setupCells: (params)=>
@@ -50,9 +64,33 @@ class GAME_NAME.Models.Map extends Backbone.Model
             Takes in a array of cells '''
         #Setup params
         params = params || {}
-        params.cells = params.cells || []
+        params.map = params.map || @get('map')
+        #Counter variables
+        i=0
+        j=0
+
+        #We'll setup the cells locally, then set it to the map object after
+        #   creating it
+        cells = {}
 
         #Loop through cells
-        for cell in params.cells
-            #create a new Cell object for each cell
-            GAME_NAME.logger.Map('cell: ', cell)
+        for row in params.map
+            #Reset j to 0
+            j=0
+            #Go through each column
+            for cell in row
+                #create a new Cell object for each cell
+                cells[i + ',' + j] = new GAME_NAME.Models.Cell({
+                    name: 'cell_' + i + ',' + j
+                    i: i,
+                    j: j,
+                })
+                #Increase counter variables
+                j++
+
+            #increase row counter variable
+            i++
+
+        #Set the Map's cells
+        @set({cells: cells})
+        GAME_NAME.logger.Map('MAP: cells set, cells: ', @get('cells'))

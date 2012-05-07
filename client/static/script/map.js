@@ -22,7 +22,7 @@ GAME_NAME.Models.Map = (function(_super) {
 
   Map.prototype.defaults = {
     name: 'Faydwer',
-    map_array: [
+    map: [
       [
         {
           type: 0
@@ -41,24 +41,54 @@ GAME_NAME.Models.Map = (function(_super) {
   };
 
   Map.prototype.initialize = function() {
-    setupCells({
-      cells: this.map_array
+    'A Map object is created in the Game class';
+    var i, j, map, row;
+    map = [];
+    for (i = 0; i <= 20; i++) {
+      row = [];
+      for (j = 0; j <= 10; j++) {
+        row.push({
+          type: 0
+        });
+      }
+      map.push(row);
+    }
+    this.set({
+      map: map
+    });
+    this.setupCells({
+      map: this.map
     });
     return this;
   };
 
   Map.prototype.setupCells = function(params) {
     'Setup the game cells.  This is called from init and\nthe cells are setup based on this model\'s map array\nTakes in a array of cells ';
-    var cell, _i, _len, _ref, _results;
+    var cell, cells, i, j, row, _i, _j, _len, _len2, _ref;
     params = params || {};
-    params.cells = params.cells || [];
-    _ref = params.cells;
-    _results = [];
+    params.map = params.map || this.get('map');
+    i = 0;
+    j = 0;
+    cells = {};
+    _ref = params.map;
     for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-      cell = _ref[_i];
-      _results.push(GAME_NAME.logger.Map('cell: ', cell));
+      row = _ref[_i];
+      j = 0;
+      for (_j = 0, _len2 = row.length; _j < _len2; _j++) {
+        cell = row[_j];
+        cells[i + ',' + j] = new GAME_NAME.Models.Cell({
+          name: 'cell_' + i + ',' + j,
+          i: i,
+          j: j
+        });
+        j++;
+      }
+      i++;
     }
-    return _results;
+    this.set({
+      cells: cells
+    });
+    return GAME_NAME.logger.Map('MAP: cells set, cells: ', this.get('cells'));
   };
 
   return Map;
