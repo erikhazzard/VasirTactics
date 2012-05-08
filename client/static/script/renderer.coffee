@@ -54,10 +54,22 @@ class GAME_NAME.Views.Renderer extends Backbone.View
         @drawMap({
             map: @model.get('game').get('map')
         })
-
-        @drawCreature({
-            creature: new GAME_NAME.Models.Creature({})
-        })
+    
+        #Create the group which will hold the creature 
+        @creaturesGroup = @$el.append('svg:g')
+            .attr('class', 'creatures_group')
+        
+        #For each player, draw their creatures
+        for i in [0..10]
+            @drawCreature({
+                creature: new GAME_NAME.Models.Creature({
+                    location: {
+                        x: Math.round(Math.random() * 10),
+                        y: Math.round(Math.random() * 10)
+                    }
+                })
+                group: @creaturesGroup
+            })
 
         #TODO: Draw creatures, entities, etc. based on game state
         
@@ -103,35 +115,24 @@ class GAME_NAME.Views.Renderer extends Backbone.View
         creature model to be passed in'''
         #Params should take in a Creature model
         params = params || {}
-        if params.creature == undefined
+        if params.creature == undefined or params.group == undefined
             GAME_NAME.logger.error('ERROR! renderer view: drawCreature(): creature not passed in')
             return false
-        
-        #Get x,y of creature
-        x = params.creature.get('location').x * @model.get('cellSize').width
-        y = params.creature.get('location').y * @model.get('cellSize').height
 
-        #When using SVG we only need to draw the entity once
-        #The mapGroup will be set from drawMap
-        creature_group = @mapGroup.append('svg:g')
-            .attr('class', 'creature_' + params.creature.cid)
-            .attr('transform', 'translate(' + [x,y] + ')')
+        #Create new view for the passed in creature model
+        if not params.creature.get('view')
+            params.creature.set({'view': new GAME_NAME.Views.Creature({
+                model: params.creature,
+                renderer: @,
+                group: params.group
+            })
+            })
 
-        #Draw the background rect 
-        creature_group.append('svg:rect')
-            .attr('class', 'creature_background_rect')
-            .attr('x', 0)
-            .attr('y', 0)
-            .attr('width', @model.get('cellSize').width)
-            .attr('height', @model.get('cellSize').height)
-
-        #Draw the creature image
-        creature_group.append('svg:image')
-            .attr('x', 0)
-            .attr('y', 0)
-            .attr('width', @model.get('cellSize').width)
-            .attr('height', @model.get('cellSize').height)
-            .attr('xlink:href', @model.get('sprites')[params.creature.get('sprite')])
+        #Render the passed in creature
+        params.creature.get('view').render({
+            renderer: @,
+            group: params.group
+        })
 
         #Finished!
         return @

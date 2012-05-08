@@ -39,13 +39,26 @@
     };
 
     Renderer.prototype.render = function() {
-      'This draws all the elements of the game to the screen';      $(this.$el.node()).empty();
+      'This draws all the elements of the game to the screen';
+      var i, _results;
+      $(this.$el.node()).empty();
       this.drawMap({
         map: this.model.get('game').get('map')
       });
-      return this.drawCreature({
-        creature: new GAME_NAME.Models.Creature({})
-      });
+      this.creaturesGroup = this.$el.append('svg:g').attr('class', 'creatures_group');
+      _results = [];
+      for (i = 0; i <= 10; i++) {
+        _results.push(this.drawCreature({
+          creature: new GAME_NAME.Models.Creature({
+            location: {
+              x: Math.round(Math.random() * 10),
+              y: Math.round(Math.random() * 10)
+            }
+          }),
+          group: this.creaturesGroup
+        }));
+      }
+      return _results;
     };
 
     Renderer.prototype.drawMap = function(map) {
@@ -72,18 +85,24 @@
     };
 
     Renderer.prototype.drawCreature = function(params) {
-      'Draws the passed in entity on the screen. Params expects a\ncreature model to be passed in';
-      var creature_group, x, y;
-      params = params || {};
-      if (params.creature === void 0) {
+      'Draws the passed in entity on the screen. Params expects a\ncreature model to be passed in';      params = params || {};
+      if (params.creature === void 0 || params.group === void 0) {
         GAME_NAME.logger.error('ERROR! renderer view: drawCreature(): creature not passed in');
         return false;
       }
-      x = params.creature.get('location').x * this.model.get('cellSize').width;
-      y = params.creature.get('location').y * this.model.get('cellSize').height;
-      creature_group = this.mapGroup.append('svg:g').attr('class', 'creature_' + params.creature.cid).attr('transform', 'translate(' + [x, y] + ')');
-      creature_group.append('svg:rect').attr('class', 'creature_background_rect').attr('x', 0).attr('y', 0).attr('width', this.model.get('cellSize').width).attr('height', this.model.get('cellSize').height);
-      creature_group.append('svg:image').attr('x', 0).attr('y', 0).attr('width', this.model.get('cellSize').width).attr('height', this.model.get('cellSize').height).attr('xlink:href', this.model.get('sprites')[params.creature.get('sprite')]);
+      if (!params.creature.get('view')) {
+        params.creature.set({
+          'view': new GAME_NAME.Views.Creature({
+            model: params.creature,
+            renderer: this,
+            group: params.group
+          })
+        });
+      }
+      params.creature.get('view').render({
+        renderer: this,
+        group: params.group
+      });
       return this;
     };
 

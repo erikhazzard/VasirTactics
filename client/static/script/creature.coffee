@@ -18,7 +18,75 @@ GAME_NAME.logger.options.setup_log_types()
 
     ======================================================================== '''
 class GAME_NAME.Views.Creature extends Backbone.View
-    '''The Creature view. Handles drawing functions for the creatures'''
+    events: {
+        'mouseenter': 'mouseEnter'
+        'mouseleave': 'mouseLeave'
+    }
+
+    initialize: ()=>
+        '''This creature view is created in Renderer'''
+        #It must pass in the associated model, cellSize, and target
+        #   group to render to
+        if @options.model == undefined or @options.renderer == undefined or @options.group == undefined
+            GAME_NAME.logger.error('ERROR', 'creature view init(): params not properly passed in')
+            return false
+
+        #Set the model
+        @model = @options.model
+
+        #Store reference to passed in vars
+        @renderer = @options.renderer
+        @cellSize = @renderer.model.get('cellSize')
+        @group = @options.group
+        
+        #Set el as an empty element, we'll create it in render()
+        @el = {}
+
+        return @
+
+    render: (params)=>
+        '''Handles the actual rendering / drawing of the creature'''
+
+        #Get x,y of creature
+        @x = @model.get('location').x * @cellSize.width
+        @y = @model.get('location').y * @cellSize.height
+
+        #When using SVG we only need to draw the entity once
+        #The mapGroup will be set from drawMap
+        creature_group = @group.append('svg:g')
+            .attr('class', 'creature_' + @model.cid)
+            .attr('transform', 'translate(' + [@x,@y] + ')')
+
+        #Draw the background rect 
+        el = creature_group.append('svg:rect')
+            .attr('class', 'creature_background_rect')
+            .attr('x', 0)
+            .attr('y', 0)
+            .attr('width', @cellSize.width)
+            .attr('height', @cellSize.height)
+
+        #Draw the creature image
+        creature_group.append('svg:image')
+            .attr('x', 0)
+            .attr('y', 0)
+            .attr('width', @cellSize.width)
+            .attr('height', @cellSize.height)
+            .attr('xlink:href', @renderer.model.get('sprites')[@model.get('sprite')])
+
+        #Store ref to DOM node
+        @el = el.node()
+        #Store ref to d3 selection 
+        @$el = el
+        #Setup events, using the events listed above
+        @delegateEvents()
+
+    mouseEnter: ()=>
+        @$el.attr('class', @$el.attr('class') + ' map_tile_mouse_over')
+        return @
+
+    mouseLeave: ()=>
+        @$el.attr('class', @$el.attr('class').replace(/\ map_tile_mouse_over/gi, ''))
+        return @
 
 ''' ========================================================================    
     
@@ -49,8 +117,10 @@ class GAME_NAME.Models.Creature extends Backbone.Model
         }
 
         #Sprite
-        sprite: 'creature_dragoon'
+        sprite: 'creature_dragoon',
 
+        #Associated view
+        view: undefined
     }
 
     initialize: ()=>
