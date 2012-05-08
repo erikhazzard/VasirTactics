@@ -43,7 +43,13 @@ class GAME_NAME.Models.Creature extends Backbone.Model
         
         #Position properties
         #   Stores x,y
-        location: [0,0]
+        location: {
+            x: Math.round(Math.random() * 10),
+            y: Math.round(Math.random() * 10)
+        }
+
+        #Sprite
+        sprite: 'creature_dragoon'
 
     }
 

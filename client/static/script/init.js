@@ -10,6 +10,15 @@
 
   ' ========================================================================    \nCall init\n========================================================================';
 
-  GAME_NAME.init();
+  $(document).ready(function() {
+    var key, tmp_img, val, _ref;
+    _ref = GAME_NAME.Models.Renderer.prototype.defaults.sprites;
+    for (key in _ref) {
+      val = _ref[key];
+      tmp_img = new Image();
+      tmp_img.src = val;
+    }
+    return GAME_NAME.init();
+  });
 
 }).call(this);

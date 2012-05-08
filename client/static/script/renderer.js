@@ -16,7 +16,7 @@
     __extends(Renderer, _super);
 
     function Renderer() {
-      this.drawEntity = __bind(this.drawEntity, this);
+      this.drawCreature = __bind(this.drawCreature, this);
       this.drawMap = __bind(this.drawMap, this);
       this.render = __bind(this.render, this);
       this.initialize = __bind(this.initialize, this);
@@ -39,22 +39,27 @@
     };
 
     Renderer.prototype.render = function() {
-      'This draws all the elements of the game to the screen';      return this.drawMap({
+      'This draws all the elements of the game to the screen';      $(this.$el.node()).empty();
+      this.drawMap({
         map: this.model.get('game').get('map')
+      });
+      return this.drawCreature({
+        creature: new GAME_NAME.Models.Creature({})
       });
     };
 
     Renderer.prototype.drawMap = function(map) {
       'This draws the map by rendering each map tile individually';
-      var cell, key, mapGroup, val, _ref;
-      mapGroup = this.$el.append('svg:g').attr('class', 'game_map');
+      var cell, key, mapTileGroup, val, _ref;
+      this.mapGroup = this.$el.append('svg:g').attr('class', 'game_map');
+      mapTileGroup = this.mapGroup.append('svg:g').attr('class', 'map_tiles');
       _ref = this.model.get('game').get('map').get('cells');
       for (key in _ref) {
         val = _ref[key];
         cell = new GAME_NAME.Views.Cell({
           model: val,
           cellSize: this.model.get('cellSize'),
-          group: mapGroup
+          group: mapTileGroup
         });
         val.set({
           'view': cell
@@ -66,8 +71,19 @@
       return GAME_NAME.logger.Render('renderer: map rendering complete');
     };
 
-    Renderer.prototype.drawEntity = function(entity) {
-      return 'Draws the passed in entity on the screen';
+    Renderer.prototype.drawCreature = function(params) {
+      'Draws the passed in entity on the screen. Params expects a\ncreature model to be passed in';
+      var creature_group, x, y;
+      params = params || {};
+      if (params.creature === void 0) {
+        GAME_NAME.logger.error('ERROR! renderer view: drawCreature(): creature not passed in');
+        return false;
+      }
+      x = params.creature.get('location').x * this.model.get('cellSize').width;
+      y = params.creature.get('location').y * this.model.get('cellSize').height;
+      creature_group = this.mapGroup.append('svg:g').attr('class', 'creature_' + params.creature.cid).attr('transform', 'translate(' + [x, y] + ')');
+      creature_group.append('svg:image').attr('x', 0).attr('y', 0).attr('width', this.model.get('cellSize').width).attr('height', this.model.get('cellSize').height).attr('xlink:href', this.model.get('sprites')[params.creature.get('sprite')]);
+      return this;
     };
 
     return Renderer;
@@ -81,7 +97,6 @@
     __extends(Renderer, _super);
 
     function Renderer() {
-      this.getCellImageSrc = __bind(this.getCellImageSrc, this);
       this.initialize = __bind(this.initialize, this);
       Renderer.__super__.constructor.apply(this, arguments);
     }
@@ -93,22 +108,17 @@
         height: 48,
         width: 48
       },
-      cellSprites: {
-        '0': '/static/image/grass_bg.png'
+      sprites: {
+        'terrain_0': '/static/image/sprites/map/grass_bg.png',
+        'terrain_1': '/static/image/sprites/map/blue_grass.jpg',
+        'terrain_2': '/static/image/sprites/map/road.jpg',
+        'rock': '/static/image/sprites/map/rock.png',
+        'creature_dragoon': '/static/image/sprites/creatures/dragoon.png'
       }
     };
 
     Renderer.prototype.initialize = function() {
       'When this renderer model is instaniated, store a reference to the\ngame object';      return this;
-    };
-
-    Renderer.prototype.getCellImageSrc = function(params) {
-      'Returns the SRC for the cell image based on the passed in cell';      params = params || {};
-      if (params.renderer === void 0) {
-        GAME_NAME.logger.error('ERROR', 'render: getCellImageSrc(): cell not passed in');
-        return false;
-      }
-      return this.get('cellSprites')[params.cell.get('type')];
     };
 
     return Renderer;

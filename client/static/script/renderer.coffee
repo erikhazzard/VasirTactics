@@ -47,9 +47,16 @@ class GAME_NAME.Views.Renderer extends Backbone.View
 
     render: ()=>
         '''This draws all the elements of the game to the screen'''
+        #Remove everything in the SVG
+        $(@$el.node()).empty()
+
         #Draw the background map
         @drawMap({
             map: @model.get('game').get('map')
+        })
+
+        @drawCreature({
+            creature: new GAME_NAME.Models.Creature({})
         })
 
         #TODO: Draw creatures, entities, etc. based on game state
@@ -63,8 +70,10 @@ class GAME_NAME.Views.Renderer extends Backbone.View
         #TODO: Abstract this out?
         
         #Create the map group
-        mapGroup = @$el.append('svg:g')
+        @mapGroup = @$el.append('svg:g')
             .attr('class', 'game_map')
+        mapTileGroup = @mapGroup.append('svg:g')
+            .attr('class', 'map_tiles')
 
         #TODO: Abstract this into Map.render?
         #Loop through each cell of the map and draw it
@@ -72,7 +81,7 @@ class GAME_NAME.Views.Renderer extends Backbone.View
             cell = new GAME_NAME.Views.Cell({
                 model: val
                 cellSize: @model.get('cellSize')
-                group: mapGroup
+                group: mapTileGroup
             })
             
             #Add the cell view to the model
@@ -85,14 +94,40 @@ class GAME_NAME.Views.Renderer extends Backbone.View
 
         #Notify the logger we're finished
         GAME_NAME.logger.Render('renderer: map rendering complete')
+
     #------------------------------------
-    #draw entity 
+    #draw creature 
     #------------------------------------
-    drawEntity: (entity)=>
-        '''Draws the passed in entity on the screen'''
+    drawCreature: (params)=>
+        '''Draws the passed in entity on the screen. Params expects a
+        creature model to be passed in'''
+        #Params should take in a Creature model
+        params = params || {}
+        if params.creature == undefined
+            GAME_NAME.logger.error('ERROR! renderer view: drawCreature(): creature not passed in')
+            return false
+        
+        #Get x,y of creature
+        x = params.creature.get('location').x * @model.get('cellSize').width
+        y = params.creature.get('location').y * @model.get('cellSize').height
 
         #When using SVG we only need to draw the entity once
-        
+        #The mapGroup will be set from drawMap
+        creature_group = @mapGroup.append('svg:g')
+            .attr('class', 'creature_' + params.creature.cid)
+            .attr('transform', 'translate(' + [x,y] + ')')
+
+        #Draw the creature image
+        creature_group.append('svg:image')
+            .attr('x', 0)
+            .attr('y', 0)
+            .attr('width', @model.get('cellSize').width)
+            .attr('height', @model.get('cellSize').height)
+            .attr('xlink:href', @model.get('sprites')[params.creature.get('sprite')])
+
+        #Finished!
+        return @
+
 
 ''' ========================================================================    
 
@@ -113,10 +148,19 @@ class GAME_NAME.Models.Renderer extends Backbone.Model
             width: 48
         },
         #--------------------------------
-        #Cell sprites
+        #Sprites
         #--------------------------------
-        cellSprites: {
-            '0': '/static/image/grass_bg.png'
+        sprites: {
+            #Terrain / map
+            'terrain_0': '/static/image/sprites/map/grass_bg.png',
+            'terrain_1': '/static/image/sprites/map/blue_grass.jpg'
+            'terrain_2': '/static/image/sprites/map/road.jpg'
+
+            #Obstacles
+            'rock': '/static/image/sprites/map/rock.png'
+
+            #Characters
+            'creature_dragoon': '/static/image/sprites/creatures/dragoon.png'
         }
 
     }
@@ -131,16 +175,3 @@ class GAME_NAME.Models.Renderer extends Backbone.Model
         game object'''
 
         return @
-
-    #------------------------------------
-    #Get cell image src
-    #------------------------------------
-    getCellImageSrc: (params)=>
-        '''Returns the SRC for the cell image based on the passed in cell'''
-        params = params || {}
-        if params.renderer == undefined
-            GAME_NAME.logger.error('ERROR', 'render: getCellImageSrc(): cell not passed in')
-            return false
-    
-        #Return the appropriate image src
-        return @get('cellSprites')[params.cell.get('type')]

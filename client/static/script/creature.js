@@ -43,7 +43,11 @@
       target: {},
       effects: [],
       abilities: [],
-      location: [0, 0]
+      location: {
+        x: Math.round(Math.random() * 10),
+        y: Math.round(Math.random() * 10)
+      },
+      sprite: 'creature_dragoon'
     };
 
     Creature.prototype.initialize = function() {

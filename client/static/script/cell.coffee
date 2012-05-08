@@ -57,19 +57,13 @@ class GAME_NAME.Views.Cell extends Backbone.View
         #TODO: Abstract this out so we can render individual cells
         
         #Draw the map cell
+        #--------------------------------
         @tile_group = @group.append('svg:g')
             .attr('class', 'tile_group tile_group_' + @model.get('i') + ',' + @model.get('j'))
             .attr('transform', 'translate(' + [@x, @y] + ')')
 
-        #Draw the graphic
-        @tile_bg = @tile_group.append('svg:image')
-            .attr('class', 'map_tile_image')
-            .attr('x', 0)
-            .attr('y', 0)
-            .attr('width', @options.cellSize.width)
-            .attr('height', @options.cellSize.height)
-            .attr('xlink:href', params.renderer.getCellImageSrc({cell: @model}) )
-
+        #Draw the rect / el
+        #--------------------------------
         #el and @el will be the background rect (it may be invisible), which will take up
         #   100% width and height of the cell
         el = @tile_group.append('svg:rect')
@@ -84,13 +78,35 @@ class GAME_NAME.Views.Cell extends Backbone.View
         #Store ref to d3 selection 
         @$el = el
 
+        #--------------------------------
+        #Draw the graphic
+        #--------------------------------
+        @baseSprite = @tile_group.append('svg:image')
+            .attr('class', 'map_tile_image')
+            .attr('x', 0)
+            .attr('y', 0)
+            .attr('width', @options.cellSize.width)
+            .attr('height', @options.cellSize.height)
+            .attr('xlink:href', params.renderer.get('sprites')[@model.get('baseSprite')])
+
+        #If there is an overlay or top sprite on top of the base sprite
+        if @model.get('topSprite')
+            @topSprite = @tile_group.append('svg:image')
+                .attr('class', 'map_tile_image_overlay')
+                .attr('x', 0)
+                .attr('y', 0)
+                .attr('width', @options.cellSize.width)
+                .attr('height', @options.cellSize.height)
+                .attr('xlink:href', params.renderer.get('sprites')[@model.get('topSprite')])
+
         #Setup events, using the events listed above
         @delegateEvents()
 
     mouseEnter: ()=>
-        @$el.attr('class', @$el.attr('class') + ' map_tile_mouse_over')
+        return @
+
     mouseLeave: ()=>
-        @$el.attr('class', @$el.attr('class').replace(/\ map_tile_mouse_over/gi,''))
+        return @
 
 ''' ========================================================================    
     
@@ -101,6 +117,9 @@ class GAME_NAME.Models.Cell extends Backbone.Model
     defaults: {
         #Default properties
         name: 'cell_i,j'
+
+        baseSprite: ''
+        topSprite: ''
 
         type: '0'
 

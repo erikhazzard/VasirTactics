@@ -30,8 +30,8 @@ class GAME_NAME.Models.Map extends Backbone.Model
         #   returned from the server represent a cell's parameters,
         #   which get passed into the Cell class.
         map: [
-            [ {type: 0}, {type: 0} ],
-            [ {type: 0}, {type: 0} ]
+            [ {}, {} ],
+            [ {}, {} ]
         ]
         #Cells
         #   Cells contains a dictionary of cell objects, keys being 
@@ -48,7 +48,11 @@ class GAME_NAME.Models.Map extends Backbone.Model
             #Reset the row
             row = []
             for j in [0..10]
-                row.push({type:0})
+                row.push({
+                    baseSprite: 'terrain_' + Math.round(Math.random() * 2)
+                    topSprite: (Math.round(Math.random() * 1)) && (Math.round(Math.random() * 1)) && (Math.round(Math.random() * 1)) && 'rock'
+                    type: 'terrain'
+                })
             #Add row to the map tiles
             map.push(row)
         #Set the map tiles
@@ -84,6 +88,9 @@ class GAME_NAME.Models.Map extends Backbone.Model
                     name: 'cell_' + i + ',' + j
                     i: i,
                     j: j,
+                    baseSprite: cell.baseSprite
+                    topSprite: cell.topSprite
+                    type: cell.type
                 })
                 #Increase counter variables
                 j++

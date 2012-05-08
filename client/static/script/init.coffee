@@ -10,10 +10,24 @@ GAME_NAME.init = ()=>
 
     #Render everything
     GAME_NAME.game.get('renderer').render()
-    
+
     return @
 
 ''' ========================================================================    
     Call init
     ========================================================================'''
-GAME_NAME.init()
+$(document).ready(()=>
+    #------------------------------------
+    #Async. load all sprites from the Renderer model
+    #------------------------------------
+    #Load assets 
+    for key, val of GAME_NAME.Models.Renderer.prototype.defaults.sprites
+        tmp_img = new Image()
+        tmp_img.src = val
+
+    #------------------------------------
+    #Initialize the game
+    #------------------------------------
+    GAME_NAME.init()
+)
+
