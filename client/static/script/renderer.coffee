@@ -117,6 +117,14 @@ class GAME_NAME.Views.Renderer extends Backbone.View
             .attr('class', 'creature_' + params.creature.cid)
             .attr('transform', 'translate(' + [x,y] + ')')
 
+        #Draw the background rect 
+        creature_group.append('svg:rect')
+            .attr('class', 'creature_background_rect')
+            .attr('x', 0)
+            .attr('y', 0)
+            .attr('width', @model.get('cellSize').width)
+            .attr('height', @model.get('cellSize').height)
+
         #Draw the creature image
         creature_group.append('svg:image')
             .attr('x', 0)

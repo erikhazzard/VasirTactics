@@ -82,6 +82,7 @@
       x = params.creature.get('location').x * this.model.get('cellSize').width;
       y = params.creature.get('location').y * this.model.get('cellSize').height;
       creature_group = this.mapGroup.append('svg:g').attr('class', 'creature_' + params.creature.cid).attr('transform', 'translate(' + [x, y] + ')');
+      creature_group.append('svg:rect').attr('class', 'creature_background_rect').attr('x', 0).attr('y', 0).attr('width', this.model.get('cellSize').width).attr('height', this.model.get('cellSize').height);
       creature_group.append('svg:image').attr('x', 0).attr('y', 0).attr('width', this.model.get('cellSize').width).attr('height', this.model.get('cellSize').height).attr('xlink:href', this.model.get('sprites')[params.creature.get('sprite')]);
       return this;
     };

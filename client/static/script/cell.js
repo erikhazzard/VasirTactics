@@ -51,21 +51,23 @@
         return false;
       }
       this.tile_group = this.group.append('svg:g').attr('class', 'tile_group tile_group_' + this.model.get('i') + ',' + this.model.get('j')).attr('transform', 'translate(' + [this.x, this.y] + ')');
-      el = this.tile_group.append('svg:rect').attr('class', 'map_tile tile_' + this.model.get('i') + ',' + this.model.get('j')).attr('x', 0).attr('y', 0).attr('width', this.options.cellSize.width).attr('height', this.options.cellSize.height);
-      this.el = el.node();
-      this.$el = el;
       this.baseSprite = this.tile_group.append('svg:image').attr('class', 'map_tile_image').attr('x', 0).attr('y', 0).attr('width', this.options.cellSize.width).attr('height', this.options.cellSize.height).attr('xlink:href', params.renderer.get('sprites')[this.model.get('baseSprite')]);
       if (this.model.get('topSprite')) {
         this.topSprite = this.tile_group.append('svg:image').attr('class', 'map_tile_image_overlay').attr('x', 0).attr('y', 0).attr('width', this.options.cellSize.width).attr('height', this.options.cellSize.height).attr('xlink:href', params.renderer.get('sprites')[this.model.get('topSprite')]);
       }
+      el = this.tile_group.append('svg:rect').attr('class', 'map_tile tile_' + this.model.get('i') + ',' + this.model.get('j')).attr('x', 0).attr('y', 0).attr('width', this.options.cellSize.width).attr('height', this.options.cellSize.height);
+      this.el = el.node();
+      this.$el = el;
       return this.delegateEvents();
     };
 
     Cell.prototype.mouseEnter = function() {
+      this.$el.attr('class', this.$el.attr('class') + ' map_tile_mouse_over');
       return this;
     };
 
     Cell.prototype.mouseLeave = function() {
+      this.$el.attr('class', this.$el.attr('class').replace(/\ map_tile_mouse_over/gi, ''));
       return this;
     };
 

@@ -62,21 +62,6 @@ class GAME_NAME.Views.Cell extends Backbone.View
             .attr('class', 'tile_group tile_group_' + @model.get('i') + ',' + @model.get('j'))
             .attr('transform', 'translate(' + [@x, @y] + ')')
 
-        #Draw the rect / el
-        #--------------------------------
-        #el and @el will be the background rect (it may be invisible), which will take up
-        #   100% width and height of the cell
-        el = @tile_group.append('svg:rect')
-            .attr('class', 'map_tile tile_' + @model.get('i') + ',' + @model.get('j'))
-            .attr('x', 0)
-            .attr('y', 0)
-            .attr('width', @options.cellSize.width)
-            .attr('height', @options.cellSize.height)
-
-        #Store ref to DOM node
-        @el = el.node()
-        #Store ref to d3 selection 
-        @$el = el
 
         #--------------------------------
         #Draw the graphic
@@ -99,13 +84,30 @@ class GAME_NAME.Views.Cell extends Backbone.View
                 .attr('height', @options.cellSize.height)
                 .attr('xlink:href', params.renderer.get('sprites')[@model.get('topSprite')])
 
+        #Draw the rect / el
+        #--------------------------------
+        #el and @el will be the background rect (it may be invisible), which will take up
+        #   100% width and height of the cell
+        el = @tile_group.append('svg:rect')
+            .attr('class', 'map_tile tile_' + @model.get('i') + ',' + @model.get('j'))
+            .attr('x', 0)
+            .attr('y', 0)
+            .attr('width', @options.cellSize.width)
+            .attr('height', @options.cellSize.height)
+
+        #Store ref to DOM node
+        @el = el.node()
+        #Store ref to d3 selection 
+        @$el = el
         #Setup events, using the events listed above
         @delegateEvents()
 
     mouseEnter: ()=>
+        @$el.attr('class', @$el.attr('class') + ' map_tile_mouse_over')
         return @
 
     mouseLeave: ()=>
+        @$el.attr('class', @$el.attr('class').replace(/\ map_tile_mouse_over/gi, ''))
         return @
 
 ''' ========================================================================    
