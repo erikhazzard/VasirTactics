@@ -43,24 +43,24 @@
 
     Creature.prototype.render = function(params) {
       'Handles the actual rendering / drawing of the creature';
-      var creature_group, el;
+      var bg_rect, creature_group;
       this.x = this.model.get('location').x * this.cellSize.width;
       this.y = this.model.get('location').y * this.cellSize.height;
       creature_group = this.group.append('svg:g').attr('class', 'creature_' + this.model.cid).attr('transform', 'translate(' + [this.x, this.y] + ')');
-      el = creature_group.append('svg:rect').attr('class', 'creature_background_rect').attr('x', 0).attr('y', 0).attr('width', this.cellSize.width).attr('height', this.cellSize.height);
+      bg_rect = creature_group.append('svg:rect').attr('class', 'creature_background_rect').attr('x', 0).attr('y', 0).attr('width', this.cellSize.width).attr('height', this.cellSize.height);
       creature_group.append('svg:image').attr('x', 0).attr('y', 0).attr('width', this.cellSize.width).attr('height', this.cellSize.height).attr('xlink:href', this.renderer.model.get('sprites')[this.model.get('sprite')]);
-      this.el = el.node();
-      this.$el = el;
+      this.el = creature_group.node();
+      this.$el = creature_group;
       return this.delegateEvents();
     };
 
     Creature.prototype.mouseEnter = function() {
-      this.$el.attr('class', this.$el.attr('class') + ' map_tile_mouse_over');
+      this.$el.select('rect').attr('class', this.$el.attr('class') + ' map_tile_mouse_over');
       return this;
     };
 
     Creature.prototype.mouseLeave = function() {
-      this.$el.attr('class', this.$el.attr('class').replace(/\ map_tile_mouse_over/gi, ''));
+      this.$el.select('rect').attr('class', this.$el.attr('class').replace(/\ map_tile_mouse_over/gi, ''));
       return this;
     };
 

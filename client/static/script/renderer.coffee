@@ -45,6 +45,29 @@ class GAME_NAME.Views.Renderer extends Backbone.View
         #Setup this element
         @$el = d3.select('#game_canvas')
 
+    #------------------------------------
+    #UI Renderer
+    #------------------------------------
+    renderUI: ()=>
+        #TODO: Break this out into peices, call render() of each view
+        #Update player list
+        players = @model.get('game').get('players')
+        list_html = ''
+        for key, player of players
+            list_html += '<li>' + player.get(
+                'name') + ': ' + player.get(
+                'health') + 'HP </li>'
+        
+        #Update player list
+        $('#game_player_info_wrapper .player_list').html(list_html)
+
+        return @
+
+    #------------------------------------
+    #
+    #Game Render
+    #
+    #------------------------------------
     render: ()=>
         '''This draws all the elements of the game to the screen'''
         #Remove everything in the SVG
@@ -125,7 +148,7 @@ class GAME_NAME.Views.Renderer extends Backbone.View
                 model: params.creature,
                 renderer: @,
                 group: params.group
-            })
+                })
             })
 
         #Render the passed in creature

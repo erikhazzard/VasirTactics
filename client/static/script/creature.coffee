@@ -58,7 +58,7 @@ class GAME_NAME.Views.Creature extends Backbone.View
             .attr('transform', 'translate(' + [@x,@y] + ')')
 
         #Draw the background rect 
-        el = creature_group.append('svg:rect')
+        bg_rect = creature_group.append('svg:rect')
             .attr('class', 'creature_background_rect')
             .attr('x', 0)
             .attr('y', 0)
@@ -74,18 +74,18 @@ class GAME_NAME.Views.Creature extends Backbone.View
             .attr('xlink:href', @renderer.model.get('sprites')[@model.get('sprite')])
 
         #Store ref to DOM node
-        @el = el.node()
+        @el = creature_group.node()
         #Store ref to d3 selection 
-        @$el = el
+        @$el = creature_group
         #Setup events, using the events listed above
         @delegateEvents()
 
     mouseEnter: ()=>
-        @$el.attr('class', @$el.attr('class') + ' map_tile_mouse_over')
+        @$el.select('rect').attr('class', @$el.attr('class') + ' map_tile_mouse_over')
         return @
 
     mouseLeave: ()=>
-        @$el.attr('class', @$el.attr('class').replace(/\ map_tile_mouse_over/gi, ''))
+        @$el.select('rect').attr('class', @$el.attr('class').replace(/\ map_tile_mouse_over/gi, ''))
         return @
 
 ''' ========================================================================    

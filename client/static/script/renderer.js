@@ -19,6 +19,7 @@
       this.drawCreature = __bind(this.drawCreature, this);
       this.drawMap = __bind(this.drawMap, this);
       this.render = __bind(this.render, this);
+      this.renderUI = __bind(this.renderUI, this);
       this.initialize = __bind(this.initialize, this);
       Renderer.__super__.constructor.apply(this, arguments);
     }
@@ -36,6 +37,18 @@
         game: this.options.game
       });
       return this.$el = d3.select('#game_canvas');
+    };
+
+    Renderer.prototype.renderUI = function() {
+      var key, list_html, player, players;
+      players = this.model.get('game').get('players');
+      list_html = '';
+      for (key in players) {
+        player = players[key];
+        list_html += '<li>' + player.get('name') + ': ' + player.get('health') + 'HP </li>';
+      }
+      $('#game_player_info_wrapper .player_list').html(list_html);
+      return this;
     };
 
     Renderer.prototype.render = function() {

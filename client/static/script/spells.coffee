@@ -22,6 +22,10 @@ class GAME_NAME.Models.Spells extends Backbone.Model
     defaults: {
         name: 'Magic Missle'
 
+        #the cost is how much mana (or whatever 'currency' we use) this spell
+        #   requires
+        cost: 1,
+
         #current target will (usually) point to a creature or player object
         target: {},
 
@@ -32,4 +36,9 @@ class GAME_NAME.Models.Spells extends Backbone.Model
     }
 
     initialize: ()=>
+        return @
+
+    renderEffect: ()=>
+        '''This function is called by the renderer and will affect
+        the visible game state somehow'''
         return @

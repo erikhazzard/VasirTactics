@@ -38,6 +38,7 @@
 
     Player.prototype.defaults = {
       name: 'Soandso',
+      id: 'some_long_string',
       power: 1,
       health: 20,
       target: {},

@@ -3,7 +3,22 @@
   var _this = this;
 
   GAME_NAME.init = function() {
-    'Kick off the game creation';    GAME_NAME.game = new GAME_NAME.Models.Game();
+    'Kick off the game creation';
+    var game_state;
+    game_state = {
+      players: {
+        '402190r90war': new GAME_NAME.Models.Player({
+          name: 'Enoex',
+          id: '402190r90war'
+        }),
+        'u90r2h180f80n': new GAME_NAME.Models.Player({
+          name: 'Enjalot',
+          id: 'u90r2h180f80n'
+        })
+      }
+    };
+    GAME_NAME.game = new GAME_NAME.Models.Game(game_state);
+    GAME_NAME.game.get('renderer').renderUI();
     GAME_NAME.game.get('renderer').render();
     return _this;
   };

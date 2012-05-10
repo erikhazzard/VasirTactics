@@ -5,10 +5,29 @@
     ========================================================================'''
 GAME_NAME.init = ()=>
     '''Kick off the game creation'''
+    #TODO: Get game state
+    #Fake game state for now
+    game_state = {
+        players: {
+            '402190r90war': new GAME_NAME.Models.Player({
+                name: 'Enoex'
+                id: '402190r90war'
+            }),
+            'u90r2h180f80n': new GAME_NAME.Models.Player({
+                name: 'Enjalot'
+                id: 'u90r2h180f80n'
+            })
+        }
+    }
+
     #Create the game model
-    GAME_NAME.game = new GAME_NAME.Models.Game()
+    #   Pass in the game state
+    GAME_NAME.game = new GAME_NAME.Models.Game(
+        game_state
+    )
 
     #Render everything
+    GAME_NAME.game.get('renderer').renderUI()
     GAME_NAME.game.get('renderer').render()
 
     return @
