@@ -18,6 +18,7 @@
     function Renderer() {
       this.drawCreature = __bind(this.drawCreature, this);
       this.drawMap = __bind(this.drawMap, this);
+      this.drawCreatures = __bind(this.drawCreatures, this);
       this.render = __bind(this.render, this);
       this.renderUI = __bind(this.renderUI, this);
       this.initialize = __bind(this.initialize, this);
@@ -52,24 +53,34 @@
     };
 
     Renderer.prototype.render = function() {
-      'This draws all the elements of the game to the screen';
-      var i, _results;
-      $(this.$el.node()).empty();
+      'This draws all the elements of the game to the screen';      $(this.$el.node()).empty();
       this.drawMap({
         map: this.model.get('game').get('map')
       });
+      return this.drawCreatures();
+    };
+
+    Renderer.prototype.drawCreatures = function() {
+      'Draw all the creatures for each player';
+      var creature, creatures, key, player, players, _results;
       this.creaturesGroup = this.$el.append('svg:g').attr('class', 'creatures_group');
+      players = this.model.get('game').get('players');
       _results = [];
-      for (i = 0; i <= 10; i++) {
-        _results.push(this.drawCreature({
-          creature: new GAME_NAME.Models.Creature({
-            location: {
-              x: Math.round(Math.random() * 10),
-              y: Math.round(Math.random() * 10)
-            }
-          }),
-          group: this.creaturesGroup
-        }));
+      for (key in players) {
+        player = players[key];
+        creatures = player.get('creatures');
+        _results.push((function() {
+          var _results2;
+          _results2 = [];
+          for (key in creatures) {
+            creature = creatures[key];
+            _results2.push(this.drawCreature({
+              creature: creature,
+              group: this.creaturesGroup
+            }));
+          }
+          return _results2;
+        }).call(this));
       }
       return _results;
     };

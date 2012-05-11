@@ -44,10 +44,10 @@ class GAME_NAME.Models.Map extends Backbone.Model
         '''A Map object is created in the Game class'''
         #Create some map tiles
         map = []
-        for i in [0..20]
+        for i in [0..16]
             #Reset the row
             row = []
-            for j in [0..10]
+            for j in [0..8]
                 row.push({
                     baseSprite: 'terrain_' + Math.round(Math.random() * 2)
                     topSprite: (Math.round(Math.random() * 1)) && (Math.round(Math.random() * 1)) && (Math.round(Math.random() * 1)) && 'rock'

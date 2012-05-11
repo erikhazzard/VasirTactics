@@ -30,15 +30,20 @@ class GAME_NAME.Models.Player extends Backbone.Model
     defaults: {
         name: 'Soandso',
         id: 'some_long_string',
-
-        power: 1,
         health: 20,
+
+        #Mana increments by X each Y turns
+        mana: 1,
         
         #current target will point to a creature or player object
         target: {},
 
         #Spels is a collection of spells this player can use
-        spells: []
+        spells: [],
+
+        #For the avatar on the game board
+        attack: 1,
+        location: [0,0]
     }
 
     initialize: ()=>

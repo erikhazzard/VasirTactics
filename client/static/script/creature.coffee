@@ -21,6 +21,7 @@ class GAME_NAME.Views.Creature extends Backbone.View
     events: {
         'mouseenter': 'mouseEnter'
         'mouseleave': 'mouseLeave'
+        'click': 'click'
     }
 
     initialize: ()=>
@@ -62,6 +63,8 @@ class GAME_NAME.Views.Creature extends Backbone.View
             .attr('class', 'creature_background_rect')
             .attr('x', 0)
             .attr('y', 0)
+            .attr('rx', 6)
+            .attr('ry', 6)
             .attr('width', @cellSize.width)
             .attr('height', @cellSize.height)
 
@@ -79,6 +82,16 @@ class GAME_NAME.Views.Creature extends Backbone.View
         @$el = creature_group
         #Setup events, using the events listed above
         @delegateEvents()
+
+    #------------------------------------
+    #Events - User Interaction
+    #------------------------------------
+    click: ()=>
+        #Update UI
+        $('#game_target_name').html(@model.get(
+            'name') + ' <br /> Health: ' + @model.get(
+            'health'))
+        return @
 
     mouseEnter: ()=>
         @$el.select('rect').attr('class', @$el.attr('class') + ' map_tile_mouse_over')

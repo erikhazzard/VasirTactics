@@ -33,16 +33,22 @@
  * Game Page
  * ------------------------------------------------------------------------ */
 @game_left_side_width: 18%;
-@game_right_side_width: 24%;
 @game_canvas_width: 45%;
 @game_content_margin_top: 0;
 
-@engine_log_height: 80px;
-@entity_information_header_height: 30px;
+/* ------------------------------------------------------------------------
+ * Right side
+ * ------------------------------------------------------------------------ */
+@game_right_side_width: 24%;
+@game_player_info_height: 120px; 
+@game_player_target_height: 100px;
 
 /* ------------------------------------------------------------------------
  * Chat / Player list related 
  * ------------------------------------------------------------------------ */
+@engine_log_height: 80px;
+@entity_information_header_height: 30px;
+
 @player_list_chat_wrapper_height: 120px;
 @player_list_chat_width: 30%;
 @player_list_width: 300px;
@@ -197,6 +203,17 @@ input:focus, textarea:focus {
 :-moz-placeholder {
     color: #ababab;
 } 
+
+/* ------------------------------------------------------------------------
+ *
+ * Base SVG 
+ *
+ * ------------------------------------------------------------------------ */
+rect {
+  fill: none;
+  stroke: none;
+}
+
 /* ========================================================================    
  *
  *                              GAME SVG
@@ -397,7 +414,23 @@ input:focus, textarea:focus {
  * ===================================================================== */
 #game_player_info_wrapper {
     .absolute_full_layout;
+
+    bottom: auto !important;
+    height: @game_player_info_height;
 }
+/* ===================================================================== 
+ * Target info
+ * ===================================================================== */
+#game_target_info_wrapper {
+    .absolute_full_layout;
+    bottom: auto !important;
+    top: @game_player_info_height;
+
+    height: @game_player_target_height;
+}
+    #game_target_name {
+
+    }
 
 /* ----------------------------------------------------------------------
  *
@@ -599,131 +632,6 @@ z-index:9999;
     position:absolute;
     right:0;
     top: @entity_information_header_height + 5px;
-}
-/* ===================================================================== 
- * D3 Graph styles
- * ===================================================================== */
-/* Network graph d3 container */
-#entity_information_network_wrapper {
-    bottom:10px;
-    left:10px;
-    position:absolute;
-    right:50%;
-    top:10px;
-}
-#entity_information_network_container {
-    border:1px solid #707070;
-    bottom: 10px;
-    display:block;
-    font: 10px Verdana;
-    left:10px;
-    position:absolute;
-    right:10px;
-    top:10px;
-}
-    #entity_information_network_container path.link {
-      fill: none;
-      stroke: #666;
-      stroke-width: 1.5px;
-    }
-
-    #entity_information_network_container marker#positive {
-      fill: green;
-    }
-
-    #entity_information_network_container path.link.positive {
-      stroke: green;
-    }
-    #entity_information_network_container path.link.negative{
-      stroke: red;
-    }
-
-    #entity_information_network_container path.link.neutral {
-      stroke-dasharray: 0,2 1;
-    }
-
-    #entity_information_network_container circle {
-      fill: #ccc;
-      stroke: #333;
-      stroke-width: 1.5px;
-    }
-
-/* ========================================================================    
- * Entity Stats
- * ======================================================================== */
-#entity_information_stats_wrapper,
-#entity_information_persona_wrapper { 
-    left:52%;
-    position:absolute;
-    right: 10px;
-}
-#entity_information_persona_wrapper { 
-    bottom:50.5%;
-    top:0;
-}
-#entity_information_stats_wrapper {
-    top: 51%;
-    bottom:0;
-}
-
-    #entity_information_stats_container,
-    #entity_information_persona_container {
-        border: 1px solid #707070;
-        bottom:10px;
-        left:10px;
-        position:absolute;
-        top:10px;
-        right: 10px;
-    }
-
-rect {
-  fill: none;
-  stroke: @color_black;
-}
-
-text {
-  font-size: 10px;
-}
-
-path {
-}
-
-/* Axis stuff*/
-.axes_line {
-    stroke: rgba(60,61,67,.2);
-    stroke-width:2px;
-}
-    .axis_text {
-        font-size:1.1em;
-        text-shadow:0 0 1px #ffffff;
-    }
-
-/* Radar chart polygon stuff */
-circle {
-    fill: rgba(60,90,120,1);
-    stroke: rgba(60,90,120,1);
-    stroke-width: 2px;
-}
-.radar_circle_group circle{
-    fill: none;
-    stroke: none;
-}
-.axes_center_mark {
-    fill: rgba(70,70,70,.8);
-    stroke: rgba(40,40,40,.8);
-    stroke-width:3px;
-}
-#negative_value_polygon {
-    fill: rgba(255,0,0,.5);
-    stroke: #ff0000;
-    stroke-width: 2px;
-    opacity:.5;
-}
-.radar_polygon {
-    fill: rgba(40,70,100,.4);
-    stroke: rgba(10,40,70,1);
-    stroke-linejoin: round;
-    stroke-width: 4px;
 }
 
 /* ========================================================================    

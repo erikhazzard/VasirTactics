@@ -39,10 +39,12 @@
     Player.prototype.defaults = {
       name: 'Soandso',
       id: 'some_long_string',
-      power: 1,
       health: 20,
+      mana: 1,
       target: {},
-      spells: []
+      spells: [],
+      attack: 1,
+      location: [0, 0]
     };
 
     Player.prototype.initialize = function() {

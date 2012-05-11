@@ -31,9 +31,9 @@
       'A Map object is created in the Game class';
       var i, j, map, row;
       map = [];
-      for (i = 0; i <= 20; i++) {
+      for (i = 0; i <= 16; i++) {
         row = [];
-        for (j = 0; j <= 10; j++) {
+        for (j = 0; j <= 8; j++) {
           row.push({
             baseSprite: 'terrain_' + Math.round(Math.random() * 2),
             topSprite: (Math.round(Math.random() * 1)) && (Math.round(Math.random() * 1)) && (Math.round(Math.random() * 1)) && 'rock',

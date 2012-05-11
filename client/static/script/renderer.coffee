@@ -78,21 +78,26 @@ class GAME_NAME.Views.Renderer extends Backbone.View
             map: @model.get('game').get('map')
         })
     
+        @drawCreatures()
+
+    drawCreatures: ()=>
+        '''Draw all the creatures for each player'''
         #Create the group which will hold the creature 
         @creaturesGroup = @$el.append('svg:g')
             .attr('class', 'creatures_group')
         
         #For each player, draw their creatures
-        for i in [0..10]
-            @drawCreature({
-                creature: new GAME_NAME.Models.Creature({
-                    location: {
-                        x: Math.round(Math.random() * 10),
-                        y: Math.round(Math.random() * 10)
-                    }
+        players = @model.get('game').get('players')
+        for key, player of players
+            #Get all creatures for each player
+            creatures = player.get('creatures')
+
+            #Render each creature
+            for key, creature of creatures
+                @drawCreature({
+                    creature: creature
+                    group: @creaturesGroup
                 })
-                group: @creaturesGroup
-            })
 
         #TODO: Draw creatures, entities, etc. based on game state
         

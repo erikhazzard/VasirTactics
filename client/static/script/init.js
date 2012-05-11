@@ -4,22 +4,43 @@
 
   GAME_NAME.init = function() {
     'Kick off the game creation';
-    var game_state;
+    var game_state, renderer;
     game_state = {
       players: {
         '402190r90war': new GAME_NAME.Models.Player({
           name: 'Enoex',
-          id: '402190r90war'
+          id: '402190r90war',
+          spells: [],
+          creatures: {
+            'toestubbergoblin1_xx': new GAME_NAME.Models.Creature({
+              name: 'Toestubber_Goblin_1',
+              location: {
+                x: 2,
+                y: 2
+              }
+            })
+          }
         }),
         'u90r2h180f80n': new GAME_NAME.Models.Player({
           name: 'Enjalot',
-          id: 'u90r2h180f80n'
+          id: 'u90r2h180f80n',
+          spells: [],
+          creatures: {
+            'toestubbergoblin2_xx': new GAME_NAME.Models.Creature({
+              name: 'Toestubber_Goblin_2',
+              location: {
+                x: 14,
+                y: 5
+              }
+            })
+          }
         })
       }
     };
     GAME_NAME.game = new GAME_NAME.Models.Game(game_state);
-    GAME_NAME.game.get('renderer').renderUI();
-    GAME_NAME.game.get('renderer').render();
+    renderer = GAME_NAME.game.get('renderer');
+    renderer.renderUI();
+    renderer.render();
     return _this;
   };
 
