@@ -41,14 +41,21 @@
     };
 
     Renderer.prototype.renderUI = function() {
-      var key, list_html, player, players;
+      var key, list_html, player, players, spell, spells_html, _ref;
       players = this.model.get('game').get('players');
-      list_html = '';
+      list_html = [];
       for (key in players) {
         player = players[key];
-        list_html += '<li>' + player.get('name') + ': ' + player.get('health') + 'HP </li>';
+        list_html.push('<li>' + player.get('name') + ': ' + player.get('health') + 'HP </li>');
       }
-      $('#game_player_info_wrapper .player_list').html(list_html);
+      $('#game_player_info_wrapper .player_list').html(list_html.join(''));
+      spells_html = [];
+      _ref = players.enoex.get('spells');
+      for (key in _ref) {
+        spell = _ref[key];
+        spells_html.push('<li class="button">' + spell.get('name') + '</li>');
+      }
+      $('#game_left_side .spells').html(spells_html.join(''));
       return this;
     };
 

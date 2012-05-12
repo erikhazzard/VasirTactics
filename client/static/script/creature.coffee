@@ -91,6 +91,7 @@ class GAME_NAME.Views.Creature extends Backbone.View
         $('#game_target_name').html(@model.get(
             'name') + ' <br /> Health: ' + @model.get(
             'health'))
+        @$el.select('rect').attr('class', @$el.attr('class') + ' map_tile_selected')
         return @
 
     mouseEnter: ()=>
@@ -98,6 +99,7 @@ class GAME_NAME.Views.Creature extends Backbone.View
         return @
 
     mouseLeave: ()=>
+        #TODO: Fix this
         @$el.select('rect').attr('class', @$el.attr('class').replace(/\ map_tile_mouse_over/gi, ''))
         return @
 

@@ -7,10 +7,12 @@
     var game_state, renderer;
     game_state = {
       players: {
-        '402190r90war': new GAME_NAME.Models.Player({
+        'enoex': new GAME_NAME.Models.Player({
           name: 'Enoex',
           id: '402190r90war',
-          spells: [],
+          spells: {
+            'spell_x': new GAME_NAME.Models.Spell({})
+          },
           creatures: {
             'toestubbergoblin1_xx': new GAME_NAME.Models.Creature({
               name: 'Toestubber_Goblin_1',
@@ -21,10 +23,10 @@
             })
           }
         }),
-        'u90r2h180f80n': new GAME_NAME.Models.Player({
+        'enjalot': new GAME_NAME.Models.Player({
           name: 'Enjalot',
           id: 'u90r2h180f80n',
-          spells: [],
+          spells: {},
           creatures: {
             'toestubbergoblin2_xx': new GAME_NAME.Models.Creature({
               name: 'Toestubber_Goblin_2',

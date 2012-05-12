@@ -51,15 +51,25 @@ class GAME_NAME.Views.Renderer extends Backbone.View
     renderUI: ()=>
         #TODO: Break this out into peices, call render() of each view
         #Update player list
+        #------------------
         players = @model.get('game').get('players')
-        list_html = ''
+        list_html = []
         for key, player of players
-            list_html += '<li>' + player.get(
+            list_html.push('<li>' + player.get(
                 'name') + ': ' + player.get(
-                'health') + 'HP </li>'
+                'health') + 'HP </li>')
         
         #Update player list
-        $('#game_player_info_wrapper .player_list').html(list_html)
+        $('#game_player_info_wrapper .player_list').html(list_html.join(''))
+
+        #Update spells
+        #-------------
+        spells_html = []
+        for key, spell of players.enoex.get('spells')
+            spells_html.push('<li class="button">' + spell.get(
+                'name') + '</li>')
+
+        $('#game_left_side .spells').html(spells_html.join(''))
 
         return @
 
@@ -78,6 +88,7 @@ class GAME_NAME.Views.Renderer extends Backbone.View
             map: @model.get('game').get('map')
         })
     
+        #Draw each player's creatures
         @drawCreatures()
 
     drawCreatures: ()=>

@@ -237,6 +237,12 @@ rect {
         stroke-width:7;
         z-index: 999;
     }
+    .creatures_group .map_tile_selected {
+        fill: rgba(50,100,150,.6) !important;
+        stroke: rgba(250,250,250,.7);
+        stroke-width:4;
+        z-index: 999;
+    }
 
 /* ========================================================================    
  *
@@ -350,11 +356,11 @@ rect {
 /* ===================================================================== 
  * Spells
  * ===================================================================== */
-#spells_wrapper {
+#game_left_side .spells_wrapper {
     .absolute_full_layout;
     text-align:right;
 }
-    #spells li {
+    #game_left_side .spells li {
         clear: both;
         display: block;
         float: none;
