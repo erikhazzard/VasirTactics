@@ -3,7 +3,7 @@
   var GAME_NAME;
 
   GAME_NAME = {
-    events: {},
+    events: _.extend({}, Backbone.Events),
     Views: {},
     Models: {},
     game: {},

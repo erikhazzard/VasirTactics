@@ -162,7 +162,7 @@ class GAME_NAME.Views.Renderer extends Backbone.View
         if not params.creature.get('view')
             params.creature.set({'view': new GAME_NAME.Views.Creature({
                 model: params.creature,
-                renderer: @,
+                game: @model.get('game'),
                 group: params.group
                 })
             })

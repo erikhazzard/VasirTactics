@@ -9,6 +9,43 @@
 
   GAME_NAME.logger.options.setup_log_types();
 
+  ' ========================================================================    \n\nView\n\n======================================================================== ';
+
+  GAME_NAME.Views.Spells = (function(_super) {
+
+    __extends(Spells, _super);
+
+    function Spells() {
+      this.click = __bind(this.click, this);
+      this.render = __bind(this.render, this);
+      this.initialize = __bind(this.initialize, this);
+      Spells.__super__.constructor.apply(this, arguments);
+    }
+
+    'Handles the UI / interaction';
+
+    Spells.prototype.initialize = function() {
+      if (this.options.model === void 0 || this.options.game === void 0) {
+        GAME_NAME.logger.error('ERROR', 'creature view init(): params not properly passed in');
+        return false;
+      }
+      this.model = this.options.model;
+      this.game = this.options.game;
+      return this;
+    };
+
+    Spells.prototype.render = function() {
+      return this;
+    };
+
+    Spells.prototype.click = function() {
+      return 'Called when the UI element is clicked.\nNeed to ensure the user CAN cast the spell';
+    };
+
+    return Spells;
+
+  })(Backbone.View);
+
   ' ========================================================================    \n\nModel    \n\n======================================================================== ';
 
   GAME_NAME.Models.Spell = (function(_super) {

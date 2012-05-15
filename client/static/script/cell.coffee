@@ -32,6 +32,7 @@ class GAME_NAME.Views.Cell extends Backbone.View
 
         #Create a model
         @model = @options.model
+        @model.set({'view': @})
         
         #Store reference to passed in vars
         @cellSize = @options.cellSize
@@ -127,6 +128,8 @@ class GAME_NAME.Models.Cell extends Backbone.Model
 
         #Graphic contains the image to use for this cell
         graphic: ''
+
+        view: {}
     }
 
     initialize: ()=>

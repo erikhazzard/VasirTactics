@@ -21,14 +21,14 @@ class GAME_NAME.Views.Creature extends Backbone.View
     events: {
         'mouseenter': 'mouseEnter'
         'mouseleave': 'mouseLeave'
-        'click': 'click'
+        'click': 'target'
     }
 
     initialize: ()=>
         '''This creature view is created in Renderer'''
         #It must pass in the associated model, cellSize, and target
         #   group to render to
-        if @options.model == undefined or @options.renderer == undefined or @options.group == undefined
+        if @options.model == undefined or @options.game == undefined or @options.group == undefined
             GAME_NAME.logger.error('ERROR', 'creature view init(): params not properly passed in')
             return false
 
@@ -36,7 +36,9 @@ class GAME_NAME.Views.Creature extends Backbone.View
         @model = @options.model
 
         #Store reference to passed in vars
-        @renderer = @options.renderer
+        @game = @options.game
+        @map = @options.game.get('map')
+        @renderer = @options.game.get('renderer')
         @cellSize = @renderer.model.get('cellSize')
         @group = @options.group
         
@@ -83,24 +85,66 @@ class GAME_NAME.Views.Creature extends Backbone.View
         #Setup events, using the events listed above
         @delegateEvents()
 
+        return @
+
     #------------------------------------
     #Events - User Interaction
     #------------------------------------
-    click: ()=>
+    target: ()=>
+        '''Targets this creature.  Updates the UI and
+            darkens the immovable map cells'''
         #Update UI
         $('#game_target_name').html(@model.get(
             'name') + ' <br /> Health: ' + @model.get(
             'health'))
-        @$el.select('rect').attr('class', @$el.attr('class') + ' map_tile_selected')
+
+        #Remove the map_tile_selected class from all elements that
+        #   have it
+        selectedEls = d3.selectAll('.map_tile_selected')
+        for el in selectedEls[0]
+            curEl = d3.select(el)
+            curEl.attr('class',
+                curEl.attr('class').replace(/map_tile_selected/gi, ''))
+
+        #Darken all the map cells
+        mapTiles = d3.selectAll('.map_tile')
+            .attr('class', (d,i)->
+                return d3.select(@).attr('class') + ' tile_disabled'
+            )
+
+        #Highlight the map cells that the creature can move to
+        #TODO: Put this in web worker
+        #TODO: Code the real logic for this, not just this fake stub
+        for i in [2..4]
+            for j in [2..4]
+                cell = @map.get('cells')[i + ',' + j].get('view').$el
+                cell.attr('class',
+                    cell.attr('class').replace(/tile_disabled/gi,'')
+                )
+
+
+        #Highlight this creature's background rect
+        rect = @$el.select('rect')
+        rect.attr('class',
+            rect.attr('class') + ' map_tile_selected')
+
+        #TODO: Move updateTarget logic to a method in renderer?
+        #@renderer.updateTarget({
+        #    rect: @$el.select('rect')
+        #})
         return @
 
     mouseEnter: ()=>
-        @$el.select('rect').attr('class', @$el.attr('class') + ' map_tile_mouse_over')
+        rect = @$el.select('rect')
+        rect.attr('class',
+            rect.attr('class') + ' map_tile_mouse_over')
         return @
 
     mouseLeave: ()=>
         #TODO: Fix this
-        @$el.select('rect').attr('class', @$el.attr('class').replace(/\ map_tile_mouse_over/gi, ''))
+        rect = @$el.select('rect')
+        rect.attr('class',
+            rect.attr('class').replace(/map_tile_mouse_over/gi, ''))
         return @
 
 ''' ========================================================================    

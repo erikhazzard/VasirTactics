@@ -125,7 +125,7 @@
         params.creature.set({
           'view': new GAME_NAME.Views.Creature({
             model: params.creature,
-            renderer: this,
+            game: this.model.get('game'),
             group: params.group
           })
         });

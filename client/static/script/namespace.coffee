@@ -6,8 +6,9 @@
     ========================================================================'''
 #Global namespace
 GAME_NAME = {
-    #Events
-    events: {}
+    #Events (Extended from Backbone.Events)
+    #   This is our global event dispatcher
+    events: _.extend({}, Backbone.Events)
 
     #Views and Model Classes
     Views: {},

@@ -12,6 +12,34 @@
 GAME_NAME.logger.options.log_types.push('Creature')
 #Add it as a log type
 GAME_NAME.logger.options.setup_log_types()
+''' ========================================================================    
+    
+    View
+
+    ======================================================================== '''
+class GAME_NAME.Views.Spells extends Backbone.View
+    '''Handles the UI / interaction'''
+    initialize: ()=>
+        if @options.model == undefined or @options.game == undefined
+            GAME_NAME.logger.error('ERROR', 'creature view init(): params not properly passed in')
+            return false
+
+        #Set the model
+        @model = @options.model
+        @game = @options.game
+
+        return @
+
+    render: ()=>
+        return @
+
+    #------------------------------------
+    #Events - UI User Interaction
+    #------------------------------------
+    click: ()=>
+        '''Called when the UI element is clicked.
+            Need to ensure the user CAN cast the spell'''
+
 
 ''' ========================================================================    
     

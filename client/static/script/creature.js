@@ -18,7 +18,7 @@
     function Creature() {
       this.mouseLeave = __bind(this.mouseLeave, this);
       this.mouseEnter = __bind(this.mouseEnter, this);
-      this.click = __bind(this.click, this);
+      this.target = __bind(this.target, this);
       this.render = __bind(this.render, this);
       this.initialize = __bind(this.initialize, this);
       Creature.__super__.constructor.apply(this, arguments);
@@ -27,16 +27,18 @@
     Creature.prototype.events = {
       'mouseenter': 'mouseEnter',
       'mouseleave': 'mouseLeave',
-      'click': 'click'
+      'click': 'target'
     };
 
     Creature.prototype.initialize = function() {
-      'This creature view is created in Renderer';      if (this.options.model === void 0 || this.options.renderer === void 0 || this.options.group === void 0) {
+      'This creature view is created in Renderer';      if (this.options.model === void 0 || this.options.game === void 0 || this.options.group === void 0) {
         GAME_NAME.logger.error('ERROR', 'creature view init(): params not properly passed in');
         return false;
       }
       this.model = this.options.model;
-      this.renderer = this.options.renderer;
+      this.game = this.options.game;
+      this.map = this.options.game.get('map');
+      this.renderer = this.options.game.get('renderer');
       this.cellSize = this.renderer.model.get('cellSize');
       this.group = this.options.group;
       this.el = {};
@@ -53,22 +55,46 @@
       creature_group.append('svg:image').attr('x', 0).attr('y', 0).attr('width', this.cellSize.width).attr('height', this.cellSize.height).attr('xlink:href', this.renderer.model.get('sprites')[this.model.get('sprite')]);
       this.el = creature_group.node();
       this.$el = creature_group;
-      return this.delegateEvents();
+      this.delegateEvents();
+      return this;
     };
 
-    Creature.prototype.click = function() {
+    Creature.prototype.target = function() {
+      'Targets this creature.  Updates the UI and\ndarkens the immovable map cells';
+      var cell, curEl, el, i, j, mapTiles, rect, selectedEls, _i, _len, _ref;
       $('#game_target_name').html(this.model.get('name') + ' <br /> Health: ' + this.model.get('health'));
-      this.$el.select('rect').attr('class', this.$el.attr('class') + ' map_tile_selected');
+      selectedEls = d3.selectAll('.map_tile_selected');
+      _ref = selectedEls[0];
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        el = _ref[_i];
+        curEl = d3.select(el);
+        curEl.attr('class', curEl.attr('class').replace(/map_tile_selected/gi, ''));
+      }
+      mapTiles = d3.selectAll('.map_tile').attr('class', function(d, i) {
+        return d3.select(this).attr('class') + ' tile_disabled';
+      });
+      for (i = 2; i <= 4; i++) {
+        for (j = 2; j <= 4; j++) {
+          cell = this.map.get('cells')[i + ',' + j].get('view').$el;
+          cell.attr('class', cell.attr('class').replace(/tile_disabled/gi, ''));
+        }
+      }
+      rect = this.$el.select('rect');
+      rect.attr('class', rect.attr('class') + ' map_tile_selected');
       return this;
     };
 
     Creature.prototype.mouseEnter = function() {
-      this.$el.select('rect').attr('class', this.$el.attr('class') + ' map_tile_mouse_over');
+      var rect;
+      rect = this.$el.select('rect');
+      rect.attr('class', rect.attr('class') + ' map_tile_mouse_over');
       return this;
     };
 
     Creature.prototype.mouseLeave = function() {
-      this.$el.select('rect').attr('class', this.$el.attr('class').replace(/\ map_tile_mouse_over/gi, ''));
+      var rect;
+      rect = this.$el.select('rect');
+      rect.attr('class', rect.attr('class').replace(/map_tile_mouse_over/gi, ''));
       return this;
     };
 
