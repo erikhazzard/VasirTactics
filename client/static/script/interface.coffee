@@ -22,11 +22,38 @@ class GAME_NAME.Views.Interface extends Backbone.View
 
     initialize: ()=>
         #Setup events to listen on
-        @on('event:name', @someFunc)
+        @model = @options.model
 
     render: ()=>
         #Render the UI
         return @
+
+    #------------------------------------
+    #Creature related
+    #------------------------------------
+    creatureClicked: (params)=>
+        params = params || {}
+        creature = params.creature
+        if creature == undefined
+            GAME_NAME.logger.error('creatureClicked(): no creature passed in')
+            return false
+
+        #Untarget selected target (if anything is targeted)
+        @model.set({ target: undefined })
+        creature.get('view').unTarget()
+
+        #Set the target
+        @model.set({ target: creature })
+        creature.get('view').target()
+
+        
+    showTarget: ()=>
+        #Show the target in the target box
+        #   Targetname may be undefined (if no target)
+        target = @model.get('target')
+        if target
+            target = target.get('name')
+        $('#game_target_name').html(target)
 
 ''' ========================================================================    
     
@@ -34,4 +61,21 @@ class GAME_NAME.Views.Interface extends Backbone.View
 
     ======================================================================== '''
 class GAME_NAME.Models.Interface extends Backbone.Model
-    defaults: {}
+    defaults: {
+        target: undefined
+        view: undefined
+    }
+
+    initialize: ()=>
+        #Called when model is created
+
+        #Create coresponding view
+        @set({view: new GAME_NAME.Views.Interface({
+            model: @
+        })})
+
+        #Setup events
+        @on('change:target', @get('view').showTarget)
+        @on('creature:clicked', @get('view').creatureClicked)
+
+        return @

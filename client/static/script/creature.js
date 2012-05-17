@@ -18,16 +18,17 @@
     function Creature() {
       this.mouseLeave = __bind(this.mouseLeave, this);
       this.mouseEnter = __bind(this.mouseEnter, this);
+      this.unTarget = __bind(this.unTarget, this);
       this.target = __bind(this.target, this);
+      this.creatureClicked = __bind(this.creatureClicked, this);
       this.render = __bind(this.render, this);
+      this.delegateSVGEvents = __bind(this.delegateSVGEvents, this);
       this.initialize = __bind(this.initialize, this);
       Creature.__super__.constructor.apply(this, arguments);
     }
 
     Creature.prototype.events = {
-      'mouseenter': 'mouseEnter',
-      'mouseleave': 'mouseLeave',
-      'click': 'target'
+      'click': 'creatureClicked'
     };
 
     Creature.prototype.initialize = function() {
@@ -41,7 +42,18 @@
       this.renderer = this.options.game.get('renderer');
       this.cellSize = this.renderer.model.get('cellSize');
       this.group = this.options.group;
+      this.interface = GAME_NAME.game.get('interface');
       this.el = {};
+      return this;
+    };
+
+    Creature.prototype.delegateSVGEvents = function() {
+      var key, val, _ref;
+      _ref = this.events;
+      for (key in _ref) {
+        val = _ref[key];
+        this.svgEl.on(key, this[val]);
+      }
       return this;
     };
 
@@ -54,47 +66,56 @@
       bg_rect = creature_group.append('svg:rect').attr('class', 'creature_background_rect').attr('x', 0).attr('y', 0).attr('rx', 6).attr('ry', 6).attr('width', this.cellSize.width).attr('height', this.cellSize.height);
       creature_group.append('svg:image').attr('x', 0).attr('y', 0).attr('width', this.cellSize.width).attr('height', this.cellSize.height).attr('xlink:href', this.renderer.model.get('sprites')[this.model.get('sprite')]);
       this.el = creature_group.node();
-      this.$el = creature_group;
-      this.delegateEvents();
+      this.svgEl = creature_group;
+      this.delegateSVGEvents();
+      return this;
+    };
+
+    Creature.prototype.creatureClicked = function() {
+      'Fired off when the user clicks on a creature';      this.interface.trigger('creature:clicked', {
+        creature: this.model
+      });
       return this;
     };
 
     Creature.prototype.target = function() {
       'Targets this creature.  Updates the UI and\ndarkens the immovable map cells';
-      var cell, curEl, el, i, j, mapTiles, rect, selectedEls, _i, _len, _ref;
-      $('#game_target_name').html(this.model.get('name') + ' <br /> Health: ' + this.model.get('health'));
-      selectedEls = d3.selectAll('.map_tile_selected');
-      _ref = selectedEls[0];
-      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        el = _ref[_i];
-        curEl = d3.select(el);
-        curEl.attr('class', curEl.attr('class').replace(/map_tile_selected/gi, ''));
-      }
-      mapTiles = d3.selectAll('.map_tile').attr('class', function(d, i) {
-        return d3.select(this).attr('class') + ' tile_disabled';
-      });
-      for (i = 2; i <= 4; i++) {
-        for (j = 2; j <= 4; j++) {
-          cell = this.map.get('cells')[i + ',' + j].get('view').$el;
-          cell.attr('class', cell.attr('class').replace(/tile_disabled/gi, ''));
+      var cell, creature_i, creature_j, i, j, mapTiles, rect, selectedEls, _ref, _ref2;
+      creature_i = this.model.get('location').x;
+      creature_j = this.model.get('location').y;
+      selectedEls = d3.selectAll('.map_tile_selected').classed('map_tile_selected', false);
+      mapTiles = d3.selectAll('.map_tile').classed('tile_disabled', true);
+      for (i = creature_i, _ref = creature_i + 2; creature_i <= _ref ? i <= _ref : i >= _ref; creature_i <= _ref ? i++ : i--) {
+        for (j = creature_j, _ref2 = creature_j + 2; creature_j <= _ref2 ? j <= _ref2 : j >= _ref2; creature_j <= _ref2 ? j++ : j--) {
+          cell = this.map.get('cells')[i + ',' + j].get('view').svgEl;
+          cell.classed('tile_disabled', false);
         }
       }
-      rect = this.$el.select('rect');
-      rect.attr('class', rect.attr('class') + ' map_tile_selected');
+      rect = this.svgEl.select('rect');
+      rect.classed('map_tile_selected', true);
+      return this;
+    };
+
+    Creature.prototype.unTarget = function() {
+      'Removed this creature from the plaer\'s currently selected target';
+      var rect, selectedEls;
+      rect = this.svgEl.select('rect');
+      rect.classed('map_tile_selected', false);
+      selectedEls = d3.selectAll('.tile_disabled').classed('tile_disabled', false);
       return this;
     };
 
     Creature.prototype.mouseEnter = function() {
       var rect;
-      rect = this.$el.select('rect');
-      rect.attr('class', rect.attr('class') + ' map_tile_mouse_over');
+      rect = this.svgEl.select('rect');
+      rect.classed('map_tile_mouse_over', true);
       return this;
     };
 
     Creature.prototype.mouseLeave = function() {
       var rect;
-      rect = this.$el.select('rect');
-      rect.attr('class', rect.attr('class').replace(/map_tile_mouse_over/gi, ''));
+      rect = this.svgEl.select('rect');
+      rect.classed('map_tile_mouse_over', false);
       return this;
     };
 

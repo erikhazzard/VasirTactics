@@ -30,6 +30,7 @@ class GAME_NAME.Views.Renderer extends Backbone.View
     #Functions
     #
     #------------------------------------
+    #TODO: Remove @svgEl, use some other thing instead
     initialize: ()=>
         '''Create the renderer view.  This should be called from game.js'''
         #Game must be passed in from options
@@ -43,7 +44,9 @@ class GAME_NAME.Views.Renderer extends Backbone.View
         })
 
         #Setup this element
-        @$el = d3.select('#game_canvas')
+        @svgEl = d3.select('#game_canvas')
+
+        return @
 
     #------------------------------------
     #UI Renderer
@@ -81,7 +84,7 @@ class GAME_NAME.Views.Renderer extends Backbone.View
     render: ()=>
         '''This draws all the elements of the game to the screen'''
         #Remove everything in the SVG
-        $(@$el.node()).empty()
+        $(@svgEl.node()).empty()
 
         #Draw the background map
         @drawMap({
@@ -91,10 +94,12 @@ class GAME_NAME.Views.Renderer extends Backbone.View
         #Draw each player's creatures
         @drawCreatures()
 
+        return @
+
     drawCreatures: ()=>
         '''Draw all the creatures for each player'''
         #Create the group which will hold the creature 
-        @creaturesGroup = @$el.append('svg:g')
+        @creaturesGroup = @svgEl.append('svg:g')
             .attr('class', 'creatures_group')
         
         #For each player, draw their creatures
@@ -111,6 +116,7 @@ class GAME_NAME.Views.Renderer extends Backbone.View
                 })
 
         #TODO: Draw creatures, entities, etc. based on game state
+        return @
         
     #------------------------------------
     #draw map
@@ -121,7 +127,7 @@ class GAME_NAME.Views.Renderer extends Backbone.View
         #TODO: Abstract this out?
         
         #Create the map group
-        @mapGroup = @$el.append('svg:g')
+        @mapGroup = @svgEl.append('svg:g')
             .attr('class', 'game_map')
         mapTileGroup = @mapGroup.append('svg:g')
             .attr('class', 'map_tiles')

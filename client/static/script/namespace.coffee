@@ -5,33 +5,38 @@
        util functions
     ========================================================================'''
 #Global namespace
-GAME_NAME = {
-    #Events (Extended from Backbone.Events)
-    #   This is our global event dispatcher
-    events: _.extend({}, Backbone.Events)
+GAME_NAME = (()=>
+    return {
+        #Events (Extended from Backbone.Events)
+        #   This is our global event dispatcher
+        events: _.extend({}, Backbone.Events)
 
-    #Views and Model Classes
-    Views: {},
-    Models: {},
+        #Views and Model Classes
+        Views: {},
+        Models: {},
 
-    #Game stuff
-    #   game will contain the game model
-    game: { },
-    
-    #Interface related stuff 
-    #   (elements user interacts with on page, including
-    #  engine action buttons)
-    interface: {
+        #Game stuff
+        #   game will contain the game model
+        game: { },
+        
+        #Interface related stuff 
+        #   (elements user interacts with on page, including
+        #  engine action buttons)
+        interface: {
 
-    },
+        },
 
-    #Logger util
-    logger: {},
+        #Logger util
+        logger: {},
 
-    #Init function called to kick everything off,
-    #  overridden in init.js
-    init: ()->{}
-}
+        #Init function called to kick everything off,
+        #  overridden in init.js
+        init: ()->{}
+
+        util: {}
+    }
+
+)()
 
 #Store global ref to it
 window.GAME_NAME = GAME_NAME

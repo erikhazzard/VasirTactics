@@ -99,16 +99,16 @@ class GAME_NAME.Views.Cell extends Backbone.View
         #Store ref to DOM node
         @el = el.node()
         #Store ref to d3 selection 
-        @$el = el
+        @svgEl = el
         #Setup events, using the events listed above
         @delegateEvents()
 
     mouseEnter: ()=>
-        @$el.attr('class', @$el.attr('class') + ' map_tile_mouse_over')
+        @svgEl.attr('class', @svgEl.attr('class') + ' map_tile_mouse_over')
         return @
 
     mouseLeave: ()=>
-        @$el.attr('class', @$el.attr('class').replace(/\ map_tile_mouse_over/gi, ''))
+        @svgEl.attr('class', @svgEl.attr('class').replace(/\ map_tile_mouse_over/gi, ''))
         return @
 
 ''' ========================================================================    

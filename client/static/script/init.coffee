@@ -46,6 +46,7 @@ GAME_NAME.init = ()=>
         }
     }
 
+
     #Create the game model
     #   Pass in the game state
     GAME_NAME.game = new GAME_NAME.Models.Game(

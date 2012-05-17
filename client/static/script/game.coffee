@@ -40,17 +40,23 @@ class GAME_NAME.Models.Game extends Backbone.Model
 
     initialize: ()=>
         '''Set everything up'''
+        gameSetup = {}
         
+        #Setup map
+        gameSetup.map = new GAME_NAME.Models.Map()
+
+        #Setup renderer
+        gameSetup.renderer = new GAME_NAME.Views.Renderer({
+            game: @
+        })
+
+        #Setup interface
+        gameSetup.interface = new GAME_NAME.Models.Interface()
+
+
         #TODO: Get game state from server based on ID
         #Get map from server
-        @set({
-            map: new GAME_NAME.Models.Map()
-
-            #Setup the renderer
-            renderer: new GAME_NAME.Views.Renderer({
-                game: @
-            })
-        })
+        @set(gameSetup)
 
         return @
 

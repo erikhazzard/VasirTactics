@@ -34,8 +34,10 @@ class GAME_NAME.Models.Player extends Backbone.Model
 
         #Mana increments by X each Y turns
         mana: 1,
+        #Mana regenerated per turn
+        regenRate: 0.5,
         
-        #current target will point to a creature or player object
+        #current target will point to a creature, player, or map object
         target: {},
 
         #Spels is a collection of spells this player can use

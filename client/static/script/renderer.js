@@ -37,7 +37,8 @@
       this.model = new GAME_NAME.Models.Renderer({
         game: this.options.game
       });
-      return this.$el = d3.select('#game_canvas');
+      this.svgEl = d3.select('#game_canvas');
+      return this;
     };
 
     Renderer.prototype.renderUI = function() {
@@ -60,42 +61,37 @@
     };
 
     Renderer.prototype.render = function() {
-      'This draws all the elements of the game to the screen';      $(this.$el.node()).empty();
+      'This draws all the elements of the game to the screen';      $(this.svgEl.node()).empty();
       this.drawMap({
         map: this.model.get('game').get('map')
       });
-      return this.drawCreatures();
+      this.drawCreatures();
+      return this;
     };
 
     Renderer.prototype.drawCreatures = function() {
       'Draw all the creatures for each player';
-      var creature, creatures, key, player, players, _results;
-      this.creaturesGroup = this.$el.append('svg:g').attr('class', 'creatures_group');
+      var creature, creatures, key, player, players;
+      this.creaturesGroup = this.svgEl.append('svg:g').attr('class', 'creatures_group');
       players = this.model.get('game').get('players');
-      _results = [];
       for (key in players) {
         player = players[key];
         creatures = player.get('creatures');
-        _results.push((function() {
-          var _results2;
-          _results2 = [];
-          for (key in creatures) {
-            creature = creatures[key];
-            _results2.push(this.drawCreature({
-              creature: creature,
-              group: this.creaturesGroup
-            }));
-          }
-          return _results2;
-        }).call(this));
+        for (key in creatures) {
+          creature = creatures[key];
+          this.drawCreature({
+            creature: creature,
+            group: this.creaturesGroup
+          });
+        }
       }
-      return _results;
+      return this;
     };
 
     Renderer.prototype.drawMap = function(map) {
       'This draws the map by rendering each map tile individually';
       var cell, key, mapTileGroup, val, _ref;
-      this.mapGroup = this.$el.append('svg:g').attr('class', 'game_map');
+      this.mapGroup = this.svgEl.append('svg:g').attr('class', 'game_map');
       mapTileGroup = this.mapGroup.append('svg:g').attr('class', 'map_tiles');
       _ref = this.model.get('game').get('map').get('cells');
       for (key in _ref) {

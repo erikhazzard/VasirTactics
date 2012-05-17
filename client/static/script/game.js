@@ -33,12 +33,15 @@
     };
 
     Game.prototype.initialize = function() {
-      'Set everything up';      this.set({
-        map: new GAME_NAME.Models.Map(),
-        renderer: new GAME_NAME.Views.Renderer({
-          game: this
-        })
+      'Set everything up';
+      var gameSetup;
+      gameSetup = {};
+      gameSetup.map = new GAME_NAME.Models.Map();
+      gameSetup.renderer = new GAME_NAME.Views.Renderer({
+        game: this
       });
+      gameSetup.interface = new GAME_NAME.Models.Interface();
+      this.set(gameSetup);
       return this;
     };
 

@@ -19,9 +19,7 @@ GAME_NAME.logger.options.setup_log_types()
     ======================================================================== '''
 class GAME_NAME.Views.Creature extends Backbone.View
     events: {
-        'mouseenter': 'mouseEnter'
-        'mouseleave': 'mouseLeave'
-        'click': 'target'
+        'click': 'creatureClicked'
     }
 
     initialize: ()=>
@@ -41,12 +39,28 @@ class GAME_NAME.Views.Creature extends Backbone.View
         @renderer = @options.game.get('renderer')
         @cellSize = @renderer.model.get('cellSize')
         @group = @options.group
+        @interface = GAME_NAME.game.get('interface')
         
         #Set el as an empty element, we'll create it in render()
         @el = {}
 
         return @
 
+    #------------------------------------
+    #util / helper
+    #------------------------------------
+    delegateSVGEvents: ()=>
+        #Use d3.on to set events
+        for key, val of @events
+            @svgEl.on(key, @[val])
+
+        return @
+
+    #------------------------------------
+    #
+    #Render
+    #
+    #------------------------------------
     render: (params)=>
         '''Handles the actual rendering / drawing of the creature'''
 
@@ -81,70 +95,84 @@ class GAME_NAME.Views.Creature extends Backbone.View
         #Store ref to DOM node
         @el = creature_group.node()
         #Store ref to d3 selection 
-        @$el = creature_group
+        @svgEl = creature_group
         #Setup events, using the events listed above
-        @delegateEvents()
+        @delegateSVGEvents()
 
         return @
 
     #------------------------------------
     #Events - User Interaction
     #------------------------------------
+    #Note: events are triggered on the game's interface model
+    creatureClicked: ()=>
+        '''Fired off when the user clicks on a creature'''
+        @interface.trigger('creature:clicked', {
+            creature:@model
+        })
+
+        return @
+
+    #------------------------------------
+    #Target / Untarget
+    #------------------------------------
     target: ()=>
         '''Targets this creature.  Updates the UI and
             darkens the immovable map cells'''
-        #Update UI
-        $('#game_target_name').html(@model.get(
-            'name') + ' <br /> Health: ' + @model.get(
-            'health'))
+
+        #Store i and j
+        creature_i = @model.get('location').x
+        creature_j = @model.get('location').y
 
         #Remove the map_tile_selected class from all elements that
         #   have it
         selectedEls = d3.selectAll('.map_tile_selected')
-        for el in selectedEls[0]
-            curEl = d3.select(el)
-            curEl.attr('class',
-                curEl.attr('class').replace(/map_tile_selected/gi, ''))
+            .classed('map_tile_selected', false)
 
         #Darken all the map cells
         mapTiles = d3.selectAll('.map_tile')
-            .attr('class', (d,i)->
-                return d3.select(@).attr('class') + ' tile_disabled'
-            )
+            .classed('tile_disabled', true)
 
         #Highlight the map cells that the creature can move to
         #TODO: Put this in web worker
         #TODO: Code the real logic for this, not just this fake stub
-        for i in [2..4]
-            for j in [2..4]
-                cell = @map.get('cells')[i + ',' + j].get('view').$el
-                cell.attr('class',
-                    cell.attr('class').replace(/tile_disabled/gi,'')
-                )
+        for i in [creature_i..creature_i+2]
+            for j in [creature_j..creature_j+2]
+                cell = @map.get('cells')[i + ',' + j].get('view').svgEl
+                cell.classed('tile_disabled', false)
 
 
         #Highlight this creature's background rect
-        rect = @$el.select('rect')
-        rect.attr('class',
-            rect.attr('class') + ' map_tile_selected')
+        rect = @svgEl.select('rect')
+        rect.classed('map_tile_selected', true)
 
         #TODO: Move updateTarget logic to a method in renderer?
         #@renderer.updateTarget({
-        #    rect: @$el.select('rect')
+        #    rect: @svgEl.select('rect')
         #})
         return @
 
+    unTarget: ()=>
+        '''Removed this creature from the plaer's currently selected target'''
+        #Unhighlight the creature
+        rect = @svgEl.select('rect')
+        rect.classed('map_tile_selected', false)
+
+        #Reneable all map tiles
+        selectedEls = d3.selectAll('.tile_disabled')
+            .classed('tile_disabled', false)
+
+        return @
+
     mouseEnter: ()=>
-        rect = @$el.select('rect')
-        rect.attr('class',
-            rect.attr('class') + ' map_tile_mouse_over')
+        rect = @svgEl.select('rect')
+        rect.classed('map_tile_mouse_over', true)
         return @
 
     mouseLeave: ()=>
         #TODO: Fix this
-        rect = @$el.select('rect')
-        rect.attr('class',
-            rect.attr('class').replace(/map_tile_mouse_over/gi, ''))
+        rect = @svgEl.select('rect')
+        rect.classed('map_tile_mouse_over', false)
         return @
 
 ''' ========================================================================    

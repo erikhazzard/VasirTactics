@@ -59,17 +59,17 @@ GAME_NAME.Views.Cell = (function(_super) {
     }
     el = this.tile_group.append('svg:rect').attr('class', 'map_tile tile_' + this.model.get('i') + ',' + this.model.get('j')).attr('x', 0).attr('y', 0).attr('width', this.options.cellSize.width).attr('height', this.options.cellSize.height);
     this.el = el.node();
-    this.$el = el;
+    this.svgEl = el;
     return this.delegateEvents();
   };
 
   Cell.prototype.mouseEnter = function() {
-    this.$el.attr('class', this.$el.attr('class') + ' map_tile_mouse_over');
+    this.svgEl.attr('class', this.svgEl.attr('class') + ' map_tile_mouse_over');
     return this;
   };
 
   Cell.prototype.mouseLeave = function() {
-    this.$el.attr('class', this.$el.attr('class').replace(/\ map_tile_mouse_over/gi, ''));
+    this.svgEl.attr('class', this.svgEl.attr('class').replace(/\ map_tile_mouse_over/gi, ''));
     return this;
   };
 
