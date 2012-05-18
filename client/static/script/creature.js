@@ -43,7 +43,7 @@
       this.renderer = this.options.game.get('renderer');
       this.cellSize = this.renderer.model.get('cellSize');
       this.group = this.options.group;
-      this.interface = GAME_NAME.game.get('interface');
+      this.interaction = GAME_NAME.game.get('interaction');
       this.el = {};
       return this;
     };
@@ -79,12 +79,12 @@
     };
 
     Creature.prototype.creatureClicked = function() {
-      'Fired off when the user clicks on a creature';      if (this.interface.get('target') === this.model) {
-        this.interface.set({
+      'Fired off when the user clicks on a creature';      if (this.interaction.get('target') === this.model) {
+        this.interaction.set({
           target: void 0
         });
       } else {
-        this.interface.set({
+        this.interaction.set({
           target: this.model
         });
       }

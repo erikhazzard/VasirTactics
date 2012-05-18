@@ -1,0 +1,5 @@
+To make everything (except third party)
+make
+
+To make third party files
+make third

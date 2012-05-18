@@ -1,5 +1,5 @@
 (function() {
-  ' ========================================================================    \ninterface.coffee\n\nCotains the game\'s Interface.  The interface controls all user interaciton\nwith the game / UI\n\n======================================================================== ';
+  ' ========================================================================    \ninteraction.coffee\n\nCotains the game\'s Interface.  The interaction controls all user interaciton\nwith the game / UI\n\n======================================================================== ';
   ' ========================================================================    \nAdd logging types\n======================================================================== ';
   var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
     __hasProp = Object.prototype.hasOwnProperty,
@@ -24,7 +24,7 @@
       Interface.__super__.constructor.apply(this, arguments);
     }
 
-    'Renders the interface and handles firing off / listening for events';
+    'Renders the interaction and handles firing off / listening for events';
 
     Interface.prototype.initialize = function() {
       return this.model = this.options.model;

@@ -1,0 +1,976 @@
+@import url("http://fonts.googleapis.com/css?family=IM+Fell+English+SC|Ubuntu+Mono|Cantarell|Averia+Serif+Libre:400,700,400italic,700italic&.css");
+/* ========================================================================    
+ *
+ * style.css
+ * ------------
+ *
+ * Main CSS style file, applied to all pages
+ *
+ * ======================================================================== */
+/* Google Fonts */
+/* ========================================================================    
+ *
+ * LESS Declarations
+ *
+ * ======================================================================== */
+/* Fonts */
+/* ------------------------------------------------------------------------
+ *
+ * Layout Related 
+ *
+ * ------------------------------------------------------------------------ */
+/* ------------------------------------------------------------------------
+ * Game Page
+ * ------------------------------------------------------------------------ */
+/* ------------------------------------------------------------------------
+ * Right side
+ * ------------------------------------------------------------------------ */
+/* ------------------------------------------------------------------------
+ * Chat / Player list related 
+ * ------------------------------------------------------------------------ */
+/* ------------------------------------------------------------------------
+ *
+ * Reusable classes
+ * 
+ * ------------------------------------------------------------------------ */
+/* Colors */
+/*Styles*/
+/* ------------------------------------------------------------------------
+ * Reusable Layout
+ * ------------------------------------------------------------------------ */
+/* full width / height positioned absolute */
+/* ========================================================================    
+ *
+ * Base Styles 
+ *
+ * ======================================================================== */
+/* apply a natural box layout model to all elements */
+* {
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+}
+html,
+body {
+  background: #f4f4f4 url(../image/bg.jpg);
+  bottom: 0;
+  color: #ffffff;
+  font-family: 'Cantarell', Arial, Verdana, sans-serif;
+  left: 0;
+  margin: 0;
+  overflow: hidden;
+  padding: 0;
+  position: absolute;
+  right: 0;
+  text-shadow: 0 1px 2px #000000;
+  top: 0;
+  -webkit-font-smoothing: antialiased;
+}
+a {
+  color: #7291AD;
+  font-weight: bold;
+  padding: 5px;
+  text-decoration: none;
+}
+a:hover {
+  color: #A28167;
+  text-decoration: underline;
+}
+/* --------------------------------------
+ * Headers 
+ * -------------------------------------- */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+#header {
+  font-family: 'Averia Serif Libre', Arial, Verdana, sans-serif;
+  margin: 0;
+  padding: 0;
+}
+h1 {
+  font-family: 'IM Fell English SC', Arial, Verdana, sans-serif;
+  font-size: 2em;
+  font-weight: bold;
+}
+h2 {
+  font-size: 1.7em;
+  font-weight: bold;
+}
+/* --------------------------------------
+ * Pre (for code) 
+ * -------------------------------------- */
+pre,
+.code_style,
+#engine_log {
+  background: #383838;
+  border: 1px solid #111111;
+  color: #ffffff;
+  font-size: 1em;
+  font-family: 'Ubuntu Mono', monospace, sans-serif;
+  padding: 5px;
+  text-shadow: 0 0 1px #2c2d32 !important;
+}
+/* --------------------------------------
+ * Lists 
+ * -------------------------------------- */
+/* --------------------------------------
+ * Divs 
+ * -------------------------------------- */
+div {
+  text-overflow: ellipsis;
+}
+/* --------------------------------------
+ * Inputs
+ * -------------------------------------- */
+input[type='text'],
+input[type='email'],
+input[type='number'],
+input[type='submit'],
+input[type='password'],
+input[type='search'],
+input[type='datetime'],
+input[type='time'],
+textarea,
+select {
+  -moz-box-shadow: 0 1px 4px #e0e0e0 inset;
+  -webkit-box-shadow: 0 1px 4px #e0e0e0 inset;
+  box-shadow: 0 1px 4px #e0e0e0 inset;
+  border: 1px solid #a0a0a0;
+  color: #2c2d32;
+  font-family: 'Cantarell', Arial, Verdana, sans-serif, Arial, Verdana, sans-serif;
+  font-size: 1em;
+  padding: 2px;
+}
+input:focus,
+textarea:focus {
+  -moz-box-shadow: 0 0 10px #42607a !important;
+  -webkit-box-shadow: 0 0 10px #42607a !important;
+  box-shadow: 0 0 10px #42607a !important;
+  border: 1px solid #324d62;
+}
+/*Placeholder style*/
+::-webkit-input-placeholder {
+  color: #ababab;
+}
+:-moz-placeholder {
+  color: #ababab;
+}
+/* ------------------------------------------------------------------------
+ *
+ * Base SVG 
+ *
+ * ------------------------------------------------------------------------ */
+rect {
+  fill: none;
+  stroke: none;
+}
+/* ========================================================================    
+ *
+ *                              GAME SVG
+ *
+ * ======================================================================== */
+.game_map .map_tile {
+  fill: rgba(100, 100, 100, 0);
+  stroke: rgba(0, 0, 0, 0.4);
+  stroke-width: 1px;
+}
+.game_map .map_tile_mouse_over {
+  cursor: pointer;
+  fill: rgba(255, 255, 255, 0.7) !important;
+  stroke: #000000 !important;
+  stroke-width: 2px;
+}
+.game_map .tile_disabled {
+  fill: rgba(0, 0, 0, 0.9);
+}
+/* CREATURES */
+.creatures_group {
+  cursor: pointer;
+}
+.creatures_group .map_tile_mouse_over {
+  fill: rgba(50, 100, 150, 0.8) !important;
+  stroke: rgba(250, 250, 250, 0.9);
+  stroke-width: 7;
+  z-index: 999;
+}
+.creatures_group .map_tile_mouse_over {
+  stroke: rgba(250, 250, 250, 0.9) !important;
+}
+.creatures_group .map_tile_selected {
+  fill: rgba(50, 100, 150, 0.6) !important;
+  stroke: rgba(250, 250, 250, 0.7);
+  stroke-width: 4;
+  z-index: 999;
+}
+/* ========================================================================    
+ *
+ *                              LAYOUT
+ *
+ * ======================================================================== */
+#site_wrapper {
+  bottom: 0;
+  left: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+/* ========================================================================    
+ * Header
+ * ======================================================================== */
+#header_wrapper {
+  -moz-box-shadow: 0 2px 7px #707070;
+  -webkit-box-shadow: 0 2px 7px #707070;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3), 0 5px 15px #343434;
+  background: #336699 url(../image/ui/header.jpg);
+  color: #f4f4f4;
+  height: 70px;
+  position: relative;
+  z-index: 700;
+}
+#header_wrapper ul,
+#header_wrapper li {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+#header {
+  bottom: 1%;
+  left: 0;
+  padding: 0 2%;
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+#logo h1 {
+  font-size: 3.4em;
+  text-shadow: 0 2px 2px #000000,
+                        0 1px 8px #232323;
+}
+#logo h1 a {
+  color: #cdcdcd;
+}
+#logo h1 a:hover {
+  color: #f0f0f0;
+  text-decoration: none;
+}
+/* ========================================================================    
+ *
+ * Site nav
+ *
+ * ======================================================================== */
+#site_nav_wrapper {
+  font-size: 1.5em;
+  position: absolute;
+  right: 10%;
+  top: .8em;
+}
+/* ========================================================================    
+ *
+ * Content
+ *
+ * ======================================================================== */
+#content_wrapper {
+  /* bottom: @footer_height; */
+
+  bottom: 0;
+  left: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
+  top: 70px !important;
+}
+#content {
+  /* bottom:  @player_list_chat_wrapper_height; */
+
+  bottom: 10px;
+  left: 0;
+  position: absolute;
+  overflow: auto;
+  right: 0;
+  top: 0;
+}
+/* ======================================================================
+ * BORDERS
+ * ====================================================================== */
+/* **********************************************************************
+ *
+ * Game Page
+ *
+ * ********************************************************************** */
+/* ----------------------------------------------------------------------
+ *
+ * Game Left Side
+ *
+ * ---------------------------------------------------------------------- */
+#game_left_side_wrapper {
+  bottom: 0;
+  left: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
+  right: auto !important;
+  width: 18%;
+}
+#game_left_side {
+  bottom: 0;
+  left: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
+  top: 0 !important;
+}
+/* ===================================================================== 
+ * Spells
+ * ===================================================================== */
+#game_left_side .spells_wrapper {
+  bottom: 0;
+  left: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
+  text-align: right;
+}
+#game_left_side .spells li {
+  clear: both;
+  display: block;
+  float: none;
+  margin: 10px 0 0 0;
+}
+/* ----------------------------------------------------------------------
+ *
+ * Game Canvas
+ *
+ * ----------------------------------------------------------------------*/
+#game_wrapper {
+  bottom: 0;
+  left: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
+  left: 18%;
+  right: 24%;
+}
+#game {
+  bottom: 0;
+  left: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
+  top: 0 !important;
+}
+@absolute _full_layout;
+#game_canvas {
+  border: 1px solid #cdcdcd;
+  height: 100%;
+  position: relative;
+  width: 100%;
+}
+/* ===================================================================== 
+ *
+ * Game Right Side
+ *
+ * ===================================================================== */
+#game_right_side_wrapper {
+  bottom: 0;
+  left: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
+  left: auto !important;
+  width: 24%;
+}
+#game_right_side {
+  bottom: 0;
+  left: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
+  top: 0 !important;
+}
+#game_player_info_wrapper {
+  bottom: 0;
+  left: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+/* ===================================================================== 
+ * Player Info 
+ * ===================================================================== */
+#game_player_info_wrapper {
+  bottom: 0;
+  left: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: auto !important;
+  height: 120px;
+}
+/* ===================================================================== 
+ * Target info
+ * ===================================================================== */
+#game_target_info_wrapper {
+  bottom: 0;
+  left: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: auto !important;
+  top: 120px;
+  height: 100px;
+}
+/* ----------------------------------------------------------------------
+ *
+ * Player List / Chat Wrapper
+ *
+ * --------------------------------------------------------------------- */
+#player_list_chat_wrapper {
+  bottom: 0;
+  left: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
+  /* TODO: background with border image */
+
+  border-top: 2px solid #343434;
+  background: #505050;
+  height: 120px;
+  top: auto !important;
+  z-index: 100;
+}
+#player_list_wrapper {
+  bottom: 0;
+  left: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
+  right: auto !important;
+  width: 300px;
+}
+#player_list {
+  bottom: 0;
+  left: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+#player_list_players {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  overflow: auto;
+  position: relative;
+  width: 100%;
+}
+#player_list_players:after {
+  clear: both;
+}
+#player_list_players li {
+  display: block;
+  float: left;
+  margin: 0 10px 0 0;
+}
+/* Chat */
+#chat_wrapper {
+  bottom: 0;
+  left: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
+  left: 301px;
+}
+#chat_inner {
+  bottom: 0;
+  left: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
+  color: #2c2d32;
+  text-shadow: 0 1px 2px #ffffff;
+}
+#chat_log_wrapper {
+  bottom: 0;
+  left: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
+  background: #f0f0f0;
+  border: 1px solid #cdcdcd;
+  bottom: 26px;
+  font-size: .8em;
+}
+#chat_log {
+  bottom: 0;
+  left: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
+  overflow: auto;
+  overflow-y: scroll;
+  padding: 4px;
+}
+#chat_message_wrapper {
+  bottom: 0;
+  left: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
+  background: #ffffff;
+  font-size: .8em;
+  height: 26px;
+  top: auto !important;
+}
+#chat_message {
+  bottom: 0;
+  left: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
+  margin: 0;
+  width: 100%;
+  z-index: 9;
+}
+#chat_message_send {
+  position: absolute;
+  right: 2px;
+  top: 2px;
+  z-index: 10;
+}
+/* ========================================================================    
+* Engine Log
+* ======================================================================== */
+#engine_log_wrapper {
+  background: #383838;
+  border: 1px solid #000000;
+  bottom: 0;
+  font-size: .8em;
+  height: 80px;
+  left: 0;
+  position: absolute;
+  right: 0;
+}
+#engine_log {
+  border: 1px solid #707070;
+  color: #ffffff;
+  height: 90%;
+  overflow: auto;
+  position: relative;
+  text-shadow: 0 0 1px #000000;
+  z-index: 50;
+}
+#engine_log ul,
+#engine_log ul li {
+  padding: 0;
+  margin: 0;
+}
+#engine_log ul li {
+  margin: 0 0 0 25px;
+}
+#engine_log .error {
+  color: #C64444;
+  text-shadow: 0 0 1px #000000, 0 0 8px #ff0000 !important;
+}
+#engine_log .success {
+  color: #4DC644;
+  text-shadow: 0 0 1px #000000, 0 0 8px #00ff00 !important;
+}
+#engine_log .waiting {
+  color: #ababab;
+  text-shadow: 0 0 1px #000000, 0 0 8px #808080 !important;
+}
+#engine_log .warning {
+  color: #dddd00;
+  text-shadow: 0 0 1px #000000, 0 0 8px #ffff00 !important;
+}
+/*Engine log buttons*/
+#engine_log_buttons {
+  font-size: .9em;
+  position: absolute;
+  right: 30px;
+  top: 0;
+  z-index: 100;
+}
+/* ===================================================================== 
+* Entity Info
+* ===================================================================== */
+/* The entity info wrapper appears above everything */
+#entity_information_wrapper {
+  border-radius: 5px;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  -moz-box-shadow: 0 0 25px #343434;
+  -webkit-box-shadow: 0 0 25px #343434;
+  box-shadow: 0 0 25px #343434;
+  background: #f0f0f0;
+  border: solid 1px #808080;
+  bottom: 10%;
+  display: none;
+  left: 10%;
+  padding: 0;
+  position: absolute;
+  right: 10%;
+  top: 50px;
+  z-index: 9999;
+}
+#entity_information_header {
+  background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#e3e3e3), to(#b5b5b5));
+  background: -moz-linear-gradient(linear, 0% 0%, 0% 100%, from(#e3e3e3), to(#b5b5b5));
+  background: -webkit-linear-gradient(top, #e3e3e3, #b5b5b5);
+  border-bottom: 1px solid #707070;
+  border-top: 1px solid #f0f0f0;
+  height: 30px;
+  padding: 5px 20px;
+  position: relative;
+  text-shadow: 0 0 1px #f0f0f0 !important;
+}
+#entity_information_header h2 {
+  color: #404040 !important;
+}
+#entity_information_close_wrapper {
+  position: absolute;
+  bottom: 5px;
+  right: 10px;
+  top: -1px;
+  width: auto;
+}
+#entity_information_close {
+  -moz-box-shadow: 0 0 25px #343434;
+  -webkit-box-shadow: 0 0 25px #343434;
+  box-shadow: 0 0 25px #343434;
+  font-size: .9em;
+  padding: 5px 15px !important;
+}
+#entity_information {
+  bottom: 0;
+  left: 0;
+  position: absolute;
+  right: 0;
+  top: 35px;
+}
+/* ========================================================================    
+ * 
+ * Footer
+ *
+ * ======================================================================== */
+#footer_wrapper {
+  -moz-box-shadow: 0 -2px 7px #707070;
+  -webkit-box-shadow: 0 -2px 7px #707070;
+  box-shadow: 0 -1px 2px #343434, 0 -2px 9px rgba(0, 0, 0, 0.8);
+  background: #707070 url(../image/footer_bg.jpg);
+  border-top: 1px solid #404040;
+  color: #c0c0c0;
+  bottom: 0;
+  height: 25px;
+  left: 0;
+  position: absolute;
+  right: 0;
+  text-shadow: 0 0 1px #2c2d32;
+  z-index: 800;
+}
+#footer {
+  border-top: 1px solid #808080;
+  bottom: 0;
+  font-size: .8em;
+  left: 0;
+  overflow: hidden;
+  padding: 4px 2% 0;
+  position: absolute;
+  right: 0;
+  text-align: right;
+  top: 0;
+}
+#footer a {
+  margin: 0 1em 0 2em;
+}
+#footer a:hover {
+  text-shadow: 0 0 1px #000000 !important;
+}
+#footer .email {
+  unicode-bidi: bidi-override;
+  direction: rtl;
+}
+/* ========================================================================    
+ *
+ * Popup
+ *
+ * ======================================================================== */
+#popup_container_wrapper {
+  background: rgba(255, 255, 255, 0.8);
+  bottom: 0;
+  display: none;
+  left: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
+  z-index: 999;
+}
+#popup_container {
+  border-radius: 3px !important;
+  -webkit-border-radius: 3px !important;
+  -moz-border-radius: 3px !important;
+  box-shadow: 0 0 22px rgba(0, 0, 0, 0.9);
+  -moz-box-shadow: 0 0 22px rgba(0, 0, 0, 0.9);
+  -webkit-box-shadow: 0 0 22px rgba(0, 0, 0, 0.9);
+  border: 1px solid #ABABAB;
+  bottom: 10%;
+  left: 20%;
+  position: absolute;
+  right: 20%;
+  top: 15%;
+  z-index: 999;
+}
+#popup_container_inner {
+  border-radius: 3px !important;
+  -webkit-border-radius: 3px !important;
+  -moz-border-radius: 3px !important;
+  background: #eeeeee;
+  border: 1px solid #ffffff;
+  bottom: 0;
+  left: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+#popup_container_wrapper h2 {
+  padding: 10px 0 0 5px;
+}
+#popup {
+  background: #fdfdfd;
+  border: 1px solid #bcbcbc;
+  bottom: 0;
+  left: 0;
+  margin: 5px;
+  position: absolute;
+  right: 0;
+  top: 100px;
+}
+/* ========================================================================    
+ * Borders
+ * ======================================================================== */
+.horizontal_border {
+  bottom: 0;
+  left: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
+  background: #f4f4f4 url(../image/border1.png) repeat-x;
+  height: 18px;
+  top: auto !important;
+}
+/* ========================================================================    
+ *
+ * REUSABLE CLASSES 
+ *
+ * ======================================================================== */
+.align_right {
+  text-align: right;
+}
+.bold {
+  font-weight: bold;
+}
+.center {
+  text-align: center;
+}
+.center_image {
+  display: block;
+  text-align: center;
+}
+.clear {
+  clear: both;
+}
+.hidden_element {
+  display: none;
+}
+.visibility_none {
+  opacity: 0;
+}
+.email {
+  unicode-bidi: bidi-override;
+  direction: rtl;
+}
+.font_small {
+  font-size: .9em;
+}
+.grey_text {
+  color: #aeaeae;
+  text-shadow: 1px 1px 0 #ffffff;
+}
+.grey_text a {
+  color: #909090;
+}
+.grey_text a:hover {
+  color: #707070;
+  text-decoration: underline;
+}
+.margin_top {
+  margin: 4em 0 0 0;
+}
+/* ========================================================================    
+ * Google-like buttons
+ * ======================================================================== */
+.buttons {
+  float: left;
+  padding-bottom: 20px;
+  clear: both;
+}
+a.button,
+li.button,
+.help,
+.button,
+button {
+  border-radius: 2px;
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  -webkit-transition: border-color 0.218s;
+  -moz-transition: border .218s;
+  -o-transition: border-color 0.218s;
+  transition: border-color 0.218s;
+  /*
+    font: bold 12px 'Questrial', Helvetica, Arial, sans-serif;
+    */
+
+  border: 1px solid #ACACAC;
+  border-top-color: #BDBDBD;
+  border-bottom-color: #949494;
+  color: #2c2d32;
+  cursor: pointer;
+  display: inline-block;
+  font-size: .9em;
+  font-weight: bold;
+  margin-right: 10px;
+  padding: 7px 12px;
+  position: relative;
+  text-decoration: none;
+  text-shadow: 0 1px 0 #fff;
+  /* Darker buttons */
+
+  background: #dedede;
+  background: -webkit-gradient(linear, left top, left bottom, from(#f0f0f0), to(#d1d1d1));
+  background: -moz-linear-gradient(top, #f0f0f0, #d1d1d1);
+}
+a.button:hover,
+li.button:hover,
+.button_hover,
+.hover,
+button:hover {
+  color: #111;
+  border-color: #999;
+  -moz-box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+  -webkit-box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+}
+a.button:active,
+li.button:active,
+.tab_active,
+button:active,
+.active {
+  color: #000 !important;
+  border-color: #444 !important;
+  border: 1px solid #979797 !important;
+  border-top: 1px solid #707070 !important;
+  background: #000!important;
+  background: -webkit-gradient(linear, left top, left bottom, from(#c3c3c3), to(#ebebeb)) !important;
+  background: -moz-linear-gradient(top, #c3c3c3, #ebebeb) !important;
+  box-shadow: inset 2px 2px 2px rgba(0, 0, 0, 0.1) !important;
+  -webkit-box-shadow: inset 2px 2px 2px rgba(0, 0, 0, 0.1) !important;
+  -moz-box-shadow: inset 2px 2px 2px rgba(0, 0, 0, 0.1) !important;
+  -o-box-shadow: inset 2px 2px 2px rgba(0, 0, 0, 0.1) !important;
+}
+a.left {
+  -webkit-border-top-right-radius: 0;
+  -moz-border-radius-topright: 0;
+  border-top-right-radius: 0;
+  -webkit-border-bottom-right-radius: 0;
+  -moz-border-radius-bottomright: 0;
+  border-bottom-right-radius: 0;
+  margin: 0;
+}
+a.middle {
+  border-radius: 0;
+  -webkit-border-radius: 0;
+  -moz-border-radius: 0;
+  border-left: solid 1px #f3f3f3;
+  margin: 0;
+  border-left: solid 1px rgba(255, 255, 255, 0);
+}
+a.middle:hover,
+a.right:hover {
+  border-left: solid 1px #999999;
+}
+a.right {
+  -webkit-border-top-left-radius: 0;
+  -moz-border-radius-topleft: 0;
+  border-top-left-radius: 0;
+  -webkit-border-bottom-left-radius: 0;
+  -moz-border-radius-bottomleft: 0;
+  border-bottom-left-radius: 0;
+  border-left: solid 1px #f3f3f3;
+  border-left: solid 1px rgba(255, 255, 255, 0);
+}
+a.big {
+  font-size: 16px;
+  padding: 10px 15px;
+}
+a.supersize {
+  font-size: 20px;
+  padding: 15px 20px;
+}
+a.save {
+  background: url(../image/sprite.png) 10px 7px no-repeat #f3f3f3;
+  padding-left: 30px;
+}
+a.add {
+  background: url(../image/sprite.png) 10px -27px no-repeat #f3f3f3;
+  padding-left: 30px;
+}
+a.delete {
+  background: url(../image/sprite.png) 10px -61px no-repeat #f3f3f3;
+  padding-left: 30px;
+}
+a.flag {
+  background: url(../image/sprite.png) 10px -96px no-repeat #f3f3f3;
+  padding-left: 30px;
+}
+a.up {
+  background: url(../image/sprite.png) 13px -133px no-repeat #f3f3f3;
+  width: 18px;
+}
+a.down {
+  background: url(../image/sprite.png) 13px -168px no-repeat #f3f3f3;
+  width: 18px;
+}
+a.save-big {
+  background: url(../image/sprite.png) 15px 11px no-repeat #f3f3f3;
+  font-size: 16px;
+  padding: 10px 15px 10px 35px;
+}
+a.add-big {
+  background: url(../image/sprite.png) 15px -23px no-repeat #f3f3f3;
+  font-size: 16px;
+  padding: 10px 15px 10px 35px;
+}
+a.delete-big {
+  background: url(../image/sprite.png) 15px -57px no-repeat #f3f3f3;
+  font-size: 16px;
+  padding: 10px 15px 10px 35px;
+}
+a.flag-big {
+  background: url(../image/sprite.png) 15px -92px no-repeat #f3f3f3;
+  font-size: 16px;
+  padding: 10px 15px 10px 35px;
+}
+a.up-big {
+  background: url(../image/sprite.png) 15px -128px no-repeat #f3f3f3;
+  width: 18px;
+  font-size: 16px;
+  padding: 10px 15px;
+}
+a.down-big {
+  background: url(../image/sprite.png) 15px -163px no-repeat #f3f3f3;
+  width: 18px;
+  font-size: 16px;
+  padding: 10px 15px;
+}

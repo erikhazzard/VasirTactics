@@ -40,7 +40,7 @@
       gameSetup.renderer = new GAME_NAME.Views.Renderer({
         game: this
       });
-      gameSetup.interface = new GAME_NAME.Models.Interface();
+      gameSetup.interaction = new GAME_NAME.Models.Interface();
       this.set(gameSetup);
       return this;
     };

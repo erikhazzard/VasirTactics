@@ -1,7 +1,7 @@
 ''' ========================================================================    
-    interface.coffee
+    interaction.coffee
 
-    Cotains the game's Interface.  The interface controls all user interaciton
+    Cotains the game's Interface.  The interaction controls all user interaciton
     with the game / UI
 
     ======================================================================== '''
@@ -18,7 +18,7 @@ GAME_NAME.logger.options.setup_log_types()
 
     ======================================================================== '''
 class GAME_NAME.Views.Interface extends Backbone.View
-    '''Renders the interface and handles firing off / listening for events'''
+    '''Renders the interaction and handles firing off / listening for events'''
 
     initialize: ()=>
         #Setup events to listen on

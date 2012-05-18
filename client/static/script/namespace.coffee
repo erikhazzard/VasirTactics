@@ -22,7 +22,7 @@ GAME_NAME = (()=>
         #Interface related stuff 
         #   (elements user interacts with on page, including
         #  engine action buttons)
-        interface: {
+        interaction: {
 
         },
 

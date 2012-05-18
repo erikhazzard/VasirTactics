@@ -42,7 +42,7 @@ class GAME_NAME.Views.Cell extends Backbone.View
         #Create the element (but don't add it yet)
         @x = @model.get('x') * @cellSize.width
         @y = @model.get('y') * @cellSize.height
-        @interface = GAME_NAME.game.get('interface')
+        @interaction = GAME_NAME.game.get('interaction')
 
         #Set el as an empty element, we'll create it in render()
         @el = {}
@@ -127,10 +127,10 @@ class GAME_NAME.Views.Cell extends Backbone.View
     click: ()=>
         #Called when the cell:clicked event is triggered
 
-        if not @interface.get('target') or @interface.get('target').get('className') != 'creature'
+        if not @interaction.get('target') or @interaction.get('target').get('className') != 'creature'
             #If no creature is targeted already, we can straight up target 
             #   the cell
-            @interface.set({
+            @interaction.set({
                 target: @model
             })
         else
@@ -139,7 +139,7 @@ class GAME_NAME.Views.Cell extends Backbone.View
             #TODO: Do this a better way - pass in X,Y to creature's
             #   CAN MOVE function
             if not @svgEl.classed('tile_disabled')
-                @interface.get('target').move({
+                @interaction.get('target').move({
                     cell: @model
                 })
 

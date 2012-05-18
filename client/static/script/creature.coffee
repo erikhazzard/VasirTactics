@@ -40,7 +40,7 @@ class GAME_NAME.Views.Creature extends Backbone.View
         @renderer = @options.game.get('renderer')
         @cellSize = @renderer.model.get('cellSize')
         @group = @options.group
-        @interface = GAME_NAME.game.get('interface')
+        @interaction = GAME_NAME.game.get('interaction')
         
         #Set el as an empty element, we'll create it in render()
         @el = {}
@@ -116,19 +116,19 @@ class GAME_NAME.Views.Creature extends Backbone.View
     #Events - User Interaction
     #
     #------------------------------------
-    #Note: events are triggered on the game's interface model
+    #Note: events are triggered on the game's interaction model
     creatureClicked: ()=>
         '''Fired off when the user clicks on a creature'''
 
         #If this creature is already targeted, we want to 
         #   fire off an event to set the target to null
-        if @interface.get('target') == @model
-            @interface.set({
+        if @interaction.get('target') == @model
+            @interaction.set({
                 target: undefined
             })
         else
             #This creature isn't already targeted, so target it
-            @interface.set({
+            @interaction.set({
                 target: @model
             })
 

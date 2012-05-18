@@ -50,8 +50,8 @@ class GAME_NAME.Models.Game extends Backbone.Model
             game: @
         })
 
-        #Setup interface
-        gameSetup.interface = new GAME_NAME.Models.Interface()
+        #Setup interaction
+        gameSetup.interaction = new GAME_NAME.Models.Interface()
 
 
         #TODO: Get game state from server based on ID

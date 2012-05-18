@@ -9,7 +9,7 @@
       Views: {},
       Models: {},
       game: {},
-      interface: {},
+      interaction: {},
       logger: {},
       init: function() {
         return {};
