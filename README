@@ -1,2 +1,13 @@
 NAME TO BE DECIDED
 ==================
+Compiling and getting everything running
+    1. Install node packages (make sure you have Node and NPM installed).  In client/,
+        node install -d
+    2. Make everything
+        make
+    3. Make third party files
+        make third
+    4. Run a local server in client/
+        python -m SimpleHTTPServer 8000
+    5. Go to it!
+        http://localhost:8000/
