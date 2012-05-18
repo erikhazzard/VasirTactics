@@ -86,8 +86,8 @@ class GAME_NAME.Models.Map extends Backbone.Model
                 #create a new Cell object for each cell
                 cells[i + ',' + j] = new GAME_NAME.Models.Cell({
                     name: 'cell_' + i + ',' + j
-                    i: i,
-                    j: j,
+                    x: i,
+                    y: j,
                     baseSprite: cell.baseSprite
                     topSprite: cell.topSprite
                     type: cell.type

@@ -16,8 +16,9 @@
     __extends(Interface, _super);
 
     function Interface() {
-      this.showTarget = __bind(this.showTarget, this);
-      this.creatureClicked = __bind(this.creatureClicked, this);
+      this.target = __bind(this.target, this);
+      this.unTargetCreatures = __bind(this.unTargetCreatures, this);
+      this.cellClicked = __bind(this.cellClicked, this);
       this.render = __bind(this.render, this);
       this.initialize = __bind(this.initialize, this);
       Interface.__super__.constructor.apply(this, arguments);
@@ -33,28 +34,29 @@
       return this;
     };
 
-    Interface.prototype.creatureClicked = function(params) {
-      var creature;
+    Interface.prototype.cellClicked = function(params) {
+      var cell;
       params = params || {};
-      creature = params.creature;
-      if (creature === void 0) {
-        GAME_NAME.logger.error('creatureClicked(): no creature passed in');
+      cell = params.cell;
+      if (cell === void 0) {
+        GAME_NAME.logger.error('cellClicked(): no cell passed in');
         return false;
       }
-      this.model.set({
-        target: void 0
-      });
-      creature.get('view').unTarget();
-      this.model.set({
-        target: creature
-      });
-      return creature.get('view').target();
     };
 
-    Interface.prototype.showTarget = function() {
+    Interface.prototype.unTargetCreatures = function() {
+      d3.select('.map_tile_selected').classed('map_tile_selected', false);
+      return d3.selectAll('.tile_disabled').classed('tile_disabled', false);
+    };
+
+    Interface.prototype.target = function(params) {
       var target;
       target = this.model.get('target');
-      if (target) target = target.get('name');
+      this.unTargetCreatures();
+      if (target) {
+        target.target();
+        target = target.get('name');
+      }
       return $('#game_target_name').html(target);
     };
 
@@ -84,8 +86,7 @@
           model: this
         })
       });
-      this.on('change:target', this.get('view').showTarget);
-      this.on('creature:clicked', this.get('view').creatureClicked);
+      this.on('change:target', this.get('view').target);
       return this;
     };
 

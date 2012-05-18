@@ -29,30 +29,55 @@ class GAME_NAME.Views.Interface extends Backbone.View
         return @
 
     #------------------------------------
-    #Creature related
+    #
+    #Cells
+    #
     #------------------------------------
-    creatureClicked: (params)=>
+    cellClicked: (params)=>
         params = params || {}
-        creature = params.creature
-        if creature == undefined
-            GAME_NAME.logger.error('creatureClicked(): no creature passed in')
+        cell = params.cell
+        if cell == undefined
+            GAME_NAME.logger.error('cellClicked(): no cell passed in')
             return false
+        #Set target to the cell (which triggers target, which
+        #   will clear any active creatures targeted
 
-        #Untarget selected target (if anything is targeted)
-        @model.set({ target: undefined })
-        creature.get('view').unTarget()
 
-        #Set the target
-        @model.set({ target: creature })
-        creature.get('view').target()
+    #------------------------------------
+    #
+    #Creature related
+    #
+    #------------------------------------
+    unTargetCreatures: ()=>
+        #Remove any classes added when creatures get targeted
+        d3.select('.map_tile_selected')
+            .classed('map_tile_selected', false)
 
+        #Reneable all map tiles
+        d3.selectAll('.tile_disabled')
+            .classed('tile_disabled', false)
         
-    showTarget: ()=>
-        #Show the target in the target box
-        #   Targetname may be undefined (if no target)
+    #------------------------------------
+    #
+    #Target related
+    #
+    #------------------------------------
+    target: (params)=>
+        #Targetname may be undefined (if no target)
         target = @model.get('target')
+
+        #Untarget everything else
+        @unTargetCreatures()
+        
+        #Check if target is not undefined
         if target
+            #Call the target's target() method
+            # (Updates the view)
+            target.target()
+
             target = target.get('name')
+
+        #Update UI
         $('#game_target_name').html(target)
 
 ''' ========================================================================    
@@ -75,7 +100,6 @@ class GAME_NAME.Models.Interface extends Backbone.Model
         })})
 
         #Setup events
-        @on('change:target', @get('view').showTarget)
-        @on('creature:clicked', @get('view').creatureClicked)
+        @on('change:target', @get('view').target)
 
         return @

@@ -32,6 +32,7 @@ class GAME_NAME.Views.Creature extends Backbone.View
 
         #Set the model
         @model = @options.model
+        @model.on('change:location', @update)
 
         #Store reference to passed in vars
         @game = @options.game
@@ -102,14 +103,49 @@ class GAME_NAME.Views.Creature extends Backbone.View
         return @
 
     #------------------------------------
+    #update
+    #------------------------------------
+    update: ()=>
+        #Function called to update the position / etc.
+        @x = @model.get('location').x * @cellSize.width
+        @y = @model.get('location').y * @cellSize.height
+        @svgEl.attr('transform', 'translate(' + [@x,@y] + ')')
+
+    #------------------------------------
+    #
+    #util / game functions
+    #
+    #------------------------------------
+    canMove:(params)=>
+        #Takes in a cell and returns true / false if the creature
+        #   can move to it
+        params = params || {}
+        cell = params.cell
+        if not cell
+            GAME_NAME.logger.error('creature model: move(): no cell passed into params')
+
+        return true
+
+    #------------------------------------
+    #
     #Events - User Interaction
+    #
     #------------------------------------
     #Note: events are triggered on the game's interface model
     creatureClicked: ()=>
         '''Fired off when the user clicks on a creature'''
-        @interface.trigger('creature:clicked', {
-            creature:@model
-        })
+
+        #If this creature is already targeted, we want to 
+        #   fire off an event to set the target to null
+        if @interface.get('target') == @model
+            @interface.set({
+                target: undefined
+            })
+        else
+            #This creature isn't already targeted, so target it
+            @interface.set({
+                target: @model
+            })
 
         return @
 
@@ -145,23 +181,6 @@ class GAME_NAME.Views.Creature extends Backbone.View
         #Highlight this creature's background rect
         rect = @svgEl.select('rect')
         rect.classed('map_tile_selected', true)
-
-        #TODO: Move updateTarget logic to a method in renderer?
-        #@renderer.updateTarget({
-        #    rect: @svgEl.select('rect')
-        #})
-        return @
-
-    unTarget: ()=>
-        '''Removed this creature from the plaer's currently selected target'''
-        #Unhighlight the creature
-        rect = @svgEl.select('rect')
-        rect.classed('map_tile_selected', false)
-
-        #Reneable all map tiles
-        selectedEls = d3.selectAll('.tile_disabled')
-            .classed('tile_disabled', false)
-
         return @
 
     mouseEnter: ()=>
@@ -183,6 +202,7 @@ class GAME_NAME.Views.Creature extends Backbone.View
 class GAME_NAME.Models.Creature extends Backbone.Model
     defaults: {
         name: 'Toestubber'
+        className: 'creature'
 
         attack: 1,
         health: 1,
@@ -212,3 +232,24 @@ class GAME_NAME.Models.Creature extends Backbone.Model
 
     initialize: ()=>
         return @
+
+    #Helper utils
+    target: ()=>
+        return @get('view').target()
+
+    move: (params)=>
+        #Attemps to move the creature to target cell
+        #Params expects a cell object to move to
+        params = params || {}
+        cell = params.cell
+        if not cell
+            GAME_NAME.logger.error('creature model: move(): no cell passed into params')
+
+        #Move the creature
+        #   When the location changes, the view's update() function is called
+        @set({
+            location: {
+                x: cell.get('x'),
+                y: cell.get('y')
+            }
+        })

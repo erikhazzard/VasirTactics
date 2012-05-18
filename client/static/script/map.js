@@ -67,8 +67,8 @@
           cell = row[_j];
           cells[i + ',' + j] = new GAME_NAME.Models.Cell({
             name: 'cell_' + i + ',' + j,
-            i: i,
-            j: j,
+            x: i,
+            y: j,
             baseSprite: cell.baseSprite,
             topSprite: cell.topSprite,
             type: cell.type

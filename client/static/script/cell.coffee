@@ -18,8 +18,9 @@ GAME_NAME.logger.options.setup_log_types()
     ======================================================================== '''
 class GAME_NAME.Views.Cell extends Backbone.View
     events: {
-        'mouseenter': 'mouseEnter'
-        'mouseleave': 'mouseLeave'
+        'click': 'click'
+        'mouseover': 'mouseEnter'
+        'mouseout': 'mouseLeave'
     }
 
     initialize: ()=>
@@ -39,14 +40,30 @@ class GAME_NAME.Views.Cell extends Backbone.View
         @group = @options.group
 
         #Create the element (but don't add it yet)
-        @x = @model.get('i') * @cellSize.width
-        @y = @model.get('j') * @cellSize.height
+        @x = @model.get('x') * @cellSize.width
+        @y = @model.get('y') * @cellSize.height
+        @interface = GAME_NAME.game.get('interface')
 
         #Set el as an empty element, we'll create it in render()
         @el = {}
 
         return @
 
+    #------------------------------------
+    #util / helper
+    #------------------------------------
+    delegateSVGEvents: ()=>
+        #Use d3.on to set events
+        for key, val of @events
+            @svgEl.on(key, @[val])
+
+        return @
+
+    #------------------------------------
+    #
+    #render
+    #
+    #------------------------------------
     render: (params)=>
         '''Render creates the map tile cells and the group containing them
         Expects a renderer model object to be passed in'''
@@ -60,7 +77,7 @@ class GAME_NAME.Views.Cell extends Backbone.View
         #Draw the map cell
         #--------------------------------
         @tile_group = @group.append('svg:g')
-            .attr('class', 'tile_group tile_group_' + @model.get('i') + ',' + @model.get('j'))
+            .attr('class', 'tile_group tile_group_' + @x + ',' + @y)
             .attr('transform', 'translate(' + [@x, @y] + ')')
 
 
@@ -90,7 +107,7 @@ class GAME_NAME.Views.Cell extends Backbone.View
         #el and @el will be the background rect (it may be invisible), which will take up
         #   100% width and height of the cell
         el = @tile_group.append('svg:rect')
-            .attr('class', 'map_tile tile_' + @model.get('i') + ',' + @model.get('j'))
+            .attr('class', 'map_tile tile_' + @x + ',' + @y)
             .attr('x', 0)
             .attr('y', 0)
             .attr('width', @options.cellSize.width)
@@ -101,14 +118,41 @@ class GAME_NAME.Views.Cell extends Backbone.View
         #Store ref to d3 selection 
         @svgEl = el
         #Setup events, using the events listed above
-        @delegateEvents()
+        @delegateSVGEvents()
+
+
+    #------------------------------------
+    #Cell events
+    #------------------------------------
+    click: ()=>
+        #Called when the cell:clicked event is triggered
+
+        if not @interface.get('target') or @interface.get('target').get('className') != 'creature'
+            #If no creature is targeted already, we can straight up target 
+            #   the cell
+            @interface.set({
+                target: @model
+            })
+        else
+            #If a creature is already targeted, we need to do special logic
+            #   e.g., move
+            #TODO: Do this a better way - pass in X,Y to creature's
+            #   CAN MOVE function
+            if not @svgEl.classed('tile_disabled')
+                @interface.get('target').move({
+                    cell: @model
+                })
+
+    target: ()=>
+        #Called when user clicks on a cell
+        return @
 
     mouseEnter: ()=>
-        @svgEl.attr('class', @svgEl.attr('class') + ' map_tile_mouse_over')
+        @svgEl.classed('map_tile_mouse_over', true)
         return @
 
     mouseLeave: ()=>
-        @svgEl.attr('class', @svgEl.attr('class').replace(/\ map_tile_mouse_over/gi, ''))
+        @svgEl.classed('map_tile_mouse_over', false)
         return @
 
 ''' ========================================================================    
@@ -120,6 +164,10 @@ class GAME_NAME.Models.Cell extends Backbone.Model
     defaults: {
         #Default properties
         name: 'cell_i,j'
+        className: 'cell'
+
+        i: 0
+        j: 0
 
         baseSprite: ''
         topSprite: ''
@@ -134,3 +182,6 @@ class GAME_NAME.Models.Cell extends Backbone.Model
 
     initialize: ()=>
         return @
+
+    target: ()=>
+        return @get('view').target()

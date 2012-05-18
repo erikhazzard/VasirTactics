@@ -17,14 +17,18 @@ GAME_NAME.Views.Cell = (function(_super) {
   function Cell() {
     this.mouseLeave = __bind(this.mouseLeave, this);
     this.mouseEnter = __bind(this.mouseEnter, this);
+    this.target = __bind(this.target, this);
+    this.click = __bind(this.click, this);
     this.render = __bind(this.render, this);
+    this.delegateSVGEvents = __bind(this.delegateSVGEvents, this);
     this.initialize = __bind(this.initialize, this);
     Cell.__super__.constructor.apply(this, arguments);
   }
 
   Cell.prototype.events = {
-    'mouseenter': 'mouseEnter',
-    'mouseleave': 'mouseLeave'
+    'click': 'click',
+    'mouseover': 'mouseEnter',
+    'mouseout': 'mouseLeave'
   };
 
   Cell.prototype.initialize = function() {
@@ -38,9 +42,20 @@ GAME_NAME.Views.Cell = (function(_super) {
     });
     this.cellSize = this.options.cellSize;
     this.group = this.options.group;
-    this.x = this.model.get('i') * this.cellSize.width;
-    this.y = this.model.get('j') * this.cellSize.height;
+    this.x = this.model.get('x') * this.cellSize.width;
+    this.y = this.model.get('y') * this.cellSize.height;
+    this.interface = GAME_NAME.game.get('interface');
     this.el = {};
+    return this;
+  };
+
+  Cell.prototype.delegateSVGEvents = function() {
+    var key, val, _ref;
+    _ref = this.events;
+    for (key in _ref) {
+      val = _ref[key];
+      this.svgEl.on(key, this[val]);
+    }
     return this;
   };
 
@@ -52,24 +67,42 @@ GAME_NAME.Views.Cell = (function(_super) {
       GAME_NAME.logger.error('ERROR', 'cell render(): renderer not passed in');
       return false;
     }
-    this.tile_group = this.group.append('svg:g').attr('class', 'tile_group tile_group_' + this.model.get('i') + ',' + this.model.get('j')).attr('transform', 'translate(' + [this.x, this.y] + ')');
+    this.tile_group = this.group.append('svg:g').attr('class', 'tile_group tile_group_' + this.x + ',' + this.y).attr('transform', 'translate(' + [this.x, this.y] + ')');
     this.baseSprite = this.tile_group.append('svg:image').attr('class', 'map_tile_image').attr('x', 0).attr('y', 0).attr('width', this.options.cellSize.width).attr('height', this.options.cellSize.height).attr('xlink:href', params.renderer.get('sprites')[this.model.get('baseSprite')]);
     if (this.model.get('topSprite')) {
       this.topSprite = this.tile_group.append('svg:image').attr('class', 'map_tile_image_overlay').attr('x', 0).attr('y', 0).attr('width', this.options.cellSize.width).attr('height', this.options.cellSize.height).attr('xlink:href', params.renderer.get('sprites')[this.model.get('topSprite')]);
     }
-    el = this.tile_group.append('svg:rect').attr('class', 'map_tile tile_' + this.model.get('i') + ',' + this.model.get('j')).attr('x', 0).attr('y', 0).attr('width', this.options.cellSize.width).attr('height', this.options.cellSize.height);
+    el = this.tile_group.append('svg:rect').attr('class', 'map_tile tile_' + this.x + ',' + this.y).attr('x', 0).attr('y', 0).attr('width', this.options.cellSize.width).attr('height', this.options.cellSize.height);
     this.el = el.node();
     this.svgEl = el;
-    return this.delegateEvents();
+    return this.delegateSVGEvents();
+  };
+
+  Cell.prototype.click = function() {
+    if (!this.interface.get('target') || this.interface.get('target').get('className') !== 'creature') {
+      return this.interface.set({
+        target: this.model
+      });
+    } else {
+      if (!this.svgEl.classed('tile_disabled')) {
+        return this.interface.get('target').move({
+          cell: this.model
+        });
+      }
+    }
+  };
+
+  Cell.prototype.target = function() {
+    return this;
   };
 
   Cell.prototype.mouseEnter = function() {
-    this.svgEl.attr('class', this.svgEl.attr('class') + ' map_tile_mouse_over');
+    this.svgEl.classed('map_tile_mouse_over', true);
     return this;
   };
 
   Cell.prototype.mouseLeave = function() {
-    this.svgEl.attr('class', this.svgEl.attr('class').replace(/\ map_tile_mouse_over/gi, ''));
+    this.svgEl.classed('map_tile_mouse_over', false);
     return this;
   };
 
@@ -84,12 +117,16 @@ GAME_NAME.Models.Cell = (function(_super) {
   __extends(Cell, _super);
 
   function Cell() {
+    this.target = __bind(this.target, this);
     this.initialize = __bind(this.initialize, this);
     Cell.__super__.constructor.apply(this, arguments);
   }
 
   Cell.prototype.defaults = {
     name: 'cell_i,j',
+    className: 'cell',
+    i: 0,
+    j: 0,
     baseSprite: '',
     topSprite: '',
     type: '0',
@@ -99,6 +136,10 @@ GAME_NAME.Models.Cell = (function(_super) {
 
   Cell.prototype.initialize = function() {
     return this;
+  };
+
+  Cell.prototype.target = function() {
+    return this.get('view').target();
   };
 
   return Cell;

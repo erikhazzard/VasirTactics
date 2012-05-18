@@ -18,9 +18,10 @@
     function Creature() {
       this.mouseLeave = __bind(this.mouseLeave, this);
       this.mouseEnter = __bind(this.mouseEnter, this);
-      this.unTarget = __bind(this.unTarget, this);
       this.target = __bind(this.target, this);
       this.creatureClicked = __bind(this.creatureClicked, this);
+      this.canMove = __bind(this.canMove, this);
+      this.update = __bind(this.update, this);
       this.render = __bind(this.render, this);
       this.delegateSVGEvents = __bind(this.delegateSVGEvents, this);
       this.initialize = __bind(this.initialize, this);
@@ -37,6 +38,7 @@
         return false;
       }
       this.model = this.options.model;
+      this.model.on('change:location', this.update);
       this.game = this.options.game;
       this.map = this.options.game.get('map');
       this.renderer = this.options.game.get('renderer');
@@ -71,10 +73,32 @@
       return this;
     };
 
+    Creature.prototype.update = function() {
+      this.x = this.model.get('location').x * this.cellSize.width;
+      this.y = this.model.get('location').y * this.cellSize.height;
+      return this.svgEl.attr('transform', 'translate(' + [this.x, this.y] + ')');
+    };
+
+    Creature.prototype.canMove = function(params) {
+      var cell;
+      params = params || {};
+      cell = params.cell;
+      if (!cell) {
+        GAME_NAME.logger.error('creature model: move(): no cell passed into params');
+      }
+      return true;
+    };
+
     Creature.prototype.creatureClicked = function() {
-      'Fired off when the user clicks on a creature';      this.interface.trigger('creature:clicked', {
-        creature: this.model
-      });
+      'Fired off when the user clicks on a creature';      if (this.interface.get('target') === this.model) {
+        this.interface.set({
+          target: void 0
+        });
+      } else {
+        this.interface.set({
+          target: this.model
+        });
+      }
       return this;
     };
 
@@ -93,15 +117,6 @@
       }
       rect = this.svgEl.select('rect');
       rect.classed('map_tile_selected', true);
-      return this;
-    };
-
-    Creature.prototype.unTarget = function() {
-      'Removed this creature from the plaer\'s currently selected target';
-      var rect, selectedEls;
-      rect = this.svgEl.select('rect');
-      rect.classed('map_tile_selected', false);
-      selectedEls = d3.selectAll('.tile_disabled').classed('tile_disabled', false);
       return this;
     };
 
@@ -130,12 +145,15 @@
     __extends(Creature, _super);
 
     function Creature() {
+      this.move = __bind(this.move, this);
+      this.target = __bind(this.target, this);
       this.initialize = __bind(this.initialize, this);
       Creature.__super__.constructor.apply(this, arguments);
     }
 
     Creature.prototype.defaults = {
       name: 'Toestubber',
+      className: 'creature',
       attack: 1,
       health: 1,
       target: {},
@@ -151,6 +169,25 @@
 
     Creature.prototype.initialize = function() {
       return this;
+    };
+
+    Creature.prototype.target = function() {
+      return this.get('view').target();
+    };
+
+    Creature.prototype.move = function(params) {
+      var cell;
+      params = params || {};
+      cell = params.cell;
+      if (!cell) {
+        GAME_NAME.logger.error('creature model: move(): no cell passed into params');
+      }
+      return this.set({
+        location: {
+          x: cell.get('x'),
+          y: cell.get('y')
+        }
+      });
     };
 
     return Creature;

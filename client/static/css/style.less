@@ -225,16 +225,20 @@ rect {
     stroke-width: 1px;
 }
     .game_map .map_tile_mouse_over {
-        fill: rgba(170,170,170,.8) !important;
-        stroke: rgba(0,0,0,.8);
-        stroke-width:1px;
+        cursor: pointer;
+        fill: rgba(255,255,255,.7) !important;
+        stroke: rgba(0,0,0,1) !important;
+        stroke-width:2px;
     }
     .game_map .tile_disabled {
-        fill: rgba(0,0,0,.4) !important;
+        fill: rgba(0,0,0,.6); 
     }
 
 /* CREATURES */
-    .creatures_group .map_tile_mouse_over {
+.creatures_group {
+    cursor: pointer;
+}
+.creatures_group .map_tile_mouse_over {
         fill: rgba(50,100,150,.8) !important;
         stroke: rgba(250,250,250,.9);
         stroke-width:7;
