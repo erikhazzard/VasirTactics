@@ -43,7 +43,19 @@ class GAME_NAME.Models.Map extends Backbone.Model
     initialize: ()=>
         '''A Map object is created in the Game class'''
         #Create some map tiles
+        @set({
+            map: @randomizeMap()
+        })
+
+        #When map is created, create its cells based on the map array
+        @setupCells({map:@map})
+
+        return @
+
+    randomizeMap: ()=>
         map = []
+
+        #TODO: Get rid of this
         for i in [0..16]
             #Reset the row
             row = []
@@ -51,16 +63,13 @@ class GAME_NAME.Models.Map extends Backbone.Model
                 row.push({
                     baseSprite: 'terrain_' + Math.round(Math.random() * 2)
                     topSprite: (Math.round(Math.random() * 1)) && (Math.round(Math.random() * 1)) && (Math.round(Math.random() * 1)) && 'rock'
-                    type: 'terrain'
+                    type: ['terrain', 'obstacle'][Math.round(Math.random() * 1)]
+                    canPass: ['all', 'ground', 'air'][Math.round(Math.random() * 2)]
                 })
             #Add row to the map tiles
             map.push(row)
-        #Set the map tiles
-        @set({map: map})
-
-        #When map is created, create its cells based on the map array
-        @setupCells({map:@map})
-        return @
+        
+        return map
 
     setupCells: (params)=>
         '''Setup the game cells.  This is called from init and
@@ -91,6 +100,7 @@ class GAME_NAME.Models.Map extends Backbone.Model
                     baseSprite: cell.baseSprite
                     topSprite: cell.topSprite
                     type: cell.type
+                    canPass: cell.canPass
                 })
                 #Increase counter variables
                 j++

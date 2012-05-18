@@ -113,21 +113,6 @@ class GAME_NAME.Views.Creature extends Backbone.View
 
     #------------------------------------
     #
-    #util / game functions
-    #
-    #------------------------------------
-    canMove:(params)=>
-        #Takes in a cell and returns true / false if the creature
-        #   can move to it
-        params = params || {}
-        cell = params.cell
-        if not cell
-            GAME_NAME.logger.error('creature model: move(): no cell passed into params')
-
-        return true
-
-    #------------------------------------
-    #
     #Events - User Interaction
     #
     #------------------------------------
@@ -172,11 +157,11 @@ class GAME_NAME.Views.Creature extends Backbone.View
         #Highlight the map cells that the creature can move to
         #TODO: Put this in web worker
         #TODO: Code the real logic for this, not just this fake stub
-        for i in [creature_i..creature_i+2]
-            for j in [creature_j..creature_j+2]
-                cell = @map.get('cells')[i + ',' + j].get('view').svgEl
-                cell.classed('tile_disabled', false)
-
+        legitCells = @model.calculateMovementCells()
+        mapCells = @map.get('cells')
+        for cell in legitCells
+            cell = mapCells[cell.get('x') + ',' + cell.get('y')].get('view').svgEl
+            cell.classed('tile_disabled', false)
 
         #Highlight this creature's background rect
         rect = @svgEl.select('rect')
@@ -215,6 +200,12 @@ class GAME_NAME.Models.Creature extends Backbone.Model
 
         #Abilities are activated or passive things this creature has
         abilities: []
+
+        #How far creature can move
+        moves: 3
+        #How many cells are left to move after creature is moved
+        #   (In case creature is removed)
+        movesLeft: 3
         
         #Position properties
         #   Stores x,y
@@ -225,6 +216,9 @@ class GAME_NAME.Models.Creature extends Backbone.Model
 
         #Sprite
         sprite: 'creature_dragoon',
+            
+        #Type could be either 'ground' or 'air' for now
+        type: 'ground'
 
         #Associated view
         view: undefined
@@ -233,10 +227,59 @@ class GAME_NAME.Models.Creature extends Backbone.Model
     initialize: ()=>
         return @
 
+    #------------------------------------
+    #
+    #util / game functions
+    #
+    #------------------------------------
     #Helper utils
     target: ()=>
         return @get('view').target()
 
+    #------------------------------------
+    #Move Calculations
+    #------------------------------------
+    calculateMovementCells:(params)=>
+        #Finds legit cells that this creature can move to
+        #   Returns an array of legit cells
+        #params can be empty OR cells can be passed in
+        
+        params = params || {}
+        #Get all game cells
+        cells = params.cells || GAME_NAME.game.get('map').get('cells')
+
+        #Keep an array of possible movement cells
+        movementCells = []
+        
+        #Get cells around this creature
+        creatureLocation = @get('location')
+        movesLeft = @get('movesLeft')
+
+        loopLen = movesLeft
+        rangeLen = -movesLeft
+
+        #Start at the top left and get all the cells that extend in a square to
+        #   the length of the moves
+        for i in [rangeLen..loopLen]
+            for j in [rangeLen..loopLen]
+                curCell = cells[ (creatureLocation.x + i) + ',' + (creatureLocation.y + j) ]
+                #Make sure the cell we're looking at exists
+                if curCell != undefined
+                    #Make sure the cell isn't impassable
+                    #TODO: IMRPOVE
+                    if curCell.get('canPass') == 'all' || curCell.get(
+                        'canPass') == @get('type')
+                        #Get all movable adjacent cells
+                        movementCells.push(
+                            curCell
+                        )
+
+        return movementCells
+        
+       
+    #------------------------------------
+    #Movement related
+    #------------------------------------
     move: (params)=>
         #Attemps to move the creature to target cell
         #Params expects a cell object to move to
@@ -253,3 +296,13 @@ class GAME_NAME.Models.Creature extends Backbone.Model
                 y: cell.get('y')
             }
         })
+
+    canMove:(params)=>
+        #Takes in a cell and returns true / false if the creature
+        #   can move to it
+        params = params || {}
+        cell = params.cell
+        if not cell
+            GAME_NAME.logger.error('creature model: move(): no cell passed into params')
+
+        return true

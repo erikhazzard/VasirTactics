@@ -17,6 +17,7 @@
 
     function Map() {
       this.setupCells = __bind(this.setupCells, this);
+      this.randomizeMap = __bind(this.randomizeMap, this);
       this.initialize = __bind(this.initialize, this);
       Map.__super__.constructor.apply(this, arguments);
     }
@@ -28,7 +29,16 @@
     };
 
     Map.prototype.initialize = function() {
-      'A Map object is created in the Game class';
+      'A Map object is created in the Game class';      this.set({
+        map: this.randomizeMap()
+      });
+      this.setupCells({
+        map: this.map
+      });
+      return this;
+    };
+
+    Map.prototype.randomizeMap = function() {
       var i, j, map, row;
       map = [];
       for (i = 0; i <= 16; i++) {
@@ -37,18 +47,13 @@
           row.push({
             baseSprite: 'terrain_' + Math.round(Math.random() * 2),
             topSprite: (Math.round(Math.random() * 1)) && (Math.round(Math.random() * 1)) && (Math.round(Math.random() * 1)) && 'rock',
-            type: 'terrain'
+            type: ['terrain', 'obstacle'][Math.round(Math.random() * 1)],
+            canPass: ['all', 'ground', 'air'][Math.round(Math.random() * 2)]
           });
         }
         map.push(row);
       }
-      this.set({
-        map: map
-      });
-      this.setupCells({
-        map: this.map
-      });
-      return this;
+      return map;
     };
 
     Map.prototype.setupCells = function(params) {
@@ -71,7 +76,8 @@
             y: j,
             baseSprite: cell.baseSprite,
             topSprite: cell.topSprite,
-            type: cell.type
+            type: cell.type,
+            canPass: cell.canPass
           });
           j++;
         }

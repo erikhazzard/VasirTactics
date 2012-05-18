@@ -20,7 +20,6 @@
       this.mouseEnter = __bind(this.mouseEnter, this);
       this.target = __bind(this.target, this);
       this.creatureClicked = __bind(this.creatureClicked, this);
-      this.canMove = __bind(this.canMove, this);
       this.update = __bind(this.update, this);
       this.render = __bind(this.render, this);
       this.delegateSVGEvents = __bind(this.delegateSVGEvents, this);
@@ -79,16 +78,6 @@
       return this.svgEl.attr('transform', 'translate(' + [this.x, this.y] + ')');
     };
 
-    Creature.prototype.canMove = function(params) {
-      var cell;
-      params = params || {};
-      cell = params.cell;
-      if (!cell) {
-        GAME_NAME.logger.error('creature model: move(): no cell passed into params');
-      }
-      return true;
-    };
-
     Creature.prototype.creatureClicked = function() {
       'Fired off when the user clicks on a creature';      if (this.interface.get('target') === this.model) {
         this.interface.set({
@@ -104,16 +93,17 @@
 
     Creature.prototype.target = function() {
       'Targets this creature.  Updates the UI and\ndarkens the immovable map cells';
-      var cell, creature_i, creature_j, i, j, mapTiles, rect, selectedEls, _ref, _ref2;
+      var cell, creature_i, creature_j, legitCells, mapCells, mapTiles, rect, selectedEls, _i, _len;
       creature_i = this.model.get('location').x;
       creature_j = this.model.get('location').y;
       selectedEls = d3.selectAll('.map_tile_selected').classed('map_tile_selected', false);
       mapTiles = d3.selectAll('.map_tile').classed('tile_disabled', true);
-      for (i = creature_i, _ref = creature_i + 2; creature_i <= _ref ? i <= _ref : i >= _ref; creature_i <= _ref ? i++ : i--) {
-        for (j = creature_j, _ref2 = creature_j + 2; creature_j <= _ref2 ? j <= _ref2 : j >= _ref2; creature_j <= _ref2 ? j++ : j--) {
-          cell = this.map.get('cells')[i + ',' + j].get('view').svgEl;
-          cell.classed('tile_disabled', false);
-        }
+      legitCells = this.model.calculateMovementCells();
+      mapCells = this.map.get('cells');
+      for (_i = 0, _len = legitCells.length; _i < _len; _i++) {
+        cell = legitCells[_i];
+        cell = mapCells[cell.get('x') + ',' + cell.get('y')].get('view').svgEl;
+        cell.classed('tile_disabled', false);
       }
       rect = this.svgEl.select('rect');
       rect.classed('map_tile_selected', true);
@@ -145,7 +135,9 @@
     __extends(Creature, _super);
 
     function Creature() {
+      this.canMove = __bind(this.canMove, this);
       this.move = __bind(this.move, this);
+      this.calculateMovementCells = __bind(this.calculateMovementCells, this);
       this.target = __bind(this.target, this);
       this.initialize = __bind(this.initialize, this);
       Creature.__super__.constructor.apply(this, arguments);
@@ -159,11 +151,14 @@
       target: {},
       effects: [],
       abilities: [],
+      moves: 3,
+      movesLeft: 3,
       location: {
         x: Math.round(Math.random() * 5),
         y: Math.round(Math.random() * 5)
       },
       sprite: 'creature_dragoon',
+      type: 'ground',
       view: void 0
     };
 
@@ -173,6 +168,28 @@
 
     Creature.prototype.target = function() {
       return this.get('view').target();
+    };
+
+    Creature.prototype.calculateMovementCells = function(params) {
+      var cells, creatureLocation, curCell, i, j, loopLen, movementCells, movesLeft, rangeLen;
+      params = params || {};
+      cells = params.cells || GAME_NAME.game.get('map').get('cells');
+      movementCells = [];
+      creatureLocation = this.get('location');
+      movesLeft = this.get('movesLeft');
+      loopLen = movesLeft;
+      rangeLen = -movesLeft;
+      for (i = rangeLen; rangeLen <= loopLen ? i <= loopLen : i >= loopLen; rangeLen <= loopLen ? i++ : i--) {
+        for (j = rangeLen; rangeLen <= loopLen ? j <= loopLen : j >= loopLen; rangeLen <= loopLen ? j++ : j--) {
+          curCell = cells[(creatureLocation.x + i) + ',' + (creatureLocation.y + j)];
+          if (curCell !== void 0) {
+            if (curCell.get('canPass') === 'all' || curCell.get('canPass') === this.get('type')) {
+              movementCells.push(curCell);
+            }
+          }
+        }
+      }
+      return movementCells;
     };
 
     Creature.prototype.move = function(params) {
@@ -188,6 +205,16 @@
           y: cell.get('y')
         }
       });
+    };
+
+    Creature.prototype.canMove = function(params) {
+      var cell;
+      params = params || {};
+      cell = params.cell;
+      if (!cell) {
+        GAME_NAME.logger.error('creature model: move(): no cell passed into params');
+      }
+      return true;
     };
 
     return Creature;
