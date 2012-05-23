@@ -61,11 +61,11 @@ class GAME_NAME.Models.Map extends Backbone.Model
             row = []
             for j in [0..8]
                 #Create object for cell
-                randNum = Math.round(Math.random() * 2)
+                randNum = Math.round(Math.random() * 3)
                 tmpRow = {
-                    baseSprite: 'terrain_' + randNum
-                    topSprite: [undefined, undefined, 'rock'][randNum]
-                    canPass: ['all', 'ground', 'air'][randNum]
+                    baseSprite: 'terrain_' + Math.round(Math.random() * 1)
+                    topSprite: [undefined, undefined, undefined, 'rock'][randNum]
+                    canPass: ['all', 'ground', 'ground', 'air'][randNum]
                 }
                 
                 #Push this row to the map

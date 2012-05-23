@@ -143,8 +143,19 @@
 <!-- ================================
     Templates
      ================================ -->
-<script type='text/template' id='template_ui_target'>
-    {{name}} | {{health}}
+
+<!-- Target: Creature -->
+<script type='text/template' id='template_ui_target_creature'>
+    {{ name }}
+    <br />
+    Health: {{ health }}
+    <br />
+    Moves Left: {{ movesLeft }}
+</script>
+
+<!-- Target: Cell -->
+<script type='text/template' id='template_ui_target_cell'>
+    {{ name }}
 </script>
 
 <!-- ======================================================================

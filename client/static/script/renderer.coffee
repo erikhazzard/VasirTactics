@@ -56,6 +56,8 @@ class GAME_NAME.Views.Renderer extends Backbone.View
         #Update player list
         #------------------
         players = @model.get('game').get('players')
+        activePlayer = @model.get('game').get('activePlayer')
+
         list_html = []
         for key, player of players
             list_html.push('<li>' + player.get(
@@ -68,11 +70,12 @@ class GAME_NAME.Views.Renderer extends Backbone.View
         #Update spells
         #-------------
         spells_html = []
-        for key, spell of players.enoex.get('spells')
-            spells_html.push('<li class="button">' + spell.get(
-                'name') + '</li>')
-
-        $('#game_left_side .spells').html(spells_html.join(''))
+        #TODO: Put in collection
+        for key, spell of activePlayer.get('spells')
+            #Create a view for each spell
+            spellView = new GAME_NAME.Views.Spell({
+                model: spell
+            }).render()
 
         return @
 

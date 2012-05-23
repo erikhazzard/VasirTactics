@@ -27,6 +27,7 @@
         playerID: {},
         playerID2: {}
       },
+      activePlayer: void 0,
       map: {},
       renderer: {},
       _state: {}
@@ -36,13 +37,14 @@
       'Set everything up';
       var gameSetup;
       gameSetup = {};
-      gameSetup.map = new GAME_NAME.Models.Map();
-      gameSetup.renderer = new GAME_NAME.Views.Renderer({
-        game: this
-      });
       gameSetup.interaction = new GAME_NAME.Models.Interface();
       gameSetup.interactionView = new GAME_NAME.Views.Interface({
         model: gameSetup.interaction
+      });
+      gameSetup.interactionView.render();
+      gameSetup.map = new GAME_NAME.Models.Map();
+      gameSetup.renderer = new GAME_NAME.Views.Renderer({
+        game: this
       });
       this.set(gameSetup);
       return this;

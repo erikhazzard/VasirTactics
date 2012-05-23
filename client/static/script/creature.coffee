@@ -45,7 +45,6 @@ class GAME_NAME.Views.Creature extends Backbone.View
         #Listen for events
         #--------------------------------
         @model.on('creature:targeted', @target)
-        @model.on('creature:renderUI', @renderUI)
         
         #Set el as an empty element, we'll create it in render()
         @el = {}
@@ -137,9 +136,14 @@ class GAME_NAME.Views.Creature extends Backbone.View
             })
         else
             #This creature isn't already targeted, so target it
+            #
+            #If this creature doesn't to the currently active player,
+            #   do different logic
+            html = @targetHtml()
+
             @interaction.set({
                 target: @model
-                targetHtml: @targetHtml()
+                targetHtml: html
             })
 
         return @
@@ -150,8 +154,8 @@ class GAME_NAME.Views.Creature extends Backbone.View
     #
     #------------------------------------
     target: ()=>
-        '''Targets this creature.  Updates the UI and
-            darkens the immovable map cells'''
+        #Targets this creature.  Updates the game map and
+        #   darkens the immovable map cells
 
         #Store i and j
         creature_i = @model.get('location').x
@@ -196,9 +200,10 @@ class GAME_NAME.Views.Creature extends Backbone.View
     #------------------------------------
     targetHtml: ()=>
         #Renders the UI
-        html = _.template(GAME_NAME.templates.target)({
+        html = _.template(GAME_NAME.templates.target_creature)({
             name: @model.get('name'),
             health: @model.get('health')
+            movesLeft: @model.get('movesLeft')
         })
         return html
 
@@ -241,6 +246,9 @@ class GAME_NAME.Models.Creature extends Backbone.Model
             
         #Type could be either 'ground' or 'air' for now
         type: 'ground'
+
+        #Owner is the player which controls this creature
+        owner: undefined
     }
 
     initialize: ()=>
@@ -330,10 +338,10 @@ class GAME_NAME.Models.Creature extends Backbone.Model
 
         return true
 
-    #------------------------------------
-    #Helper UI Functions
-    #------------------------------------
-    renderUI: ()=>
-        #trigger the view's renderUI function
-        @trigger('creature:renderUI')
+''' ========================================================================    
+    
+    Colections
 
+    ======================================================================== '''
+class GAME_NAME.Collections.Creatures extends Backbone.Model
+    model: GAME_NAME.Models.Creature

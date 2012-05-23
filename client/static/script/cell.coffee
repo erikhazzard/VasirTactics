@@ -37,7 +37,6 @@ class GAME_NAME.Views.Cell extends Backbone.View
         #Listen for events
         #--------------------------------
         @model.on('cell:targeted', @target)
-        @model.on('cell:renderUI', @renderUI)
         
         #Store reference to passed in vars
         @cellSize = @options.cellSize
@@ -165,7 +164,7 @@ class GAME_NAME.Views.Cell extends Backbone.View
     #------------------------------------
     targetHtml: ()=>
         #Renders the target box
-        html = _.template(GAME_NAME.templates.target)({
+        html = _.template(GAME_NAME.templates.target_cell)({
             name: @model.get('name')
             health: ''
         })
@@ -202,10 +201,3 @@ class GAME_NAME.Models.Cell extends Backbone.Model
         #   The view will listen for this event
         @trigger('cell:targeted')
         return @
-        
-    #------------------------------------
-    #Heler UI Functions
-    #------------------------------------
-    renderUI: ()=>
-        #trigger the view's renderUI function
-        @trigger('cell:renderUI')

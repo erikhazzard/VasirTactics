@@ -8,6 +8,7 @@
       events: _.extend({}, Backbone.Events),
       Views: {},
       Models: {},
+      Collections: {},
       game: {},
       interaction: {},
       logger: {},

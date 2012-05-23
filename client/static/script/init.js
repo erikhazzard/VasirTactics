@@ -1,6 +1,7 @@
 (function() {
   ' ========================================================================    \ninit.js\n----------------------\nSets up page / UI related stuff and \n========================================================================';
-  var _this = this;
+  var key, tmp_img, val, _ref,
+    _this = this;
 
   GAME_NAME.init = function() {
     'Kick off the game creation';
@@ -11,7 +12,12 @@
           name: 'Enoex',
           id: '402190r90war',
           spells: {
-            'spell_x': new GAME_NAME.Models.Spell({})
+            'summon_knight': new GAME_NAME.Models.Spell({
+              name: 'Summon Creature'
+            }),
+            'magic_missile': new GAME_NAME.Models.Spell({
+              name: 'Magic Missle'
+            })
           },
           creatures: {
             'toestubbergoblin1_xx': new GAME_NAME.Models.Creature({
@@ -39,6 +45,7 @@
         })
       }
     };
+    game_state.activePlayer = game_state.players.enoex;
     GAME_NAME.game = new GAME_NAME.Models.Game(game_state);
     renderer = GAME_NAME.game.get('renderer');
     renderer.renderUI();
@@ -48,15 +55,16 @@
 
   ' ========================================================================    \nCall init\n========================================================================';
 
+  _ref = GAME_NAME.Models.Renderer.prototype.defaults.sprites;
+  for (key in _ref) {
+    val = _ref[key];
+    tmp_img = new Image();
+    tmp_img.src = val;
+  }
+
   $(document).ready(function() {
-    var key, tmp_img, val, _ref;
-    _ref = GAME_NAME.Models.Renderer.prototype.defaults.sprites;
-    for (key in _ref) {
-      val = _ref[key];
-      tmp_img = new Image();
-      tmp_img.src = val;
-    }
-    GAME_NAME.templates.target = $('#template_ui_target').html();
+    GAME_NAME.templates.target_creature = $('#template_ui_target_creature').html();
+    GAME_NAME.templates.target_cell = $('#template_ui_target_cell').html();
     return GAME_NAME.init();
   });
 

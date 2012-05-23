@@ -40,7 +40,6 @@
       }
       this.model = this.options.model;
       this.model.on('cell:targeted', this.target);
-      this.model.on('cell:renderUI', this.renderUI);
       this.cellSize = this.options.cellSize;
       this.group = this.options.group;
       this.x = this.model.get('x') * this.cellSize.width;
@@ -110,7 +109,7 @@
 
     Cell.prototype.targetHtml = function() {
       var html;
-      html = _.template(GAME_NAME.templates.target)({
+      html = _.template(GAME_NAME.templates.target_cell)({
         name: this.model.get('name'),
         health: ''
       });
@@ -128,7 +127,6 @@
     __extends(Cell, _super);
 
     function Cell() {
-      this.renderUI = __bind(this.renderUI, this);
       this.target = __bind(this.target, this);
       this.initialize = __bind(this.initialize, this);
       Cell.__super__.constructor.apply(this, arguments);
@@ -152,10 +150,6 @@
     Cell.prototype.target = function() {
       this.trigger('cell:targeted');
       return this;
-    };
-
-    Cell.prototype.renderUI = function() {
-      return this.trigger('cell:renderUI');
     };
 
     return Cell;

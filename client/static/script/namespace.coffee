@@ -14,6 +14,7 @@ GAME_NAME = (()=>
         #Views and Model Classes
         Views: {},
         Models: {},
+        Collections: {},
 
         #Game stuff
         #   game will contain the game model

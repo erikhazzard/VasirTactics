@@ -51,7 +51,11 @@ class GAME_NAME.Views.Interface extends Backbone.View
         if target != undefined
             #Call the target's target() method
             # (Updates the view)
+            #
+            #If this creature doesn't to the currently active player,
+            #   do different logic
             target.target()
+
         else
             #Target is not defined, so make sure we clear the
             #   targetHTML
@@ -66,8 +70,8 @@ class GAME_NAME.Views.Interface extends Backbone.View
         d3.selectAll('.tile_disabled')
             .classed('tile_disabled', false)
 
-    #Target - UI
     renderTarget: ()=>
+        #Updates the UI
         #Updates the target box HTML
         @$targetEl.html(@model.get('targetHtml'))
 

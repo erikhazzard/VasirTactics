@@ -44,11 +44,11 @@
       for (i = 0; i <= 16; i++) {
         row = [];
         for (j = 0; j <= 8; j++) {
-          randNum = Math.round(Math.random() * 2);
+          randNum = Math.round(Math.random() * 3);
           tmpRow = {
-            baseSprite: 'terrain_' + randNum,
-            topSprite: [void 0, void 0, 'rock'][randNum],
-            canPass: ['all', 'ground', 'air'][randNum]
+            baseSprite: 'terrain_' + Math.round(Math.random() * 1),
+            topSprite: [void 0, void 0, void 0, 'rock'][randNum],
+            canPass: ['all', 'ground', 'ground', 'air'][randNum]
           };
           row.push(tmpRow);
         }

@@ -17,20 +17,28 @@ GAME_NAME.logger.options.setup_log_types()
     View
 
     ======================================================================== '''
-class GAME_NAME.Views.Spells extends Backbone.View
+class GAME_NAME.Views.Spell extends Backbone.View
     '''Handles the UI / interaction'''
+    type: 'li'
+
     initialize: ()=>
-        if @options.model == undefined or @options.game == undefined
+        if @options.model == undefined
             GAME_NAME.logger.error('ERROR', 'creature view init(): params not properly passed in')
             return false
 
         #Set the model
         @model = @options.model
-        @game = @options.game
+
+        #List for events
+        GAME_NAME.game.get('interaction').on('change:target', @updateUI)
 
         return @
 
     render: ()=>
+        #Renders the spell button in the UI
+        @el = $('<li class="button">' + @model.get(
+            'name') + '</li>')
+        $('.spells').append(@el)
         return @
 
     #------------------------------------
@@ -39,7 +47,16 @@ class GAME_NAME.Views.Spells extends Backbone.View
     click: ()=>
         '''Called when the UI element is clicked.
             Need to ensure the user CAN cast the spell'''
+        return @
 
+    #------------------------------------
+    #Update UI (show / hide based on current target)
+    #------------------------------------
+    updateUI: ()=>
+        #This is triggered when the game's Interaction model receives
+        #   a new target 
+        console.log('hello', GAME_NAME.game.get('interaction').get('target'))
+        return @
 
 ''' ========================================================================    
     

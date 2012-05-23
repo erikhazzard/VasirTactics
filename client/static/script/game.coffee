@@ -28,6 +28,9 @@ class GAME_NAME.Models.Game extends Backbone.Model
             playerID2: {}
         },
 
+        #Reference to current player
+        activePlayer: undefined,
+
         #Contains the Map object
         map: {}
 
@@ -41,6 +44,13 @@ class GAME_NAME.Models.Game extends Backbone.Model
     initialize: ()=>
         '''Set everything up'''
         gameSetup = {}
+
+        #Setup interaction (game interface, UI)
+        gameSetup.interaction = new GAME_NAME.Models.Interface()
+        gameSetup.interactionView = new GAME_NAME.Views.Interface({
+            model: gameSetup.interaction
+        })
+        gameSetup.interactionView.render()
         
         #Setup map
         gameSetup.map = new GAME_NAME.Models.Map()
@@ -49,13 +59,6 @@ class GAME_NAME.Models.Game extends Backbone.Model
         gameSetup.renderer = new GAME_NAME.Views.Renderer({
             game: @
         })
-
-        #Setup interaction
-        gameSetup.interaction = new GAME_NAME.Models.Interface()
-        gameSetup.interactionView = new GAME_NAME.Views.Interface({
-            model: gameSetup.interaction
-        })
-
 
         #TODO: Get game state from server based on ID
         #Get map from server

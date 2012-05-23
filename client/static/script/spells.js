@@ -11,38 +11,48 @@
 
   ' ========================================================================    \n\nView\n\n======================================================================== ';
 
-  GAME_NAME.Views.Spells = (function(_super) {
+  GAME_NAME.Views.Spell = (function(_super) {
 
-    __extends(Spells, _super);
+    __extends(Spell, _super);
 
-    function Spells() {
+    function Spell() {
+      this.updateUI = __bind(this.updateUI, this);
       this.click = __bind(this.click, this);
       this.render = __bind(this.render, this);
       this.initialize = __bind(this.initialize, this);
-      Spells.__super__.constructor.apply(this, arguments);
+      Spell.__super__.constructor.apply(this, arguments);
     }
 
     'Handles the UI / interaction';
 
-    Spells.prototype.initialize = function() {
-      if (this.options.model === void 0 || this.options.game === void 0) {
+    Spell.prototype.type = 'li';
+
+    Spell.prototype.initialize = function() {
+      if (this.options.model === void 0) {
         GAME_NAME.logger.error('ERROR', 'creature view init(): params not properly passed in');
         return false;
       }
       this.model = this.options.model;
-      this.game = this.options.game;
+      GAME_NAME.game.get('interaction').on('change:target', this.updateUI);
       return this;
     };
 
-    Spells.prototype.render = function() {
+    Spell.prototype.render = function() {
+      this.el = $('<li class="button">' + this.model.get('name') + '</li>');
+      $('.spells').append(this.el);
       return this;
     };
 
-    Spells.prototype.click = function() {
-      return 'Called when the UI element is clicked.\nNeed to ensure the user CAN cast the spell';
+    Spell.prototype.click = function() {
+      'Called when the UI element is clicked.\nNeed to ensure the user CAN cast the spell';      return this;
     };
 
-    return Spells;
+    Spell.prototype.updateUI = function() {
+      console.log('hello', GAME_NAME.game.get('interaction').get('target'));
+      return this;
+    };
+
+    return Spell;
 
   })(Backbone.View);
 

@@ -46,7 +46,6 @@
       this.group = this.options.group;
       this.interaction = GAME_NAME.game.get('interaction');
       this.model.on('creature:targeted', this.target);
-      this.model.on('creature:renderUI', this.renderUI);
       this.el = {};
       return this;
     };
@@ -82,21 +81,23 @@
     };
 
     Creature.prototype.creatureClicked = function() {
-      'Fired off when the user clicks on a creature';      if (this.interaction.get('target') === this.model) {
+      'Fired off when the user clicks on a creature';
+      var html;
+      if (this.interaction.get('target') === this.model) {
         this.interaction.set({
           target: void 0
         });
       } else {
+        html = this.targetHtml();
         this.interaction.set({
           target: this.model,
-          targetHtml: this.targetHtml()
+          targetHtml: html
         });
       }
       return this;
     };
 
     Creature.prototype.target = function() {
-      'Targets this creature.  Updates the UI and\ndarkens the immovable map cells';
       var cell, creature_i, creature_j, legitCells, mapCells, mapTiles, rect, selectedEls, _i, _len;
       creature_i = this.model.get('location').x;
       creature_j = this.model.get('location').y;
@@ -130,9 +131,10 @@
 
     Creature.prototype.targetHtml = function() {
       var html;
-      html = _.template(GAME_NAME.templates.target)({
+      html = _.template(GAME_NAME.templates.target_creature)({
         name: this.model.get('name'),
-        health: this.model.get('health')
+        health: this.model.get('health'),
+        movesLeft: this.model.get('movesLeft')
       });
       return html;
     };
@@ -148,7 +150,6 @@
     __extends(Creature, _super);
 
     function Creature() {
-      this.renderUI = __bind(this.renderUI, this);
       this.canMove = __bind(this.canMove, this);
       this.move = __bind(this.move, this);
       this.calculateMovementCells = __bind(this.calculateMovementCells, this);
@@ -172,7 +173,8 @@
         y: Math.round(Math.random() * 5)
       },
       sprite: 'creature_dragoon',
-      type: 'ground'
+      type: 'ground',
+      owner: void 0
     };
 
     Creature.prototype.initialize = function() {
@@ -232,11 +234,23 @@
       return true;
     };
 
-    Creature.prototype.renderUI = function() {
-      return this.trigger('creature:renderUI');
-    };
-
     return Creature;
+
+  })(Backbone.Model);
+
+  ' ========================================================================    \n\nColections\n\n======================================================================== ';
+
+  GAME_NAME.Collections.Creatures = (function(_super) {
+
+    __extends(Creatures, _super);
+
+    function Creatures() {
+      Creatures.__super__.constructor.apply(this, arguments);
+    }
+
+    Creatures.prototype.model = GAME_NAME.Models.Creature;
+
+    return Creatures;
 
   })(Backbone.Model);
 
