@@ -60,12 +60,16 @@ class GAME_NAME.Models.Map extends Backbone.Model
             #Reset the row
             row = []
             for j in [0..8]
-                row.push({
-                    baseSprite: 'terrain_' + Math.round(Math.random() * 2)
-                    topSprite: (Math.round(Math.random() * 1)) && (Math.round(Math.random() * 1)) && (Math.round(Math.random() * 1)) && 'rock'
-                    type: ['terrain', 'obstacle'][Math.round(Math.random() * 1)]
-                    canPass: ['all', 'ground', 'air'][Math.round(Math.random() * 2)]
-                })
+                #Create object for cell
+                randNum = Math.round(Math.random() * 2)
+                tmpRow = {
+                    baseSprite: 'terrain_' + randNum
+                    topSprite: [undefined, undefined, 'rock'][randNum]
+                    canPass: ['all', 'ground', 'air'][randNum]
+                }
+                
+                #Push this row to the map
+                row.push(tmpRow)
             #Add row to the map tiles
             map.push(row)
         

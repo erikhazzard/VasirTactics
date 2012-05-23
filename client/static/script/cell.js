@@ -16,6 +16,7 @@
     __extends(Cell, _super);
 
     function Cell() {
+      this.targetHtml = __bind(this.targetHtml, this);
       this.mouseLeave = __bind(this.mouseLeave, this);
       this.mouseEnter = __bind(this.mouseEnter, this);
       this.target = __bind(this.target, this);
@@ -38,9 +39,8 @@
         return false;
       }
       this.model = this.options.model;
-      this.model.set({
-        'view': this
-      });
+      this.model.on('cell:targeted', this.target);
+      this.model.on('cell:renderUI', this.renderUI);
       this.cellSize = this.options.cellSize;
       this.group = this.options.group;
       this.x = this.model.get('x') * this.cellSize.width;
@@ -82,7 +82,8 @@
     Cell.prototype.click = function() {
       if (!this.interaction.get('target') || this.interaction.get('target').get('className') !== 'creature') {
         return this.interaction.set({
-          target: this.model
+          target: this.model,
+          targetHtml: this.targetHtml()
         });
       } else {
         if (!this.svgEl.classed('tile_disabled')) {
@@ -107,17 +108,27 @@
       return this;
     };
 
+    Cell.prototype.targetHtml = function() {
+      var html;
+      html = _.template(GAME_NAME.templates.target)({
+        name: this.model.get('name'),
+        health: ''
+      });
+      return html;
+    };
+
     return Cell;
 
   })(Backbone.View);
 
-  ' ========================================================================    \n\nModel    \n\n======================================================================== ';
+  ' ========================================================================\n\nModel\n\n======================================================================== ';
 
   GAME_NAME.Models.Cell = (function(_super) {
 
     __extends(Cell, _super);
 
     function Cell() {
+      this.renderUI = __bind(this.renderUI, this);
       this.target = __bind(this.target, this);
       this.initialize = __bind(this.initialize, this);
       Cell.__super__.constructor.apply(this, arguments);
@@ -131,8 +142,7 @@
       baseSprite: '',
       topSprite: '',
       type: '0',
-      graphic: '',
-      view: {}
+      graphic: ''
     };
 
     Cell.prototype.initialize = function() {
@@ -140,7 +150,12 @@
     };
 
     Cell.prototype.target = function() {
-      return this.get('view').target();
+      this.trigger('cell:targeted');
+      return this;
+    };
+
+    Cell.prototype.renderUI = function() {
+      return this.trigger('cell:renderUI');
     };
 
     return Cell;

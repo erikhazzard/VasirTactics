@@ -73,6 +73,11 @@ $(document).ready(()=>
         tmp_img.src = val
 
     #------------------------------------
+    #Setup templates
+    #------------------------------------
+    GAME_NAME.templates.target = $('#template_ui_target').html()
+
+    #------------------------------------
     #Initialize the game
     #------------------------------------
     GAME_NAME.init()

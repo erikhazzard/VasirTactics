@@ -14,18 +14,25 @@
       init: function() {
         return {};
       },
-      util: {}
+      util: {},
+      templates: {}
     };
   })();
 
   window.GAME_NAME = GAME_NAME;
 
-  ' ========================================================================    \n\nGlobal Functions\n\n========================================================================';
+  ' ========================================================================    \n\nGlobal Util Functions\n\n========================================================================';
 
   window.requestAnimFrame = (function() {
     return window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame || window.oRequestAnimationFrame || window.msRequestAnimationFrame || function(callback, element) {
       return window.setTimeout(callback, 1000 / 60);
     };
   })();
+
+  $(document).ready(function() {
+    return _.templateSettings = {
+      interpolate: /\{\{(.+?)\}\}/g
+    };
+  });
 
 }).call(this);

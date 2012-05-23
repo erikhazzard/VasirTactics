@@ -39,17 +39,18 @@
     };
 
     Map.prototype.randomizeMap = function() {
-      var i, j, map, row;
+      var i, j, map, randNum, row, tmpRow;
       map = [];
       for (i = 0; i <= 16; i++) {
         row = [];
         for (j = 0; j <= 8; j++) {
-          row.push({
-            baseSprite: 'terrain_' + Math.round(Math.random() * 2),
-            topSprite: (Math.round(Math.random() * 1)) && (Math.round(Math.random() * 1)) && (Math.round(Math.random() * 1)) && 'rock',
-            type: ['terrain', 'obstacle'][Math.round(Math.random() * 1)],
-            canPass: ['all', 'ground', 'air'][Math.round(Math.random() * 2)]
-          });
+          randNum = Math.round(Math.random() * 2);
+          tmpRow = {
+            baseSprite: 'terrain_' + randNum,
+            topSprite: [void 0, void 0, 'rock'][randNum],
+            canPass: ['all', 'ground', 'air'][randNum]
+          };
+          row.push(tmpRow);
         }
         map.push(row);
       }

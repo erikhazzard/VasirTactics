@@ -16,6 +16,7 @@
     __extends(Creature, _super);
 
     function Creature() {
+      this.targetHtml = __bind(this.targetHtml, this);
       this.mouseLeave = __bind(this.mouseLeave, this);
       this.mouseEnter = __bind(this.mouseEnter, this);
       this.target = __bind(this.target, this);
@@ -44,6 +45,8 @@
       this.cellSize = this.renderer.model.get('cellSize');
       this.group = this.options.group;
       this.interaction = GAME_NAME.game.get('interaction');
+      this.model.on('creature:targeted', this.target);
+      this.model.on('creature:renderUI', this.renderUI);
       this.el = {};
       return this;
     };
@@ -75,7 +78,7 @@
     Creature.prototype.update = function() {
       this.x = this.model.get('location').x * this.cellSize.width;
       this.y = this.model.get('location').y * this.cellSize.height;
-      return this.svgEl.attr('transform', 'translate(' + [this.x, this.y] + ')');
+      return this.svgEl.transition().duration(900).attr('transform', 'translate(' + [this.x, this.y] + ')');
     };
 
     Creature.prototype.creatureClicked = function() {
@@ -85,7 +88,8 @@
         });
       } else {
         this.interaction.set({
-          target: this.model
+          target: this.model,
+          targetHtml: this.targetHtml()
         });
       }
       return this;
@@ -124,6 +128,15 @@
       return this;
     };
 
+    Creature.prototype.targetHtml = function() {
+      var html;
+      html = _.template(GAME_NAME.templates.target)({
+        name: this.model.get('name'),
+        health: this.model.get('health')
+      });
+      return html;
+    };
+
     return Creature;
 
   })(Backbone.View);
@@ -135,6 +148,7 @@
     __extends(Creature, _super);
 
     function Creature() {
+      this.renderUI = __bind(this.renderUI, this);
       this.canMove = __bind(this.canMove, this);
       this.move = __bind(this.move, this);
       this.calculateMovementCells = __bind(this.calculateMovementCells, this);
@@ -158,8 +172,7 @@
         y: Math.round(Math.random() * 5)
       },
       sprite: 'creature_dragoon',
-      type: 'ground',
-      view: void 0
+      type: 'ground'
     };
 
     Creature.prototype.initialize = function() {
@@ -167,7 +180,8 @@
     };
 
     Creature.prototype.target = function() {
-      return this.get('view').target();
+      this.trigger('creature:targeted');
+      return this;
     };
 
     Creature.prototype.calculateMovementCells = function(params) {
@@ -199,12 +213,13 @@
       if (!cell) {
         GAME_NAME.logger.error('creature model: move(): no cell passed into params');
       }
-      return this.set({
+      this.set({
         location: {
           x: cell.get('x'),
           y: cell.get('y')
         }
       });
+      return this;
     };
 
     Creature.prototype.canMove = function(params) {
@@ -215,6 +230,10 @@
         GAME_NAME.logger.error('creature model: move(): no cell passed into params');
       }
       return true;
+    };
+
+    Creature.prototype.renderUI = function() {
+      return this.trigger('creature:renderUI');
     };
 
     return Creature;

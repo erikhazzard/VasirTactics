@@ -16,9 +16,9 @@
     __extends(Interface, _super);
 
     function Interface() {
+      this.renderTarget = __bind(this.renderTarget, this);
+      this.unTargetTiles = __bind(this.unTargetTiles, this);
       this.target = __bind(this.target, this);
-      this.unTargetCreatures = __bind(this.unTargetCreatures, this);
-      this.cellClicked = __bind(this.cellClicked, this);
       this.render = __bind(this.render, this);
       this.initialize = __bind(this.initialize, this);
       Interface.__super__.constructor.apply(this, arguments);
@@ -27,37 +27,36 @@
     'Renders the interaction and handles firing off / listening for events';
 
     Interface.prototype.initialize = function() {
-      return this.model = this.options.model;
+      this.model = this.options.model;
+      this.model.on('change:target', this.target);
+      this.model.on('change:targetHtml', this.renderTarget);
+      return this.$targetEl = $('#game_target_wrapper .game_target');
     };
 
     Interface.prototype.render = function() {
       return this;
     };
 
-    Interface.prototype.cellClicked = function(params) {
-      var cell;
-      params = params || {};
-      cell = params.cell;
-      if (cell === void 0) {
-        GAME_NAME.logger.error('cellClicked(): no cell passed in');
-        return false;
+    Interface.prototype.target = function() {
+      var target;
+      target = this.model.get('target');
+      this.unTargetTiles();
+      if (target !== void 0) {
+        return target.target();
+      } else {
+        return this.model.set({
+          targetHtml: ''
+        });
       }
     };
 
-    Interface.prototype.unTargetCreatures = function() {
+    Interface.prototype.unTargetTiles = function() {
       d3.select('.map_tile_selected').classed('map_tile_selected', false);
       return d3.selectAll('.tile_disabled').classed('tile_disabled', false);
     };
 
-    Interface.prototype.target = function(params) {
-      var target;
-      target = this.model.get('target');
-      this.unTargetCreatures();
-      if (target) {
-        target.target();
-        target = target.get('name');
-      }
-      return $('#game_target_name').html(target);
+    Interface.prototype.renderTarget = function() {
+      return this.$targetEl.html(this.model.get('targetHtml'));
     };
 
     return Interface;
@@ -77,16 +76,10 @@
 
     Interface.prototype.defaults = {
       target: void 0,
-      view: void 0
+      targetHtml: ''
     };
 
     Interface.prototype.initialize = function() {
-      this.set({
-        view: new GAME_NAME.Views.Interface({
-          model: this
-        })
-      });
-      this.on('change:target', this.get('view').target);
       return this;
     };
 

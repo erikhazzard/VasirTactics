@@ -80,9 +80,9 @@
                         </ul>
                     </div>
                     <!-- Current Selection -->
-                    <div id='game_target_info_wrapper'>
+                    <div id='game_target_wrapper'>
                         <h2>Target</h2>
-                        <div id='game_target_name'></div>
+                        <div class='game_target'></div>
                     </div>
 
                 </div>
@@ -139,6 +139,13 @@
     </div>
     ================================= -->
 </div>
+
+<!-- ================================
+    Templates
+     ================================ -->
+<script type='text/template' id='template_ui_target'>
+    {{name}} | {{health}}
+</script>
 
 <!-- ======================================================================
 

@@ -41,6 +41,11 @@ class GAME_NAME.Views.Creature extends Backbone.View
         @cellSize = @renderer.model.get('cellSize')
         @group = @options.group
         @interaction = GAME_NAME.game.get('interaction')
+
+        #Listen for events
+        #--------------------------------
+        @model.on('creature:targeted', @target)
+        @model.on('creature:renderUI', @renderUI)
         
         #Set el as an empty element, we'll create it in render()
         @el = {}
@@ -109,7 +114,11 @@ class GAME_NAME.Views.Creature extends Backbone.View
         #Function called to update the position / etc.
         @x = @model.get('location').x * @cellSize.width
         @y = @model.get('location').y * @cellSize.height
-        @svgEl.attr('transform', 'translate(' + [@x,@y] + ')')
+
+        #Animate the movement with transition
+        @svgEl.transition()
+            .duration(900)
+            .attr('transform', 'translate(' + [@x,@y] + ')')
 
     #------------------------------------
     #
@@ -130,12 +139,15 @@ class GAME_NAME.Views.Creature extends Backbone.View
             #This creature isn't already targeted, so target it
             @interaction.set({
                 target: @model
+                targetHtml: @targetHtml()
             })
 
         return @
 
     #------------------------------------
+    #
     #Target / Untarget
+    #
     #------------------------------------
     target: ()=>
         '''Targets this creature.  Updates the UI and
@@ -179,6 +191,17 @@ class GAME_NAME.Views.Creature extends Backbone.View
         rect.classed('map_tile_mouse_over', false)
         return @
 
+    #------------------------------------
+    #UI Functions
+    #------------------------------------
+    targetHtml: ()=>
+        #Renders the UI
+        html = _.template(GAME_NAME.templates.target)({
+            name: @model.get('name'),
+            health: @model.get('health')
+        })
+        return html
+
 ''' ========================================================================    
     
     Model    
@@ -188,7 +211,6 @@ class GAME_NAME.Models.Creature extends Backbone.Model
     defaults: {
         name: 'Toestubber'
         className: 'creature'
-
         attack: 1,
         health: 1,
         
@@ -219,9 +241,6 @@ class GAME_NAME.Models.Creature extends Backbone.Model
             
         #Type could be either 'ground' or 'air' for now
         type: 'ground'
-
-        #Associated view
-        view: undefined
     }
 
     initialize: ()=>
@@ -234,7 +253,10 @@ class GAME_NAME.Models.Creature extends Backbone.Model
     #------------------------------------
     #Helper utils
     target: ()=>
-        return @get('view').target()
+        #When target() is called, trigger the cell:targeted event
+        #   The view will listen for this event
+        @trigger('creature:targeted')
+        return @
 
     #------------------------------------
     #Move Calculations
@@ -275,8 +297,7 @@ class GAME_NAME.Models.Creature extends Backbone.Model
                         )
 
         return movementCells
-        
-       
+
     #------------------------------------
     #Movement related
     #------------------------------------
@@ -297,6 +318,8 @@ class GAME_NAME.Models.Creature extends Backbone.Model
             }
         })
 
+        return @
+
     canMove:(params)=>
         #Takes in a cell and returns true / false if the creature
         #   can move to it
@@ -306,3 +329,11 @@ class GAME_NAME.Models.Creature extends Backbone.Model
             GAME_NAME.logger.error('creature model: move(): no cell passed into params')
 
         return true
+
+    #------------------------------------
+    #Helper UI Functions
+    #------------------------------------
+    renderUI: ()=>
+        #trigger the view's renderUI function
+        @trigger('creature:renderUI')
+

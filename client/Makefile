@@ -39,3 +39,7 @@ third:
 	@cat static/script/libs/underscore.js static/script/libs/json2.js static/script/libs/jquery.js static/script/libs/backbone.js static/script/libs/d3.js > static/script/libs/all3rdjs.js
 	@uglifyjs -nc static/script/libs/all3rdjs.js > static/script/libs/all3rdjs.min.js
 	@rm static/script/libs/all3rdjs.js
+
+watch:
+	echo "Watching Less and Coffee files..."; \
+	watchr -e "watch('static/script/.*\.coffee') { system 'make' }"

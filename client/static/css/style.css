@@ -412,15 +412,15 @@ rect {
 /* ===================================================================== 
  * Target info
  * ===================================================================== */
-#game_target_info_wrapper {
+#game_target_wrapper {
   bottom: 0;
   left: 0;
   position: absolute;
   right: 0;
   top: 0;
   bottom: auto !important;
-  top: 120px;
   height: 100px;
+  top: 120px;
 }
 /* ----------------------------------------------------------------------
  *

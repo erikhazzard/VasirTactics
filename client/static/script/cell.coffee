@@ -33,7 +33,11 @@ class GAME_NAME.Views.Cell extends Backbone.View
 
         #Create a model
         @model = @options.model
-        @model.set({'view': @})
+
+        #Listen for events
+        #--------------------------------
+        @model.on('cell:targeted', @target)
+        @model.on('cell:renderUI', @renderUI)
         
         #Store reference to passed in vars
         @cellSize = @options.cellSize
@@ -132,6 +136,7 @@ class GAME_NAME.Views.Cell extends Backbone.View
             #   the cell
             @interaction.set({
                 target: @model
+                targetHtml: @targetHtml()
             })
         else
             #If a creature is already targeted, we need to do special logic
@@ -155,9 +160,20 @@ class GAME_NAME.Views.Cell extends Backbone.View
         @svgEl.classed('map_tile_mouse_over', false)
         return @
 
-''' ========================================================================    
+    #------------------------------------
+    #UI Helper functions
+    #------------------------------------
+    targetHtml: ()=>
+        #Renders the target box
+        html = _.template(GAME_NAME.templates.target)({
+            name: @model.get('name')
+            health: ''
+        })
+        return html
+
+''' ========================================================================
     
-    Model    
+    Model
 
     ======================================================================== '''
 class GAME_NAME.Models.Cell extends Backbone.Model
@@ -176,12 +192,20 @@ class GAME_NAME.Models.Cell extends Backbone.Model
 
         #Graphic contains the image to use for this cell
         graphic: ''
-
-        view: {}
     }
 
     initialize: ()=>
         return @
 
     target: ()=>
-        return @get('view').target()
+        #When target() is called, trigger the cell:targeted event
+        #   The view will listen for this event
+        @trigger('cell:targeted')
+        return @
+        
+    #------------------------------------
+    #Heler UI Functions
+    #------------------------------------
+    renderUI: ()=>
+        #trigger the view's renderUI function
+        @trigger('cell:renderUI')

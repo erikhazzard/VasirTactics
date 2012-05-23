@@ -56,6 +56,7 @@
       tmp_img = new Image();
       tmp_img.src = val;
     }
+    GAME_NAME.templates.target = $('#template_ui_target').html();
     return GAME_NAME.init();
   });
 

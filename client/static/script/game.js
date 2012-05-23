@@ -41,6 +41,9 @@
         game: this
       });
       gameSetup.interaction = new GAME_NAME.Models.Interface();
+      gameSetup.interactionView = new GAME_NAME.Views.Interface({
+        model: gameSetup.interaction
+      });
       this.set(gameSetup);
       return this;
     };

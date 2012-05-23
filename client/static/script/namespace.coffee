@@ -34,6 +34,10 @@ GAME_NAME = (()=>
         init: ()->{}
 
         util: {}
+
+        #Store HTML template text.
+        #   Will be pulled from DOM when the page loads
+        templates: {}
     }
 
 )()
@@ -43,7 +47,7 @@ window.GAME_NAME = GAME_NAME
 
 ''' ========================================================================    
     
-    Global Functions
+    Global Util Functions
 
     ========================================================================'''
 window.requestAnimFrame = (()->
@@ -55,3 +59,9 @@ window.requestAnimFrame = (()->
           (callback, element)->
             window.setTimeout(callback, 1000 / 60)
 )()
+
+$(document).ready(()=>
+    _.templateSettings = {
+      interpolate : /\{\{(.+?)\}\}/g
+    }
+)
