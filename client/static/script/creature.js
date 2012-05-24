@@ -105,8 +105,7 @@
       mapCells = this.map.get('cells');
       for (_i = 0, _len = legitCells.length; _i < _len; _i++) {
         cell = legitCells[_i];
-        cell = mapCells[cell.get('x') + ',' + cell.get('y')].get('view').svgEl;
-        cell.classed('tile_disabled', false);
+        mapCells[cell.get('x') + ',' + cell.get('y')].trigger('cell:enableCell');
       }
       rect = this.svgEl.select('rect');
       rect.classed('map_tile_selected', true);
@@ -180,7 +179,7 @@
         y: Math.round(Math.random() * 5)
       },
       sprite: 'creature_dragoon',
-      type: 'ground',
+      passType: 'ground',
       owner: void 0
     };
 
@@ -217,7 +216,9 @@
         for (j = rangeLen; rangeLen <= loopLen ? j <= loopLen : j >= loopLen; rangeLen <= loopLen ? j++ : j--) {
           curCell = cells[(creatureLocation.x + i) + ',' + (creatureLocation.y + j)];
           if (curCell !== void 0) {
-            if (curCell.get('canPass') === 'all' || curCell.get('canPass') === this.get('type')) {
+            if (this.canMove({
+              cell: curCell
+            })) {
               movementCells.push(curCell);
             }
           }
@@ -227,14 +228,22 @@
     };
 
     Creature.prototype.move = function(params) {
-      var cell;
+      var cell, deltaMoves, deltaX, deltaY, movesLeft, _ref;
       params = params || {};
       cell = params.cell;
       if (!cell) {
         GAME_NAME.logger.error('creature model: move(): no cell passed into params');
       }
-      if (!this.model.belongsToActivePlayer()) return this;
+      if (this.calculateMovementCells().indexOf(cell) < 0) return this;
+      if (!this.belongsToActivePlayer()) return this;
+      deltaX = Math.abs(this.get('location').x - cell.get('x'));
+      deltaY = Math.abs(this.get('location').y - cell.get('y'));
+      deltaMoves = (_ref = deltaX > deltaY) != null ? _ref : {
+        deltaX: deltaY
+      };
+      movesLeft = this.get('movesLeft') - deltaMoves;
       this.set({
+        movesLeft: movesLeft,
         location: {
           x: cell.get('x'),
           y: cell.get('y')
@@ -244,13 +253,19 @@
     };
 
     Creature.prototype.canMove = function(params) {
-      var cell;
+      var ableToMove, cell;
       params = params || {};
       cell = params.cell;
       if (!cell) {
         GAME_NAME.logger.error('creature model: move(): no cell passed into params');
       }
-      return true;
+      ableToMove = false;
+      if (cell.get('canPass') === 'all' || cell.get('canPass') === this.get('passType')) {
+        ableToMove = true;
+      } else {
+        ableToMove = false;
+      }
+      return ableToMove;
     };
 
     return Creature;

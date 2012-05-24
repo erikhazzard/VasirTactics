@@ -55,7 +55,6 @@ class GAME_NAME.Views.Spell extends Backbone.View
     updateUI: ()=>
         #This is triggered when the game's Interaction model receives
         #   a new target 
-        console.log('hello', GAME_NAME.game.get('interaction').get('target'))
         return @
 
 ''' ========================================================================    

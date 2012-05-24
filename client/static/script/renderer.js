@@ -108,9 +108,6 @@
           cellSize: this.model.get('cellSize'),
           group: mapTileGroup
         });
-        val.set({
-          'view': cell
-        });
         cell.render({
           renderer: this.model
         });

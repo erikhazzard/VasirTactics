@@ -146,11 +146,6 @@ class GAME_NAME.Views.Renderer extends Backbone.View
                 group: mapTileGroup
             })
             
-            #Add the cell view to the model
-            val.set({
-                'view': cell
-            })
-
             #Draw it
             cell.render({renderer: @model})
 

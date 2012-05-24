@@ -154,7 +154,7 @@ class GAME_NAME.Views.Creature extends Backbone.View
 
         #If this creature doesn't belong to the active player, don't 
         #   allow them to move the creature
-        if(!@model.belongsToActivePlayer())
+        if not @model.belongsToActivePlayer()
             return @
             
         #Store i and j
@@ -174,10 +174,14 @@ class GAME_NAME.Views.Creature extends Backbone.View
         #TODO: Put this in web worker
         #TODO: Code the real logic for this, not just this fake stub
         legitCells = @model.calculateMovementCells()
+
+        #Renable cells
         mapCells = @map.get('cells')
         for cell in legitCells
-            cell = mapCells[cell.get('x') + ',' + cell.get('y')].get('view').svgEl
-            cell.classed('tile_disabled', false)
+            #Turns off the tile_disabled class
+            mapCells[cell.get('x') + ',' + cell.get('y')].trigger(
+                'cell:enableCell'
+            )
 
         #Highlight this creature's background rect
         rect = @svgEl.select('rect')
@@ -205,7 +209,7 @@ class GAME_NAME.Views.Creature extends Backbone.View
 
         #If this creature doesn't to the currently active player,
         #   do different logic
-        if(@model.belongsToActivePlayer())
+        if @model.belongsToActivePlayer()
             #This creature belongs to the active player, so show all stats
             html = _.template(GAME_NAME.templates.target_creature_mine)({
                 name: @model.get('name'),
@@ -260,7 +264,7 @@ class GAME_NAME.Models.Creature extends Backbone.Model
         sprite: 'creature_dragoon',
             
         #Type could be either 'ground' or 'air' for now
-        type: 'ground'
+        passType: 'ground'
 
         #Owner is the player which controls this creature
         owner: undefined
@@ -301,8 +305,9 @@ class GAME_NAME.Models.Creature extends Backbone.Model
     calculateMovementCells:(params)=>
         #Finds legit cells that this creature can move to
         #   Returns an array of legit cells
-        #params can be empty OR cells can be passed in
+        #TODO: Put in web worker
         
+        #params can be empty OR cells can be passed in
         params = params || {}
         #Get all game cells
         cells = params.cells || GAME_NAME.game.get('map').get('cells')
@@ -326,8 +331,7 @@ class GAME_NAME.Models.Creature extends Backbone.Model
                 if curCell != undefined
                     #Make sure the cell isn't impassable
                     #TODO: IMRPOVE
-                    if curCell.get('canPass') == 'all' || curCell.get(
-                        'canPass') == @get('type')
+                    if @canMove({cell: curCell})
                         #Get all movable adjacent cells
                         movementCells.push(
                             curCell
@@ -346,13 +350,28 @@ class GAME_NAME.Models.Creature extends Backbone.Model
         if not cell
             GAME_NAME.logger.error('creature model: move(): no cell passed into params')
 
-        #If this creature doesn't belong to the active player, we can't move it
-        if(!@model.belongsToActivePlayer())
+        #TODO: Do this a better way - check Map class instead of cell state
+        #   CAN MOVE function
+        if @calculateMovementCells().indexOf(cell) < 0
             return @
+
+        #If this creature doesn't belong to the active player, we can't move it
+        if not @belongsToActivePlayer()
+            return @
+
+        #Update the moves left
+        #   Since we're moving diagonal, we just need to take the greater of
+        #   x or y and lower the movesleft by it
+        #TODO: make this work
+        deltaX = Math.abs(@get('location').x - cell.get('x'))
+        deltaY = Math.abs(@get('location').y - cell.get('y'))
+        deltaMoves = (deltaX > deltaY) ? deltaX : deltaY
+        movesLeft = @get('movesLeft') - deltaMoves
 
         #Move the creature
         #   When the location changes, the view's update() function is called
         @set({
+            movesLeft: movesLeft,
             location: {
                 x: cell.get('x'),
                 y: cell.get('y')
@@ -368,8 +387,15 @@ class GAME_NAME.Models.Creature extends Backbone.Model
         cell = params.cell
         if not cell
             GAME_NAME.logger.error('creature model: move(): no cell passed into params')
+        ableToMove = false
 
-        return true
+        #Pass checks
+        if cell.get('canPass') == 'all' or cell.get('canPass') == @get('passType')
+            ableToMove = true
+        else
+            ableToMove = false
+
+        return ableToMove
 
 ''' ========================================================================    
     

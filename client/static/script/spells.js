@@ -48,7 +48,6 @@
     };
 
     Spell.prototype.updateUI = function() {
-      console.log('hello', GAME_NAME.game.get('interaction').get('target'));
       return this;
     };
 

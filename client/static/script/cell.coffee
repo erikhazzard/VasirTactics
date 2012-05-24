@@ -37,6 +37,7 @@ class GAME_NAME.Views.Cell extends Backbone.View
         #Listen for events
         #--------------------------------
         @model.on('cell:targeted', @target)
+        @model.on('cell:enableCell', @enableCell)
         
         #Store reference to passed in vars
         @cellSize = @options.cellSize
@@ -123,10 +124,13 @@ class GAME_NAME.Views.Cell extends Backbone.View
         #Setup events, using the events listed above
         @delegateSVGEvents()
 
-
     #------------------------------------
     #Cell events
     #------------------------------------
+    enableCell: ()=>
+        #Turns off the tile_disabled class
+        @svgEl.classed('tile_disabled', false)
+
     click: ()=>
         #Called when the cell:clicked event is triggered
 
@@ -140,12 +144,9 @@ class GAME_NAME.Views.Cell extends Backbone.View
         else
             #If a creature is already targeted, we need to do special logic
             #   e.g., move
-            #TODO: Do this a better way - pass in X,Y to creature's
-            #   CAN MOVE function
-            if not @svgEl.classed('tile_disabled')
-                @interaction.get('target').trigger('creature:move', {
-                    cell: @model
-                })
+            @interaction.get('target').trigger('creature:move', {
+                cell: @model
+            })
 
     target: ()=>
         #Called when user clicks on a cell

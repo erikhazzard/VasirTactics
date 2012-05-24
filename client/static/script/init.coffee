@@ -26,7 +26,7 @@ GAME_NAME.init = ()=>
                         name: 'Toestubber_Goblin_1'
                         location: {
                             x: 2,
-                            y: 2
+                            y: 1
                         }
                     })
                 ])
@@ -42,7 +42,7 @@ GAME_NAME.init = ()=>
                         name: 'Toestubber_Goblin_1'
                         location: {
                             x: 15,
-                            y: 5
+                            y: 1
                         }
                     })
                 ])

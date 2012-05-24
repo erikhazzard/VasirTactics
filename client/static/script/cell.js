@@ -21,6 +21,7 @@
       this.mouseEnter = __bind(this.mouseEnter, this);
       this.target = __bind(this.target, this);
       this.click = __bind(this.click, this);
+      this.enableCell = __bind(this.enableCell, this);
       this.render = __bind(this.render, this);
       this.delegateSVGEvents = __bind(this.delegateSVGEvents, this);
       this.initialize = __bind(this.initialize, this);
@@ -40,6 +41,7 @@
       }
       this.model = this.options.model;
       this.model.on('cell:targeted', this.target);
+      this.model.on('cell:enableCell', this.enableCell);
       this.cellSize = this.options.cellSize;
       this.group = this.options.group;
       this.x = this.model.get('x') * this.cellSize.width;
@@ -78,6 +80,10 @@
       return this.delegateSVGEvents();
     };
 
+    Cell.prototype.enableCell = function() {
+      return this.svgEl.classed('tile_disabled', false);
+    };
+
     Cell.prototype.click = function() {
       if (!this.interaction.get('target') || this.interaction.get('target').get('className') !== 'creature') {
         return this.interaction.set({
@@ -85,11 +91,9 @@
           targetHtml: this.targetHtml()
         });
       } else {
-        if (!this.svgEl.classed('tile_disabled')) {
-          return this.interaction.get('target').trigger('creature:move', {
-            cell: this.model
-          });
-        }
+        return this.interaction.get('target').trigger('creature:move', {
+          cell: this.model
+        });
       }
     };
 
