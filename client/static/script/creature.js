@@ -81,17 +81,14 @@
     };
 
     Creature.prototype.creatureClicked = function() {
-      'Fired off when the user clicks on a creature';
-      var html;
-      if (this.interaction.get('target') === this.model) {
+      'Fired off when the user clicks on a creature';      if (this.interaction.get('target') === this.model) {
         this.interaction.set({
           target: void 0
         });
       } else {
-        html = this.targetHtml();
         this.interaction.set({
           target: this.model,
-          targetHtml: html
+          targetHtml: this.targetHtml()
         });
       }
       return this;
@@ -99,6 +96,7 @@
 
     Creature.prototype.target = function() {
       var cell, creature_i, creature_j, legitCells, mapCells, mapTiles, rect, selectedEls, _i, _len;
+      if (!this.model.belongsToActivePlayer()) return this;
       creature_i = this.model.get('location').x;
       creature_j = this.model.get('location').y;
       selectedEls = d3.selectAll('.map_tile_selected').classed('map_tile_selected', false);
@@ -131,11 +129,19 @@
 
     Creature.prototype.targetHtml = function() {
       var html;
-      html = _.template(GAME_NAME.templates.target_creature)({
-        name: this.model.get('name'),
-        health: this.model.get('health'),
-        movesLeft: this.model.get('movesLeft')
-      });
+      html = '';
+      if (this.model.belongsToActivePlayer()) {
+        html = _.template(GAME_NAME.templates.target_creature_mine)({
+          name: this.model.get('name'),
+          health: this.model.get('health'),
+          movesLeft: this.model.get('movesLeft')
+        });
+      } else {
+        html = _.template(GAME_NAME.templates.target_creature_theirs)({
+          name: this.model.get('name'),
+          health: this.model.get('health')
+        });
+      }
       return html;
     };
 
@@ -154,6 +160,7 @@
       this.move = __bind(this.move, this);
       this.calculateMovementCells = __bind(this.calculateMovementCells, this);
       this.target = __bind(this.target, this);
+      this.belongsToActivePlayer = __bind(this.belongsToActivePlayer, this);
       this.initialize = __bind(this.initialize, this);
       Creature.__super__.constructor.apply(this, arguments);
     }
@@ -178,7 +185,18 @@
     };
 
     Creature.prototype.initialize = function() {
+      this.on('creature:move', this.move);
       return this;
+    };
+
+    Creature.prototype.belongsToActivePlayer = function() {
+      var index;
+      index = GAME_NAME.game.get('activePlayer').get('creatures').indexOf(this);
+      if (index > -1) {
+        return true;
+      } else {
+        return false;
+      }
     };
 
     Creature.prototype.target = function() {
@@ -215,6 +233,7 @@
       if (!cell) {
         GAME_NAME.logger.error('creature model: move(): no cell passed into params');
       }
+      if (!this.model.belongsToActivePlayer()) return this;
       this.set({
         location: {
           x: cell.get('x'),
@@ -252,6 +271,6 @@
 
     return Creatures;
 
-  })(Backbone.Model);
+  })(Backbone.Collection);
 
 }).call(this);

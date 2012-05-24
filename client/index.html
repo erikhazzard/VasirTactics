@@ -144,13 +144,20 @@
     Templates
      ================================ -->
 
-<!-- Target: Creature -->
-<script type='text/template' id='template_ui_target_creature'>
+<!-- Target: Creature: Mine (User controlled) -->
+<script type='text/template' id='template_ui_target_creature_mine'>
     {{ name }}
     <br />
     Health: {{ health }}
     <br />
     Moves Left: {{ movesLeft }}
+</script>
+
+<!-- Target: Creature: Theirs (Opponent controlled) -->
+<script type='text/template' id='template_ui_target_creature_theirs'>
+{{ name }}
+<br />
+Estimated Health: {{ health }}
 </script>
 
 <!-- Target: Cell -->

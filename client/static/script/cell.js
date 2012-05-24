@@ -86,7 +86,7 @@
         });
       } else {
         if (!this.svgEl.classed('tile_disabled')) {
-          return this.interaction.get('target').move({
+          return this.interaction.get('target').trigger('creature:move', {
             cell: this.model
           });
         }

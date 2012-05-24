@@ -143,7 +143,7 @@ class GAME_NAME.Views.Cell extends Backbone.View
             #TODO: Do this a better way - pass in X,Y to creature's
             #   CAN MOVE function
             if not @svgEl.classed('tile_disabled')
-                @interaction.get('target').move({
+                @interaction.get('target').trigger('creature:move', {
                     cell: @model
                 })
 

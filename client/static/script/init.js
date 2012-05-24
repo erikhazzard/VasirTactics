@@ -19,29 +19,29 @@
               name: 'Magic Missle'
             })
           },
-          creatures: {
-            'toestubbergoblin1_xx': new GAME_NAME.Models.Creature({
+          creatures: new GAME_NAME.Collections.Creatures([
+            new GAME_NAME.Models.Creature({
               name: 'Toestubber_Goblin_1',
               location: {
                 x: 2,
                 y: 2
               }
             })
-          }
+          ])
         }),
         'enjalot': new GAME_NAME.Models.Player({
           name: 'Enjalot',
           id: 'u90r2h180f80n',
           spells: {},
-          creatures: {
-            'toestubbergoblin2_xx': new GAME_NAME.Models.Creature({
-              name: 'Toestubber_Goblin_2',
+          creatures: new GAME_NAME.Collections.Creatures([
+            new GAME_NAME.Models.Creature({
+              name: 'Toestubber_Goblin_1',
               location: {
-                x: 14,
+                x: 15,
                 y: 5
               }
             })
-          }
+          ])
         })
       }
     };
@@ -63,7 +63,8 @@
   }
 
   $(document).ready(function() {
-    GAME_NAME.templates.target_creature = $('#template_ui_target_creature').html();
+    GAME_NAME.templates.target_creature_mine = $('#template_ui_target_creature_mine').html();
+    GAME_NAME.templates.target_creature_theirs = $('#template_ui_target_creature_theirs').html();
     GAME_NAME.templates.target_cell = $('#template_ui_target_cell').html();
     return GAME_NAME.init();
   });

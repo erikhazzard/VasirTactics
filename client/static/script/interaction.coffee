@@ -51,9 +51,6 @@ class GAME_NAME.Views.Interface extends Backbone.View
         if target != undefined
             #Call the target's target() method
             # (Updates the view)
-            #
-            #If this creature doesn't to the currently active player,
-            #   do different logic
             target.target()
 
         else

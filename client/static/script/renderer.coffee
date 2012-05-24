@@ -112,11 +112,12 @@ class GAME_NAME.Views.Renderer extends Backbone.View
             creatures = player.get('creatures')
 
             #Render each creature
-            for key, creature of creatures
-                @drawCreature({
-                    creature: creature
-                    group: @creaturesGroup
-                })
+            for creature in creatures.models
+                do (creature)=>
+                    @drawCreature({
+                        creature: creature
+                        group: @creaturesGroup
+                    })
 
         #TODO: Draw creatures, entities, etc. based on game state
         return @
@@ -137,7 +138,8 @@ class GAME_NAME.Views.Renderer extends Backbone.View
 
         #TODO: Abstract this into Map.render?
         #Loop through each cell of the map and draw it
-        for key, val of @model.get('game').get('map').get('cells')
+        cells = @model.get('game').get('map').get('cells')
+        for key, val of cells
             cell = new GAME_NAME.Views.Cell({
                 model: val
                 cellSize: @model.get('cellSize')

@@ -136,14 +136,9 @@ class GAME_NAME.Views.Creature extends Backbone.View
             })
         else
             #This creature isn't already targeted, so target it
-            #
-            #If this creature doesn't to the currently active player,
-            #   do different logic
-            html = @targetHtml()
-
             @interaction.set({
                 target: @model
-                targetHtml: html
+                targetHtml: @targetHtml()
             })
 
         return @
@@ -157,6 +152,11 @@ class GAME_NAME.Views.Creature extends Backbone.View
         #Targets this creature.  Updates the game map and
         #   darkens the immovable map cells
 
+        #If this creature doesn't belong to the active player, don't 
+        #   allow them to move the creature
+        if(!@model.belongsToActivePlayer())
+            return @
+            
         #Store i and j
         creature_i = @model.get('location').x
         creature_j = @model.get('location').y
@@ -199,13 +199,28 @@ class GAME_NAME.Views.Creature extends Backbone.View
     #UI Functions
     #------------------------------------
     targetHtml: ()=>
-        #Renders the UI
-        html = _.template(GAME_NAME.templates.target_creature)({
-            name: @model.get('name'),
-            health: @model.get('health')
-            movesLeft: @model.get('movesLeft')
-        })
+        #Returns HTML to be put in the target box. Uses the target
+        #   box template
+        html = ''
+
+        #If this creature doesn't to the currently active player,
+        #   do different logic
+        if(@model.belongsToActivePlayer())
+            #This creature belongs to the active player, so show all stats
+            html = _.template(GAME_NAME.templates.target_creature_mine)({
+                name: @model.get('name'),
+                health: @model.get('health')
+                movesLeft: @model.get('movesLeft')
+            })
+        else
+            #They target an opponent
+            html = _.template(GAME_NAME.templates.target_creature_theirs)({
+                name: @model.get('name'),
+                health: @model.get('health')
+            })
+
         return html
+
 
 ''' ========================================================================    
     
@@ -251,7 +266,13 @@ class GAME_NAME.Models.Creature extends Backbone.Model
         owner: undefined
     }
 
+    #------------------------------------
+    #Init
+    #------------------------------------
     initialize: ()=>
+        #Listen for events
+        @on('creature:move', @move)
+
         return @
 
     #------------------------------------
@@ -260,6 +281,14 @@ class GAME_NAME.Models.Creature extends Backbone.Model
     #
     #------------------------------------
     #Helper utils
+    belongsToActivePlayer: ()=>
+        #returns the index of this creature in the active player's creature collection
+        index = GAME_NAME.game.get('activePlayer').get('creatures').indexOf(@)
+        if index > -1
+            return true
+        else
+            return false
+
     target: ()=>
         #When target() is called, trigger the cell:targeted event
         #   The view will listen for this event
@@ -317,6 +346,10 @@ class GAME_NAME.Models.Creature extends Backbone.Model
         if not cell
             GAME_NAME.logger.error('creature model: move(): no cell passed into params')
 
+        #If this creature doesn't belong to the active player, we can't move it
+        if(!@model.belongsToActivePlayer())
+            return @
+
         #Move the creature
         #   When the location changes, the view's update() function is called
         @set({
@@ -343,5 +376,5 @@ class GAME_NAME.Models.Creature extends Backbone.Model
     Colections
 
     ======================================================================== '''
-class GAME_NAME.Collections.Creatures extends Backbone.Model
+class GAME_NAME.Collections.Creatures extends Backbone.Collection
     model: GAME_NAME.Models.Creature

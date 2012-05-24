@@ -73,18 +73,23 @@
 
     Renderer.prototype.drawCreatures = function() {
       'Draw all the creatures for each player';
-      var creature, creatures, key, player, players;
+      var creature, creatures, key, player, players, _fn, _i, _len, _ref,
+        _this = this;
       this.creaturesGroup = this.svgEl.append('svg:g').attr('class', 'creatures_group');
       players = this.model.get('game').get('players');
       for (key in players) {
         player = players[key];
         creatures = player.get('creatures');
-        for (key in creatures) {
-          creature = creatures[key];
-          this.drawCreature({
+        _ref = creatures.models;
+        _fn = function(creature) {
+          return _this.drawCreature({
             creature: creature,
-            group: this.creaturesGroup
+            group: _this.creaturesGroup
           });
+        };
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          creature = _ref[_i];
+          _fn(creature);
         }
       }
       return this;
@@ -92,12 +97,12 @@
 
     Renderer.prototype.drawMap = function(map) {
       'This draws the map by rendering each map tile individually';
-      var cell, key, mapTileGroup, val, _ref;
+      var cell, cells, key, mapTileGroup, val;
       this.mapGroup = this.svgEl.append('svg:g').attr('class', 'game_map');
       mapTileGroup = this.mapGroup.append('svg:g').attr('class', 'map_tiles');
-      _ref = this.model.get('game').get('map').get('cells');
-      for (key in _ref) {
-        val = _ref[key];
+      cells = this.model.get('game').get('map').get('cells');
+      for (key in cells) {
+        val = cells[key];
         cell = new GAME_NAME.Views.Cell({
           model: val,
           cellSize: this.model.get('cellSize'),
