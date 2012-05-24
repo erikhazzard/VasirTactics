@@ -33,12 +33,13 @@
     };
 
     Creature.prototype.initialize = function() {
-      'This creature view is created in Renderer';      if (this.options.model === void 0 || this.options.game === void 0 || this.options.group === void 0) {
+      'This creature view is created in Renderer';
+      var _this = this;
+      if (this.options.model === void 0 || this.options.game === void 0 || this.options.group === void 0) {
         GAME_NAME.logger.error('ERROR', 'creature view init(): params not properly passed in');
         return false;
       }
       this.model = this.options.model;
-      this.model.on('change:location', this.update);
       this.game = this.options.game;
       this.map = this.options.game.get('map');
       this.renderer = this.options.game.get('renderer');
@@ -46,6 +47,14 @@
       this.group = this.options.group;
       this.interaction = GAME_NAME.game.get('interaction');
       this.model.on('creature:targeted', this.target);
+      this.model.on('change:location', this.update);
+      this.model.on('change:location', this.target);
+      this.model.on('change:movesLeft', this.target);
+      this.model.on('change:movesLeft', function() {
+        return _this.interaction.set({
+          targetHtml: _this.targetHtml()
+        });
+      });
       this.el = {};
       return this;
     };
@@ -96,7 +105,9 @@
 
     Creature.prototype.target = function() {
       var cell, creature_i, creature_j, legitCells, mapCells, mapTiles, rect, selectedEls, _i, _len;
-      if (!this.model.belongsToActivePlayer()) return this;
+      if (!this.model.belongsToActivePlayer() && this.model !== this.interaction.get('target')) {
+        return this;
+      }
       creature_i = this.model.get('location').x;
       creature_j = this.model.get('location').y;
       selectedEls = d3.selectAll('.map_tile_selected').classed('map_tile_selected', false);
@@ -228,7 +239,7 @@
     };
 
     Creature.prototype.move = function(params) {
-      var cell, deltaMoves, deltaX, deltaY, movesLeft, _ref;
+      var cell, deltaMoves, deltaX, deltaY, movesLeft;
       params = params || {};
       cell = params.cell;
       if (!cell) {
@@ -238,16 +249,18 @@
       if (!this.belongsToActivePlayer()) return this;
       deltaX = Math.abs(this.get('location').x - cell.get('x'));
       deltaY = Math.abs(this.get('location').y - cell.get('y'));
-      deltaMoves = (_ref = deltaX > deltaY) != null ? _ref : {
-        deltaX: deltaY
-      };
+      if (deltaX > deltaY) {
+        deltaMoves = deltaX;
+      } else {
+        deltaMoves = deltaY;
+      }
       movesLeft = this.get('movesLeft') - deltaMoves;
       this.set({
-        movesLeft: movesLeft,
         location: {
           x: cell.get('x'),
           y: cell.get('y')
-        }
+        },
+        movesLeft: movesLeft
       });
       return this;
     };

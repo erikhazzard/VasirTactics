@@ -32,7 +32,6 @@ class GAME_NAME.Views.Creature extends Backbone.View
 
         #Set the model
         @model = @options.model
-        @model.on('change:location', @update)
 
         #Store reference to passed in vars
         @game = @options.game
@@ -45,6 +44,14 @@ class GAME_NAME.Views.Creature extends Backbone.View
         #Listen for events
         #--------------------------------
         @model.on('creature:targeted', @target)
+        @model.on('change:location', @update)
+        @model.on('change:location', @target)
+        @model.on('change:movesLeft', @target)
+        @model.on('change:movesLeft', ()=>
+            @interaction.set({
+                targetHtml: @targetHtml()
+            })
+        )
         
         #Set el as an empty element, we'll create it in render()
         @el = {}
@@ -154,7 +161,9 @@ class GAME_NAME.Views.Creature extends Backbone.View
 
         #If this creature doesn't belong to the active player, don't 
         #   allow them to move the creature
-        if not @model.belongsToActivePlayer()
+        #Also, don't do this if this creature isn't the target
+        #TODO: MAKE SURE THIS WORKS
+        if not @model.belongsToActivePlayer() and @model != @interaction.get('target')
             return @
             
         #Store i and j
@@ -365,17 +374,22 @@ class GAME_NAME.Models.Creature extends Backbone.Model
         #TODO: make this work
         deltaX = Math.abs(@get('location').x - cell.get('x'))
         deltaY = Math.abs(@get('location').y - cell.get('y'))
-        deltaMoves = (deltaX > deltaY) ? deltaX : deltaY
+        if deltaX > deltaY
+            deltaMoves = deltaX
+        else
+            deltaMoves = deltaY
+
+        #Set the moves left
         movesLeft = @get('movesLeft') - deltaMoves
 
         #Move the creature
         #   When the location changes, the view's update() function is called
         @set({
-            movesLeft: movesLeft,
             location: {
                 x: cell.get('x'),
                 y: cell.get('y')
-            }
+            },
+            movesLeft: movesLeft
         })
 
         return @

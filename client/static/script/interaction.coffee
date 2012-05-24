@@ -28,12 +28,33 @@ class GAME_NAME.Views.Interface extends Backbone.View
         @model.on('change:target', @target)
         @model.on('change:targetHtml', @renderTarget)
 
+        #TODO: turn this into a view
+        $('#game_actions_wrapper .next_move').click(@nextMove)
+
         #Store refs to dom nodes
         @$targetEl = $('#game_target_wrapper .game_target')
 
     render: ()=>
         #Render the UI
         return @
+
+    #------------------------------------
+    #
+    #Next move
+    #
+    #------------------------------------
+    nextMove: ()=>
+        #Next turn, do stuff
+        creatures = GAME_NAME.game.get('activePlayer').get('creatures').models
+        for creature in creatures
+            creature.set({
+                'movesLeft': creature.get('moves')
+            }, {silent: true})
+
+        #Clear out the target
+        @model.set({
+            target: undefined
+        })
 
     #------------------------------------
     #

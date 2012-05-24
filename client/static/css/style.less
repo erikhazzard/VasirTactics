@@ -25,7 +25,6 @@
  *
  * ------------------------------------------------------------------------ */
 @header_height: 70px;
-@header_height: 0px;
 @footer_height: 25px;
 @inner_padding_width: 2%;
 @content_top_padding: 10px;
@@ -43,6 +42,7 @@
 @game_right_side_width: 24%;
 @game_player_info_height: 120px; 
 @game_player_target_height: 100px;
+@game_actions_height: 100px;
 
 /* ------------------------------------------------------------------------
  * Chat / Player list related 
@@ -397,7 +397,6 @@ rect {
         @absolute_full_layout;
     }
         #game_canvas {
-            border: 1px solid #cdcdcd;
             height: 100%;
             position:relative;
             width: 100%;
@@ -443,6 +442,16 @@ rect {
     bottom: auto !important;
     height: @game_player_target_height;
     top: @game_player_info_height;
+}
+
+/* ===================================================================== 
+ * Game actions
+ * ===================================================================== */
+#game_actions_wrapper {
+    .absolute_full_layout;
+    bottom: auto !important;
+    height: @game_actions_height;
+    top: @game_player_info_height + @game_player_target_height;
 }
 
 /* ----------------------------------------------------------------------

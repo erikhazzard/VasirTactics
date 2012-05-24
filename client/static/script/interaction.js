@@ -19,6 +19,7 @@
       this.renderTarget = __bind(this.renderTarget, this);
       this.unTargetTiles = __bind(this.unTargetTiles, this);
       this.target = __bind(this.target, this);
+      this.nextMove = __bind(this.nextMove, this);
       this.render = __bind(this.render, this);
       this.initialize = __bind(this.initialize, this);
       Interface.__super__.constructor.apply(this, arguments);
@@ -30,11 +31,28 @@
       this.model = this.options.model;
       this.model.on('change:target', this.target);
       this.model.on('change:targetHtml', this.renderTarget);
+      $('#game_actions_wrapper .next_move').click(this.nextMove);
       return this.$targetEl = $('#game_target_wrapper .game_target');
     };
 
     Interface.prototype.render = function() {
       return this;
+    };
+
+    Interface.prototype.nextMove = function() {
+      var creature, creatures, _i, _len;
+      creatures = GAME_NAME.game.get('activePlayer').get('creatures').models;
+      for (_i = 0, _len = creatures.length; _i < _len; _i++) {
+        creature = creatures[_i];
+        creature.set({
+          'movesLeft': creature.get('moves')
+        }, {
+          silent: true
+        });
+      }
+      return this.model.set({
+        target: void 0
+      });
     };
 
     Interface.prototype.target = function() {
