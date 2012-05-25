@@ -5,8 +5,25 @@
     ========================================================================'''
 GAME_NAME.init = ()=>
     '''Kick off the game creation'''
+    #Example spell effect
+    magicMissile = (target)=>
+        #Todo: do some filter
+        target.transition()
+            .duration(1000)
+            .attr('width', GAME_NAME.Models.Renderer.prototype.defaults.cellSize.width * 10)
+            .attr('height', 5)
+            .style('fill', '#dd2222')
+                .transition()
+                    .delay(1000)
+                    .duration(1000)
+                    .style('fill', '#ffffff')
+                    .attr('height', GAME_NAME.Models.Renderer.prototype.defaults.cellSize.width)
+                    .attr('width', GAME_NAME.Models.Renderer.prototype.defaults.cellSize.width)
+                        .transition()
+                            .delay(2000)
+                            .style('fill', 'none')
+
     #TODO: Get game state
-    
     #Fake game state for now
     game_state = {
         players: {
@@ -14,11 +31,12 @@ GAME_NAME.init = ()=>
                 name: 'Enoex'
                 id: '402190r90war',
                 spells: {
+                    'magic_missile': new GAME_NAME.Models.Spell({
+                        name: 'Magic Missile'
+                        effect: magicMissile
+                    }),
                     'summon_knight': new GAME_NAME.Models.Spell({
                         name: 'Summon Creature'
-                    }),
-                    'magic_missile': new GAME_NAME.Models.Spell({
-                        name: 'Magic Missle'
                     })
                 },
                 creatures: new GAME_NAME.Collections.Creatures([

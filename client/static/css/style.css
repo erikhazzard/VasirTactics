@@ -226,7 +226,7 @@ rect {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3), 0 5px 15px #343434;
   background: #336699 url(../image/ui/header.jpg);
   color: #f4f4f4;
-  height: 70px;
+  height: 0px;
   position: relative;
   z-index: 700;
 }
@@ -280,7 +280,7 @@ rect {
   position: absolute;
   right: 0;
   top: 0;
-  top: 70px !important;
+  top: 0px !important;
 }
 #content {
   /* bottom:  @player_list_chat_wrapper_height; */

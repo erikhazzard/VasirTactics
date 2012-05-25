@@ -29,33 +29,66 @@ class GAME_NAME.Views.Spell extends Backbone.View
         #Set the model
         @model = @options.model
 
-        #List for events
-        GAME_NAME.game.get('interaction').on('change:target', @updateUI)
+        #Create this element
+        @el = $('<li class="button">' + @model.get(
+            'name') + '</li>')
+
+        #Listen for events
+        #TODO: put this in view's events
+        @el.click(@click)
+
+        #Listen for events on the model
+        @model.on('spell:cast', @spellCast)
 
         return @
 
     render: ()=>
         #Renders the spell button in the UI
-        @el = $('<li class="button">' + @model.get(
-            'name') + '</li>')
         $('.spells').append(@el)
+
         return @
 
     #------------------------------------
     #Events - UI User Interaction
     #------------------------------------
     click: ()=>
-        '''Called when the UI element is clicked.
-            Need to ensure the user CAN cast the spell'''
+        #Called when the UI element is clicked.
+        #Fire the spellCast event
+        @model.trigger('spell:cast')
         return @
 
-    #------------------------------------
     #Update UI (show / hide based on current target)
-    #------------------------------------
     updateUI: ()=>
         #This is triggered when the game's Interaction model receives
         #   a new target 
         return @
+
+    #------------------------------------
+    #Spell interaction
+    #------------------------------------
+    spellCast: ()=>
+        #The process of casting a spell:
+        #   1. Determine if spell can be cast (this function)
+        #   2. get current target's model
+        #   3. fire event on that model and pass in this spell's model
+        #   4. the target's view listens on it's model to catch the event
+        #       we fire off
+        #   5. a function in the target's view gets called, and calls
+        #       this model's effect() function, passing in the view's
+        #       element
+        #Make sure user has enough mana, etc.
+        if not true
+            return false
+
+        #Make sure there is a target (unless the spell doesn't
+        #   need one)
+        #TODO: cast without target
+        #TODO: support multiple targets
+        target = GAME_NAME.game.get('interaction').get('target')
+        target.trigger('spell:cast', {
+            spell: @model
+        })
+        
 
 ''' ========================================================================    
     
@@ -73,7 +106,7 @@ class GAME_NAME.Models.Spell extends Backbone.Model
         #current target will (usually) point to a creature or player object
         target: {},
 
-        effect: ()->
+        effect: (target)->
             #this is a callback returned from the server which will do 
             #   something to the target
             return @
@@ -86,3 +119,11 @@ class GAME_NAME.Models.Spell extends Backbone.Model
         '''This function is called by the renderer and will affect
         the visible game state somehow'''
         return @
+
+''' ========================================================================    
+    
+    Colections
+
+    ======================================================================== '''
+class GAME_NAME.Collections.Spells extends Backbone.Collection
+    model: GAME_NAME.Models.Spell

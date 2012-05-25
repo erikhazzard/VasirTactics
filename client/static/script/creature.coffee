@@ -48,10 +48,14 @@ class GAME_NAME.Views.Creature extends Backbone.View
         @model.on('change:location', @target)
         @model.on('change:movesLeft', @target)
         @model.on('change:movesLeft', ()=>
-            @interaction.set({
-                targetHtml: @targetHtml()
-            })
+            #Only do this if this creature is the selected
+            #   one
+            if @model.belongsToActivePlayer() and @model == @interaction.get('target')
+                @interaction.set({
+                    targetHtml: @targetHtml()
+                })
         )
+        @model.on('spell:cast', @handleSpell)
         
         #Set el as an empty element, we'll create it in render()
         @el = {}
@@ -163,7 +167,7 @@ class GAME_NAME.Views.Creature extends Backbone.View
         #   allow them to move the creature
         #Also, don't do this if this creature isn't the target
         #TODO: MAKE SURE THIS WORKS
-        if not @model.belongsToActivePlayer() and @model != @interaction.get('target')
+        if not @model.belongsToActivePlayer() or @model != @interaction.get('target')
             return @
             
         #Store i and j
@@ -234,6 +238,21 @@ class GAME_NAME.Views.Creature extends Backbone.View
 
         return html
 
+    #------------------------------------
+    #Game Functions
+    #------------------------------------
+    handleSpell: (params)=>
+        #Called when a spell is casted on this creature,
+        #   called from the spell:cast event
+        console.log('spell cast!')
+        #make sure the spell is passed in
+        params = params || {}
+        if not params.spell
+            visually.logger.error('creature:handleSpell():',
+                'no spell passed into handleSpell',
+                'params: ', params)
+
+        return @
 
 ''' ========================================================================    
     
@@ -358,6 +377,7 @@ class GAME_NAME.Models.Creature extends Backbone.Model
         cell = params.cell
         if not cell
             GAME_NAME.logger.error('creature model: move(): no cell passed into params')
+            return false
 
         #TODO: Do this a better way - check Map class instead of cell state
         #   CAN MOVE function

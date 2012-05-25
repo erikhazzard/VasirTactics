@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang='en'>
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+    <link href='/static/css/libs/qunit.css' rel='stylesheet' type='text/css' />
+    <title>Test Suite</title>
+</head>
+<body>
+<div id='tests_wrapper'>
+    <!-- QUnit Test Boilerplate -->
+    <h1 id="qunit-header">QUnit Test Suite</h1>  
+    <h2 id="qunit-banner"></h2>  
+    <div id="qunit-testrunner-toolbar"></div>  
+    <h2 id="qunit-userAgent"></h2>  
+    <ol id="qunit-tests"></ol> 
+
+    <!-- JSLitmus Tests -->
+    <br /><br />
+    <h1 id="qunit-header"><a href="#">Speed Tests</a></h1>
+    <div id="jslitmus_container" style="margin: 20px 10px;"></div>
+
+    <!-- DOM Nodes -->
+    <div style='display:none;'>
+        <!-- SVG for first test -->
+        <svg  id="svg_el" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"> 
+        </svg>
+    </div>
+</div>
+<!-- ======================================================================
+
+    SCRIPTS
+
+    ======================================================================= -->
+<!-- ======================================================================
+    Third party
+        underscore, json2js, jquery, backbone, d3
+    ======================================================================= -->
+<script src='/static/script/libs/all3rdjs.min.js'></script>
+<!-- Test libs -->
+<script src="/static/script/libs/qunit.js"></script>
+<script src="/static/script/libs/js_litmus.js"></script>
+<script src="/static/script/libs/sinon-1.3.2.js"></script>
+<script src="/static/script/libs/sinon-qunit-1.0.0.js"></script>
+
+<!-- ======================================================================
+    Third party
+        underscore, json2js, jquery, backbone, d3
+    ======================================================================= -->
+<script src='/static/script/namespace.js'></script>
+<script src='/static/script/logger.js'></script>
+<script src='/static/script/util.js'></script>
+
+<script src='/static/script/interaction.js'></script>
+<script src='/static/script/player.js'></script>
+<script src='/static/script/creature.js'></script>
+<script src='/static/script/spells.js'></script>
+<script src='/static/script/map.js'></script>
+<script src='/static/script/cell.js'></script>
+<script src='/static/script/renderer.js'></script>
+<script src='/static/script/game.js'></script>
+
+<!-- Test files -->
+<script src="/static/script/test/tests.js"></script>
+<script src="/static/script/test/performance_tests.js"></script>
+
+</body>
+</html>

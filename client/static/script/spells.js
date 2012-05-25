@@ -16,6 +16,7 @@
     __extends(Spell, _super);
 
     function Spell() {
+      this.spellCast = __bind(this.spellCast, this);
       this.updateUI = __bind(this.updateUI, this);
       this.click = __bind(this.click, this);
       this.render = __bind(this.render, this);
@@ -33,22 +34,33 @@
         return false;
       }
       this.model = this.options.model;
-      GAME_NAME.game.get('interaction').on('change:target', this.updateUI);
+      this.el = $('<li class="button">' + this.model.get('name') + '</li>');
+      this.el.click(this.click);
+      this.model.on('spell:cast', this.spellCast);
       return this;
     };
 
     Spell.prototype.render = function() {
-      this.el = $('<li class="button">' + this.model.get('name') + '</li>');
       $('.spells').append(this.el);
       return this;
     };
 
     Spell.prototype.click = function() {
-      'Called when the UI element is clicked.\nNeed to ensure the user CAN cast the spell';      return this;
+      this.model.trigger('spell:cast');
+      return this;
     };
 
     Spell.prototype.updateUI = function() {
       return this;
+    };
+
+    Spell.prototype.spellCast = function() {
+      var target;
+      if (!true) return false;
+      target = GAME_NAME.game.get('interaction').get('target');
+      return target.trigger('spell:cast', {
+        spell: this.model
+      });
     };
 
     return Spell;
@@ -71,7 +83,7 @@
       name: 'Magic Missle',
       cost: 1,
       target: {},
-      effect: function() {
+      effect: function(target) {
         return this;
       }
     };
@@ -87,5 +99,21 @@
     return Spell;
 
   })(Backbone.Model);
+
+  ' ========================================================================    \n\nColections\n\n======================================================================== ';
+
+  GAME_NAME.Collections.Spells = (function(_super) {
+
+    __extends(Spells, _super);
+
+    function Spells() {
+      Spells.__super__.constructor.apply(this, arguments);
+    }
+
+    Spells.prototype.model = GAME_NAME.Models.Spell;
+
+    return Spells;
+
+  })(Backbone.Collection);
 
 }).call(this);

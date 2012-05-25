@@ -16,6 +16,7 @@
     __extends(Creature, _super);
 
     function Creature() {
+      this.handleSpell = __bind(this.handleSpell, this);
       this.targetHtml = __bind(this.targetHtml, this);
       this.mouseLeave = __bind(this.mouseLeave, this);
       this.mouseEnter = __bind(this.mouseEnter, this);
@@ -51,10 +52,13 @@
       this.model.on('change:location', this.target);
       this.model.on('change:movesLeft', this.target);
       this.model.on('change:movesLeft', function() {
-        return _this.interaction.set({
-          targetHtml: _this.targetHtml()
-        });
+        if (_this.model.belongsToActivePlayer() && _this.model === _this.interaction.get('target')) {
+          return _this.interaction.set({
+            targetHtml: _this.targetHtml()
+          });
+        }
       });
+      this.model.on('spell:cast', this.handleSpell);
       this.el = {};
       return this;
     };
@@ -105,7 +109,7 @@
 
     Creature.prototype.target = function() {
       var cell, creature_i, creature_j, legitCells, mapCells, mapTiles, rect, selectedEls, _i, _len;
-      if (!this.model.belongsToActivePlayer() && this.model !== this.interaction.get('target')) {
+      if (!this.model.belongsToActivePlayer() || this.model !== this.interaction.get('target')) {
         return this;
       }
       creature_i = this.model.get('location').x;
@@ -153,6 +157,15 @@
         });
       }
       return html;
+    };
+
+    Creature.prototype.handleSpell = function(params) {
+      console.log('spell cast!');
+      params = params || {};
+      if (!params.spell) {
+        visually.logger.error('creature:handleSpell():', 'no spell passed into handleSpell', 'params: ', params);
+      }
+      return this;
     };
 
     return Creature;
@@ -244,6 +257,7 @@
       cell = params.cell;
       if (!cell) {
         GAME_NAME.logger.error('creature model: move(): no cell passed into params');
+        return false;
       }
       if (this.calculateMovementCells().indexOf(cell) < 0) return this;
       if (!this.belongsToActivePlayer()) return this;

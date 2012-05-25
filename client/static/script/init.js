@@ -5,18 +5,22 @@
 
   GAME_NAME.init = function() {
     'Kick off the game creation';
-    var game_state, renderer;
+    var game_state, magicMissile, renderer;
+    magicMissile = function(target) {
+      return target.transition().duration(1000).attr('width', GAME_NAME.Models.Renderer.prototype.defaults.cellSize.width * 10).attr('height', 5).style('fill', '#dd2222').transition().delay(1000).duration(1000).style('fill', '#ffffff').attr('height', GAME_NAME.Models.Renderer.prototype.defaults.cellSize.width).attr('width', GAME_NAME.Models.Renderer.prototype.defaults.cellSize.width).transition().delay(2000).style('fill', 'none');
+    };
     game_state = {
       players: {
         'enoex': new GAME_NAME.Models.Player({
           name: 'Enoex',
           id: '402190r90war',
           spells: {
+            'magic_missile': new GAME_NAME.Models.Spell({
+              name: 'Magic Missile',
+              effect: magicMissile
+            }),
             'summon_knight': new GAME_NAME.Models.Spell({
               name: 'Summon Creature'
-            }),
-            'magic_missile': new GAME_NAME.Models.Spell({
-              name: 'Magic Missle'
             })
           },
           creatures: new GAME_NAME.Collections.Creatures([
