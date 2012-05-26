@@ -46,16 +46,9 @@ class GAME_NAME.Views.Creature extends Backbone.View
         @model.on('creature:targeted', @target)
         @model.on('change:location', @update)
         @model.on('change:location', @target)
-        @model.on('change:movesLeft', @target)
-        @model.on('change:movesLeft', ()=>
-            #Only do this if this creature is the selected
-            #   one
-            if @model.belongsToActivePlayer() and @model == @interaction.get('target')
-                @interaction.set({
-                    targetHtml: @targetHtml()
-                })
-        )
+        @model.on('change:movesLeft', @updateTargetHtml)
         @model.on('spell:cast', @handleSpell)
+        @model.on('change:health', @updateTargetHtml)
         
         #Set el as an empty element, we'll create it in render()
         @el = {}
@@ -149,8 +142,8 @@ class GAME_NAME.Views.Creature extends Backbone.View
             #This creature isn't already targeted, so target it
             @interaction.set({
                 target: @model
-                targetHtml: @targetHtml()
             })
+            @updateTargetHtml()
 
         return @
 
@@ -163,13 +156,6 @@ class GAME_NAME.Views.Creature extends Backbone.View
         #Targets this creature.  Updates the game map and
         #   darkens the immovable map cells
 
-        #If this creature doesn't belong to the active player, don't 
-        #   allow them to move the creature
-        #Also, don't do this if this creature isn't the target
-        #TODO: MAKE SURE THIS WORKS
-        if not @model.belongsToActivePlayer() or @model != @interaction.get('target')
-            return @
-            
         #Store i and j
         creature_i = @model.get('location').x
         creature_j = @model.get('location').y
@@ -179,6 +165,16 @@ class GAME_NAME.Views.Creature extends Backbone.View
         selectedEls = d3.selectAll('.map_tile_selected')
             .classed('map_tile_selected', false)
 
+        #Highlight this creature's background rect
+        rect = @svgEl.select('rect')
+        rect.classed('map_tile_selected', true)
+
+        #If this creature doesn't belong to the active player, don't 
+        #   allow them to move the creature
+        #Don't darken the map tiles
+        if not @model.canUpdateTargetUI()
+            return @
+            
         #Darken all the map cells
         mapTiles = d3.selectAll('.map_tile')
             .classed('tile_disabled', true)
@@ -196,9 +192,6 @@ class GAME_NAME.Views.Creature extends Backbone.View
                 'cell:enableCell'
             )
 
-        #Highlight this creature's background rect
-        rect = @svgEl.select('rect')
-        rect.classed('map_tile_selected', true)
         return @
 
     mouseEnter: ()=>
@@ -215,28 +208,36 @@ class GAME_NAME.Views.Creature extends Backbone.View
     #------------------------------------
     #UI Functions
     #------------------------------------
-    targetHtml: ()=>
+    updateTargetHtml: ()=>
         #Returns HTML to be put in the target box. Uses the target
         #   box template
         html = ''
 
-        #If this creature doesn't to the currently active player,
-        #   do different logic
-        if @model.belongsToActivePlayer()
-            #This creature belongs to the active player, so show all stats
-            html = _.template(GAME_NAME.templates.target_creature_mine)({
-                name: @model.get('name'),
-                health: @model.get('health')
-                movesLeft: @model.get('movesLeft')
-            })
-        else
-            #They target an opponent
-            html = _.template(GAME_NAME.templates.target_creature_theirs)({
-                name: @model.get('name'),
-                health: @model.get('health')
-            })
+        #Only do this if this creature is the selected one
+        if not @model == @interaction.get('target')
+            return false
 
-        return html
+        else
+            #We can update the target UI html, since this model is
+            #   the active target for the UI
+            #If this creature doesn't to the currently active player,
+            #   do different logic
+            if @model.belongsToActivePlayer()
+                #This creature belongs to the active player, so show all stats
+                html = _.template(GAME_NAME.templates.target_creature_mine)({
+                    name: @model.get('name'),
+                    health: @model.get('health')
+                    movesLeft: @model.get('movesLeft')
+                })
+            else
+                #They target an opponent
+                html = _.template(GAME_NAME.templates.target_creature_theirs)({
+                    name: @model.get('name'),
+                    health: @model.get('health')
+                })
+
+            @interaction.set({targetHtml: html})
+            return @
 
     #------------------------------------
     #Game Functions
@@ -244,13 +245,15 @@ class GAME_NAME.Views.Creature extends Backbone.View
     handleSpell: (params)=>
         #Called when a spell is casted on this creature,
         #   called from the spell:cast event
-        console.log('spell cast!')
         #make sure the spell is passed in
         params = params || {}
         if not params.spell
             visually.logger.error('creature:handleSpell():',
                 'no spell passed into handleSpell',
                 'params: ', params)
+
+        #Call the spell effect
+        params.spell.get('effect')({target: @svgEl, model: @model})
 
         return @
 
@@ -264,7 +267,7 @@ class GAME_NAME.Models.Creature extends Backbone.Model
         name: 'Toestubber'
         className: 'creature'
         attack: 1,
-        health: 1,
+        health: 2,
         
         #current target will point to a creature or player object
         target: {},
@@ -306,6 +309,32 @@ class GAME_NAME.Models.Creature extends Backbone.Model
         @on('creature:move', @move)
 
         return @
+    #------------------------------------
+    #
+    #game functions
+    #
+    #------------------------------------
+    dealDamage: (params)=>
+        #Takes in damage to this creature.  The actual damage dealt
+        #   may be different than the passed in damage
+        #If they don't pass in a dict (just a number), use it
+        if typeof params == 'number'
+            params = { amount: params }
+
+        #Otherwise, allow them to pass in a dict
+        params = params || {}
+
+        if not params.amount
+            GAME_NAME.logger.error('creature model: dealDamage()',
+                'no amount passed in')
+            return false
+
+        #Get amount of damage to be dealt
+        amount = params.amount
+
+        #Good to go now
+        #Do damage calculation
+        @set({ health: @get('health') - amount })
 
     #------------------------------------
     #
@@ -327,6 +356,13 @@ class GAME_NAME.Models.Creature extends Backbone.Model
         @trigger('creature:targeted')
         return @
 
+    canUpdateTargetUI: ()=>
+        #Returns true or false if this model is the currently selected target
+        #   of the interaction model
+        if @.belongsToActivePlayer() and @ == GAME_NAME.game.get('interaction').get('target')
+            return true
+        else
+            return false
     #------------------------------------
     #Move Calculations
     #------------------------------------

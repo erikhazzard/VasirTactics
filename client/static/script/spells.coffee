@@ -85,9 +85,17 @@ class GAME_NAME.Views.Spell extends Backbone.View
         #TODO: cast without target
         #TODO: support multiple targets
         target = GAME_NAME.game.get('interaction').get('target')
-        target.trigger('spell:cast', {
-            spell: @model
-        })
+
+        #Make sure the target exists
+        if target
+            target.trigger('spell:cast', {
+                spell: @model
+            })
+        else
+            GAME_NAME.logger.Creature('spellCast(): Interaction model has no target')
+            return false
+
+        return @
         
 
 ''' ========================================================================    

@@ -6,22 +6,43 @@
 GAME_NAME.init = ()=>
     '''Kick off the game creation'''
     #Example spell effect
-    magicMissile = (target)=>
+    magicMissile = (params)=>
+        #TODO: this would come from server
         #Todo: do some filter
+        params = params || {}
+        #get model
+        model = params.model
+        
+        #Do 1 point of damage
+        model.dealDamage(1)
+        
+        #--------------------------------
+        #cell size
+        cellSize = GAME_NAME.Models.Renderer.prototype.defaults.cellSize
+
+        #Do the animation on the view
+        target = params.target.append('svg:circle')
+            .attr('r', 0)
+            .attr('cx', cellSize.width/2)
+            .attr('cy', cellSize.height/2)
+            .style('opacity', .8)
+
+        #Animate the 'missle'
+        #TODO: Do a badass effect
         target.transition()
             .duration(1000)
-            .attr('width', GAME_NAME.Models.Renderer.prototype.defaults.cellSize.width * 10)
-            .attr('height', 5)
+            .attr('r', 40)
             .style('fill', '#dd2222')
                 .transition()
                     .delay(1000)
-                    .duration(1000)
-                    .style('fill', '#ffffff')
-                    .attr('height', GAME_NAME.Models.Renderer.prototype.defaults.cellSize.width)
-                    .attr('width', GAME_NAME.Models.Renderer.prototype.defaults.cellSize.width)
+                    .duration(700)
+                    .style('fill', '#ff0000')
+                    .attr('r', 0)
                         .transition()
-                            .delay(2000)
+                            .delay(1700)
+                            .attr('r', 0)
                             .style('fill', 'none')
+                            .remove()
 
     #TODO: Get game state
     #Fake game state for now

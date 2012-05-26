@@ -17,7 +17,7 @@
 
     function Creature() {
       this.handleSpell = __bind(this.handleSpell, this);
-      this.targetHtml = __bind(this.targetHtml, this);
+      this.updateTargetHtml = __bind(this.updateTargetHtml, this);
       this.mouseLeave = __bind(this.mouseLeave, this);
       this.mouseEnter = __bind(this.mouseEnter, this);
       this.target = __bind(this.target, this);
@@ -34,9 +34,7 @@
     };
 
     Creature.prototype.initialize = function() {
-      'This creature view is created in Renderer';
-      var _this = this;
-      if (this.options.model === void 0 || this.options.game === void 0 || this.options.group === void 0) {
+      'This creature view is created in Renderer';      if (this.options.model === void 0 || this.options.game === void 0 || this.options.group === void 0) {
         GAME_NAME.logger.error('ERROR', 'creature view init(): params not properly passed in');
         return false;
       }
@@ -50,15 +48,9 @@
       this.model.on('creature:targeted', this.target);
       this.model.on('change:location', this.update);
       this.model.on('change:location', this.target);
-      this.model.on('change:movesLeft', this.target);
-      this.model.on('change:movesLeft', function() {
-        if (_this.model.belongsToActivePlayer() && _this.model === _this.interaction.get('target')) {
-          return _this.interaction.set({
-            targetHtml: _this.targetHtml()
-          });
-        }
-      });
+      this.model.on('change:movesLeft', this.updateTargetHtml);
       this.model.on('spell:cast', this.handleSpell);
+      this.model.on('change:health', this.updateTargetHtml);
       this.el = {};
       return this;
     };
@@ -100,21 +92,21 @@
         });
       } else {
         this.interaction.set({
-          target: this.model,
-          targetHtml: this.targetHtml()
+          target: this.model
         });
+        this.updateTargetHtml();
       }
       return this;
     };
 
     Creature.prototype.target = function() {
       var cell, creature_i, creature_j, legitCells, mapCells, mapTiles, rect, selectedEls, _i, _len;
-      if (!this.model.belongsToActivePlayer() || this.model !== this.interaction.get('target')) {
-        return this;
-      }
       creature_i = this.model.get('location').x;
       creature_j = this.model.get('location').y;
       selectedEls = d3.selectAll('.map_tile_selected').classed('map_tile_selected', false);
+      rect = this.svgEl.select('rect');
+      rect.classed('map_tile_selected', true);
+      if (!this.model.canUpdateTargetUI()) return this;
       mapTiles = d3.selectAll('.map_tile').classed('tile_disabled', true);
       legitCells = this.model.calculateMovementCells();
       mapCells = this.map.get('cells');
@@ -122,8 +114,6 @@
         cell = legitCells[_i];
         mapCells[cell.get('x') + ',' + cell.get('y')].trigger('cell:enableCell');
       }
-      rect = this.svgEl.select('rect');
-      rect.classed('map_tile_selected', true);
       return this;
     };
 
@@ -141,30 +131,40 @@
       return this;
     };
 
-    Creature.prototype.targetHtml = function() {
+    Creature.prototype.updateTargetHtml = function() {
       var html;
       html = '';
-      if (this.model.belongsToActivePlayer()) {
-        html = _.template(GAME_NAME.templates.target_creature_mine)({
-          name: this.model.get('name'),
-          health: this.model.get('health'),
-          movesLeft: this.model.get('movesLeft')
-        });
+      if (!this.model === this.interaction.get('target')) {
+        return false;
       } else {
-        html = _.template(GAME_NAME.templates.target_creature_theirs)({
-          name: this.model.get('name'),
-          health: this.model.get('health')
+        if (this.model.belongsToActivePlayer()) {
+          html = _.template(GAME_NAME.templates.target_creature_mine)({
+            name: this.model.get('name'),
+            health: this.model.get('health'),
+            movesLeft: this.model.get('movesLeft')
+          });
+        } else {
+          html = _.template(GAME_NAME.templates.target_creature_theirs)({
+            name: this.model.get('name'),
+            health: this.model.get('health')
+          });
+        }
+        this.interaction.set({
+          targetHtml: html
         });
+        return this;
       }
-      return html;
     };
 
     Creature.prototype.handleSpell = function(params) {
-      console.log('spell cast!');
       params = params || {};
       if (!params.spell) {
         visually.logger.error('creature:handleSpell():', 'no spell passed into handleSpell', 'params: ', params);
       }
+      params.spell.get('effect')({
+        target: this.svgEl,
+        model: this.model
+      });
       return this;
     };
 
@@ -182,8 +182,10 @@
       this.canMove = __bind(this.canMove, this);
       this.move = __bind(this.move, this);
       this.calculateMovementCells = __bind(this.calculateMovementCells, this);
+      this.canUpdateTargetUI = __bind(this.canUpdateTargetUI, this);
       this.target = __bind(this.target, this);
       this.belongsToActivePlayer = __bind(this.belongsToActivePlayer, this);
+      this.dealDamage = __bind(this.dealDamage, this);
       this.initialize = __bind(this.initialize, this);
       Creature.__super__.constructor.apply(this, arguments);
     }
@@ -192,7 +194,7 @@
       name: 'Toestubber',
       className: 'creature',
       attack: 1,
-      health: 1,
+      health: 2,
       target: {},
       effects: [],
       abilities: [],
@@ -212,6 +214,24 @@
       return this;
     };
 
+    Creature.prototype.dealDamage = function(params) {
+      var amount;
+      if (typeof params === 'number') {
+        params = {
+          amount: params
+        };
+      }
+      params = params || {};
+      if (!params.amount) {
+        GAME_NAME.logger.error('creature model: dealDamage()', 'no amount passed in');
+        return false;
+      }
+      amount = params.amount;
+      return this.set({
+        health: this.get('health') - amount
+      });
+    };
+
     Creature.prototype.belongsToActivePlayer = function() {
       var index;
       index = GAME_NAME.game.get('activePlayer').get('creatures').indexOf(this);
@@ -225,6 +245,14 @@
     Creature.prototype.target = function() {
       this.trigger('creature:targeted');
       return this;
+    };
+
+    Creature.prototype.canUpdateTargetUI = function() {
+      if (this.belongsToActivePlayer() && this === GAME_NAME.game.get('interaction').get('target')) {
+        return true;
+      } else {
+        return false;
+      }
     };
 
     Creature.prototype.calculateMovementCells = function(params) {

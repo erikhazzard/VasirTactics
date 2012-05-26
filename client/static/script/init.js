@@ -6,8 +6,14 @@
   GAME_NAME.init = function() {
     'Kick off the game creation';
     var game_state, magicMissile, renderer;
-    magicMissile = function(target) {
-      return target.transition().duration(1000).attr('width', GAME_NAME.Models.Renderer.prototype.defaults.cellSize.width * 10).attr('height', 5).style('fill', '#dd2222').transition().delay(1000).duration(1000).style('fill', '#ffffff').attr('height', GAME_NAME.Models.Renderer.prototype.defaults.cellSize.width).attr('width', GAME_NAME.Models.Renderer.prototype.defaults.cellSize.width).transition().delay(2000).style('fill', 'none');
+    magicMissile = function(params) {
+      var cellSize, model, target;
+      params = params || {};
+      model = params.model;
+      model.dealDamage(1);
+      cellSize = GAME_NAME.Models.Renderer.prototype.defaults.cellSize;
+      target = params.target.append('svg:circle').attr('r', 0).attr('cx', cellSize.width / 2).attr('cy', cellSize.height / 2).style('opacity', .8);
+      return target.transition().duration(1000).attr('r', 40).style('fill', '#dd2222').transition().delay(1000).duration(700).style('fill', '#ff0000').attr('r', 0).transition().delay(1700).attr('r', 0).style('fill', 'none').remove();
     };
     game_state = {
       players: {

@@ -58,9 +58,15 @@
       var target;
       if (!true) return false;
       target = GAME_NAME.game.get('interaction').get('target');
-      return target.trigger('spell:cast', {
-        spell: this.model
-      });
+      if (target) {
+        target.trigger('spell:cast', {
+          spell: this.model
+        });
+      } else {
+        GAME_NAME.logger.Creature('spellCast(): Interaction model has no target');
+        return false;
+      }
+      return this;
     };
 
     return Spell;

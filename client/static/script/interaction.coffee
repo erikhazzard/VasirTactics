@@ -45,6 +45,9 @@ class GAME_NAME.Views.Interface extends Backbone.View
     #------------------------------------
     nextMove: ()=>
         #Next turn, do stuff
+        #TODO!!!!!!!!!!!!!!!!!!!!!
+        #Fire off some global next turn event which all models will
+        #   listen for (on the game model)
         creatures = GAME_NAME.game.get('activePlayer').get('creatures').models
         for creature in creatures
             creature.set({
@@ -88,9 +91,8 @@ class GAME_NAME.Views.Interface extends Backbone.View
         d3.selectAll('.tile_disabled')
             .classed('tile_disabled', false)
 
-    renderTarget: ()=>
-        #Updates the UI
-        #Updates the target box HTML
+    renderTarget: (params)=>
+        #Updates the target box UI HTML
         @$targetEl.html(@model.get('targetHtml'))
 
 ''' ========================================================================    
