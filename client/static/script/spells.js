@@ -5,7 +5,7 @@
     __hasProp = Object.prototype.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor; child.__super__ = parent.prototype; return child; };
 
-  GAME_NAME.logger.options.log_types.push('Creature');
+  GAME_NAME.logger.options.log_types.push('Spell');
 
   GAME_NAME.logger.options.setup_log_types();
 
@@ -63,7 +63,7 @@
           spell: this.model
         });
       } else {
-        GAME_NAME.logger.Creature('spellCast(): Interaction model has no target');
+        GAME_NAME.logger.Spell('spellCast(): Interaction model has no target');
         return false;
       }
       return this;

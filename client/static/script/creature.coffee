@@ -46,8 +46,9 @@ class GAME_NAME.Views.Creature extends Backbone.View
         @model.on('creature:targeted', @target)
         @model.on('change:location', @update)
         @model.on('change:location', @target)
-        @model.on('change:movesLeft', @updateTargetHtml)
+        @model.on('creature:death', @creatureDeath)
         @model.on('spell:cast', @handleSpell)
+        @model.on('change:movesLeft', @updateTargetHtml)
         @model.on('change:health', @updateTargetHtml)
         
         #Set el as an empty element, we'll create it in render()
@@ -214,9 +215,8 @@ class GAME_NAME.Views.Creature extends Backbone.View
         html = ''
 
         #Only do this if this creature is the selected one
-        if not @model == @interaction.get('target')
+        if not (@model == @interaction.get('target'))
             return false
-
         else
             #We can update the target UI html, since this model is
             #   the active target for the UI
@@ -236,6 +236,7 @@ class GAME_NAME.Views.Creature extends Backbone.View
                     health: @model.get('health')
                 })
 
+
             @interaction.set({targetHtml: html})
             return @
 
@@ -254,6 +255,26 @@ class GAME_NAME.Views.Creature extends Backbone.View
 
         #Call the spell effect
         params.spell.get('effect')({target: @svgEl, model: @model})
+
+        return @
+
+    #Creature died
+    creatureDeath: ()=>
+        #Effect that gets triggered when the creature dies
+        #TODO: There is a delay with the animation, because
+        #   the spell uses transition. figure out how to use multiple
+        #   transitions in parallel
+        @svgEl.selectAll('*').
+            transition()
+                .duration(1000)
+                .style('opacity',0)
+                .delay(1500)
+                    .remove()
+
+        #Untarget the creature
+        @interaction.set({
+            target: undefined
+        })
 
         return @
 
@@ -277,6 +298,10 @@ class GAME_NAME.Models.Creature extends Backbone.Model
 
         #Abilities are activated or passive things this creature has
         abilities: []
+
+        #creature type
+        #   A creature can have multiple types
+        type: ['human']
 
         #How far creature can move
         moves: 3
@@ -308,12 +333,32 @@ class GAME_NAME.Models.Creature extends Backbone.Model
         #Listen for events
         @on('creature:move', @move)
 
+        #Watch health. If it ever goes below 1, creature dies
+        @on('change:health', @checkForDeath)
+        #   Listen for death event (triggered when health goes
+        #       below 1 or if a creature is directly killed)
+        @on('creature:death', @creatureDeath)
         return @
+
     #------------------------------------
     #
     #game functions
     #
     #------------------------------------
+    checkForDeath: (params)=>
+        #Gets fired each time health changes. If health is ever below
+        #   one the creatue dies
+        if @get('health') < 1
+            @trigger('creature:death')
+
+    creatureDeath: ()=>
+        #Fired when creature's health drops below health or
+        #   some other effect that kills the creature happens
+        #Note: View effects wil be triggered in view
+        GAME_NAME.logger.Creature('Creature died!',
+            'creature: ' + @get('name'),
+            'model: ', @)
+
     dealDamage: (params)=>
         #Takes in damage to this creature.  The actual damage dealt
         #   may be different than the passed in damage

@@ -74,7 +74,9 @@
     };
 
     Interface.prototype.renderTarget = function(params) {
-      return this.$targetEl.html(this.model.get('targetHtml'));
+      var html;
+      html = this.model.get('targetHtml') || '';
+      return this.$targetEl.html(html);
     };
 
     return Interface;

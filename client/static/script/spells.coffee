@@ -9,7 +9,7 @@
     Add logging types
     ======================================================================== '''
 #Add a log type
-GAME_NAME.logger.options.log_types.push('Creature')
+GAME_NAME.logger.options.log_types.push('Spell')
 #Add it as a log type
 GAME_NAME.logger.options.setup_log_types()
 ''' ========================================================================    
@@ -92,11 +92,10 @@ class GAME_NAME.Views.Spell extends Backbone.View
                 spell: @model
             })
         else
-            GAME_NAME.logger.Creature('spellCast(): Interaction model has no target')
+            GAME_NAME.logger.Spell('spellCast(): Interaction model has no target')
             return false
 
         return @
-        
 
 ''' ========================================================================    
     

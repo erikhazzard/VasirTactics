@@ -236,3 +236,71 @@
 	width: 1000px;
 	height: 1000px;
 }
+
+/* =======================================================================
+ *
+ * STYLE OVERRIDES (Custom test suite)
+ *
+ * ======================================================================= */
+@import url("http://fonts.googleapis.com/css?family=IM+Fell+English+SC|Ubuntu+Mono|Cantarell|Averia+Serif+Libre:400,700,400italic,700italic&.css");
+
+* {
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+html, body {
+  background: #f4f4f4 url(../../image/bg.jpg);
+  bottom: 0;
+  color: #ffffff;
+  font-family: 'Cantarell', Arial, Verdana, sans-serif;
+  margin: 0;
+  padding: 0;
+  -webkit-font-smoothing: antialiased;
+}
+#qunit-testresult {
+    background: #f0f0f0;
+    padding-bottom: 20px;
+}
+#qunit-testresult .passed, 
+#qunit-testresult .total, 
+#qunit-testresult .failed {
+    font-size:2em;
+    text-shadow: 0 0 1px #ffffff;
+    font-weight:bold;
+}
+#qunit-testresult .total {
+    color: #343434;
+}
+#qunit-testresult .passed {
+    color: #53A84A;
+}
+#qunit-testresult .failed {
+    color: #FF5757;
+    font-size:2.2em;
+}
+#qunit-tests ol {
+    margin: 5px 5px 5px 25px;
+    box-shadow: 0 1px 5px #343434 inset;
+}
+#qunit-tests li li.pass {
+    border-left: 26px solid #66E85A;
+    color: #4E9E47;
+}
+#qunit-tests li li.fail {
+    background: rgba(250, 150, 150, .1);
+    box-shadow: 0 1px 6px #343434;
+    font-size: 1.4em;
+}
+#qunit-testrunner-toolbar {
+    color: #4E9E47;
+}
+#qunit-banner.qunit-pass {
+    padding:5px; 
+    background-color: #66E85A;
+}
+#qunit-banner.qunit-fail {
+    padding:5px; 
+}
+

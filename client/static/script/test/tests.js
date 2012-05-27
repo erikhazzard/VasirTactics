@@ -25,8 +25,20 @@
       equal(moveSpy.callCount, 1, 'creature:move fires off an event');
       return this;
     });
-    return test('move(): function works', function() {
+    test('move(): function works', function() {
       return equal(this.creature.move(), false, 'Calling move() returns false with no params');
+    });
+    return test('Model: creature:health change event works', function() {
+      var healthSpy, origHealth;
+      healthSpy = this.spy();
+      origHealth = this.creature.get('health');
+      this.creature.on('change:health', healthSpy);
+      this.creature.set({
+        health: origHealth - 1
+      });
+      equal(healthSpy.callCount, 1, 'change:health fires off an event');
+      equal(this.creature.get('health'), origHealth - 1, 'setting health to health-1 works properly');
+      return this;
     });
   });
 

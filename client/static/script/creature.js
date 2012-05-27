@@ -16,6 +16,7 @@
     __extends(Creature, _super);
 
     function Creature() {
+      this.creatureDeath = __bind(this.creatureDeath, this);
       this.handleSpell = __bind(this.handleSpell, this);
       this.updateTargetHtml = __bind(this.updateTargetHtml, this);
       this.mouseLeave = __bind(this.mouseLeave, this);
@@ -48,8 +49,9 @@
       this.model.on('creature:targeted', this.target);
       this.model.on('change:location', this.update);
       this.model.on('change:location', this.target);
-      this.model.on('change:movesLeft', this.updateTargetHtml);
+      this.model.on('creature:death', this.creatureDeath);
       this.model.on('spell:cast', this.handleSpell);
+      this.model.on('change:movesLeft', this.updateTargetHtml);
       this.model.on('change:health', this.updateTargetHtml);
       this.el = {};
       return this;
@@ -134,7 +136,7 @@
     Creature.prototype.updateTargetHtml = function() {
       var html;
       html = '';
-      if (!this.model === this.interaction.get('target')) {
+      if (!(this.model === this.interaction.get('target'))) {
         return false;
       } else {
         if (this.model.belongsToActivePlayer()) {
@@ -168,6 +170,14 @@
       return this;
     };
 
+    Creature.prototype.creatureDeath = function() {
+      this.svgEl.selectAll('*').transition().duration(1000).style('opacity', 0).delay(1500).remove();
+      this.interaction.set({
+        target: void 0
+      });
+      return this;
+    };
+
     return Creature;
 
   })(Backbone.View);
@@ -186,6 +196,8 @@
       this.target = __bind(this.target, this);
       this.belongsToActivePlayer = __bind(this.belongsToActivePlayer, this);
       this.dealDamage = __bind(this.dealDamage, this);
+      this.creatureDeath = __bind(this.creatureDeath, this);
+      this.checkForDeath = __bind(this.checkForDeath, this);
       this.initialize = __bind(this.initialize, this);
       Creature.__super__.constructor.apply(this, arguments);
     }
@@ -198,6 +210,7 @@
       target: {},
       effects: [],
       abilities: [],
+      type: ['human'],
       moves: 3,
       movesLeft: 3,
       location: {
@@ -211,7 +224,17 @@
 
     Creature.prototype.initialize = function() {
       this.on('creature:move', this.move);
+      this.on('change:health', this.checkForDeath);
+      this.on('creature:death', this.creatureDeath);
       return this;
+    };
+
+    Creature.prototype.checkForDeath = function(params) {
+      if (this.get('health') < 1) return this.trigger('creature:death');
+    };
+
+    Creature.prototype.creatureDeath = function() {
+      return GAME_NAME.logger.Creature('Creature died!', 'creature: ' + this.get('name'), 'model: ', this);
     };
 
     Creature.prototype.dealDamage = function(params) {

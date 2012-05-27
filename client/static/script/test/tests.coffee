@@ -56,8 +56,9 @@ $(document).ready( ()->
     )
 
     #------------------------------------
-    #Events
+    #MOVE Related
     #------------------------------------
+    #Events
     test('Model: creature:move event works', ()->
         moveSpy = @spy()
         @creature.on('creature:move', moveSpy)
@@ -69,13 +70,33 @@ $(document).ready( ()->
         return @
     )
 
-    #------------------------------------
     #Functions
     #------------------------------------
     test('move(): function works', ()->
         #No params should return false
         equal(@creature.move(), false,
             'Calling move() returns false with no params')
+    )
+
+    #------------------------------------
+    #HEALTH Related
+    #------------------------------------
+    test('Model: creature:health change event works', ()->
+        healthSpy = @spy()
+        origHealth = @creature.get('health')
+
+        @creature.on('change:health', healthSpy)
+        @creature.set({health: origHealth - 1 })
+
+        equal(
+            healthSpy.callCount
+            1,
+            'change:health fires off an event')
+        equal(
+            @creature.get('health')
+            origHealth-1,
+            'setting health to health-1 works properly')
+        return @
     )
 
 )

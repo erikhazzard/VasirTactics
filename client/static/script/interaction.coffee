@@ -80,6 +80,7 @@ class GAME_NAME.Views.Interface extends Backbone.View
         else
             #Target is not defined, so make sure we clear the
             #   targetHTML
+            #Bad target html
             @model.set({targetHtml: ''})
             
     unTargetTiles: ()=>
@@ -93,7 +94,8 @@ class GAME_NAME.Views.Interface extends Backbone.View
 
     renderTarget: (params)=>
         #Updates the target box UI HTML
-        @$targetEl.html(@model.get('targetHtml'))
+        html = @model.get('targetHtml') || ''
+        @$targetEl.html(html)
 
 ''' ========================================================================    
     
