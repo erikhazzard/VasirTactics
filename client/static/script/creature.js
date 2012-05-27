@@ -172,9 +172,11 @@
 
     Creature.prototype.creatureDeath = function() {
       this.svgEl.selectAll('*').transition().duration(1000).style('opacity', 0).delay(1500).remove();
-      this.interaction.set({
-        target: void 0
-      });
+      if (this.model === this.interaction.get('target')) {
+        this.interaction.set({
+          target: void 0
+        });
+      }
       return this;
     };
 

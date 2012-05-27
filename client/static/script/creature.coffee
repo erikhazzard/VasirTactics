@@ -271,10 +271,11 @@ class GAME_NAME.Views.Creature extends Backbone.View
                 .delay(1500)
                     .remove()
 
-        #Untarget the creature
-        @interaction.set({
-            target: undefined
-        })
+        #Untarget the creature, if it was already targeted
+        if @model == @interaction.get('target')
+            @interaction.set({
+                target: undefined
+            })
 
         return @
 
