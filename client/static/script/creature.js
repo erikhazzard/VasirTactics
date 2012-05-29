@@ -191,6 +191,7 @@
     __extends(Creature, _super);
 
     function Creature() {
+      this.turnEnd = __bind(this.turnEnd, this);
       this.canMove = __bind(this.canMove, this);
       this.move = __bind(this.move, this);
       this.calculateMovementCells = __bind(this.calculateMovementCells, this);
@@ -228,6 +229,7 @@
       this.on('creature:move', this.move);
       this.on('change:health', this.checkForDeath);
       this.on('creature:death', this.creatureDeath);
+      this.on('creature:turn:end', this.turnEnd);
       return this;
     };
 
@@ -348,6 +350,14 @@
       return ableToMove;
     };
 
+    Creature.prototype.turnEnd = function() {
+      return this.set({
+        'movesLeft': this.get('moves')
+      }, {
+        silent: true
+      });
+    };
+
     return Creature;
 
   })(Backbone.Model);
@@ -359,10 +369,27 @@
     __extends(Creatures, _super);
 
     function Creatures() {
+      this.turnEnd = __bind(this.turnEnd, this);
+      this.initialize = __bind(this.initialize, this);
       Creatures.__super__.constructor.apply(this, arguments);
     }
 
     Creatures.prototype.model = GAME_NAME.Models.Creature;
+
+    Creatures.prototype.initialize = function() {
+      return this.on('creatures:turn:end', this.turnEnd);
+    };
+
+    Creatures.prototype.turnEnd = function() {
+      var creature, _i, _len, _ref, _results;
+      _ref = this.models;
+      _results = [];
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        creature = _ref[_i];
+        _results.push(creature.trigger('creature:turn:end'));
+      }
+      return _results;
+    };
 
     return Creatures;
 

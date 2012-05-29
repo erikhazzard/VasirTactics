@@ -29,7 +29,7 @@ class GAME_NAME.Views.Interface extends Backbone.View
         @model.on('change:targetHtml', @renderTarget)
 
         #TODO: turn this into a view
-        $('#game_actions_wrapper .next_move').click(@nextMove)
+        $('#game_actions_wrapper .end_turn').click(@endTurn)
 
         #Store refs to dom nodes
         @$targetEl = $('#game_target_wrapper .game_target')
@@ -43,16 +43,18 @@ class GAME_NAME.Views.Interface extends Backbone.View
     #Next move
     #
     #------------------------------------
-    nextMove: ()=>
+    endTurn: ()=>
         #Next turn, do stuff
         #TODO!!!!!!!!!!!!!!!!!!!!!
+
+        #Fire off turn:end event on player
+        GAME_NAME.game.get('activePlayer').trigger('turn:end')
+
         #Fire off some global next turn event which all models will
         #   listen for (on the game model)
-        creatures = GAME_NAME.game.get('activePlayer').get('creatures').models
-        for creature in creatures
-            creature.set({
-                'movesLeft': creature.get('moves')
-            }, {silent: true})
+        
+        #Reset all creature moves
+        GAME_NAME.game.get('activePlayer').get('creatures').trigger('creatures:turn:end')
 
         #Clear out the target
         @model.set({

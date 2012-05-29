@@ -339,6 +339,10 @@ class GAME_NAME.Models.Creature extends Backbone.Model
         #   Listen for death event (triggered when health goes
         #       below 1 or if a creature is directly killed)
         @on('creature:death', @creatureDeath)
+
+        #Turn related
+        @on('creature:turn:end', @turnEnd)
+
         return @
 
     #------------------------------------
@@ -513,6 +517,15 @@ class GAME_NAME.Models.Creature extends Backbone.Model
 
         return ableToMove
 
+    #------------------------------------
+    #Turn related
+    #------------------------------------
+    turnEnd: ()=>
+        #Called when the player's turn is ended. Reset movement
+        @.set({
+            'movesLeft': @.get('moves')
+        }, {silent: true})
+
 ''' ========================================================================    
     
     Colections
@@ -520,3 +533,18 @@ class GAME_NAME.Models.Creature extends Backbone.Model
     ======================================================================== '''
 class GAME_NAME.Collections.Creatures extends Backbone.Collection
     model: GAME_NAME.Models.Creature
+
+    initialize: ()=>
+        #Listen for events
+        #   Whenever the creatures:turn:end event is fired, fire off the event
+        #   for all creatures in this collection
+        #   NOTE: The creatureS:turn:end event is for this collection,
+        #   the creature:turn:end (no s) is for an individual creature
+        @on('creatures:turn:end', @turnEnd)
+
+    turnEnd: ()=>
+        #Called when creature:turn:end is fired on this collection 
+        #   Fire off the corresponding event for each creature
+        for creature in @models
+            creature.trigger('creature:turn:end')
+

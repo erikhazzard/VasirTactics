@@ -40,7 +40,7 @@ $(document).ready( ()->
             @creature = new GAME_NAME.Models.Creature({})
 
             ok(@creature != undefined,
-                'Empty creature created in setup()')
+                'Empty creature created successfully in setup()')
             return @
 
         teardown: ()->
@@ -96,7 +96,60 @@ $(document).ready( ()->
             @creature.get('health')
             origHealth-1,
             'setting health to health-1 works properly')
+
+        #Test that the creature death event gets fired off if health < 1
+        deathSpy = @spy()
+        @creature.on('creature:death', deathSpy)
+
+        #Set the health to 0
+        @creature.set({health: 0})
+        equal(
+            deathSpy.callCount,
+            1,
+            'creature:death event fired when health < 1')
         return @
     )
 
+
+    ''' ====================================================================
+        PLAYER
+
+        Testing a player
+        ==================================================================== '''
+    module('PLAYER: model',{
+        setup: ()->
+            @player = new GAME_NAME.Models.Player({})
+
+            ok(@player != undefined,
+                'Empty player created successfully in setup()')
+            return @
+
+        teardown: ()->
+            return @
+    })
+
+    test('Model: default properties are set', ()->
+        equal(
+            @player.get('health') > -1,
+            true,
+            'Player starts with > -1 health')
+        return @
+    )
+    test('Turns completed is updated when a turn is made', ()->
+        turnSpy = @spy()
+        origTurns = @player.get('turnsEnded')
+
+        @player.on('turn:end', turnSpy)
+        @player.trigger('turn:end')
+
+        equal(
+            turnSpy.callCount,
+            1,
+            'turn:end fires off event')
+        equal(
+            @player.get('turnsEnded'),
+            origTurns + 1,
+            'turn:end increments turnsEnded property properly')
+        return @
+    )
 )

@@ -43,10 +43,24 @@ class GAME_NAME.Models.Player extends Backbone.Model
         #Spels is a collection of spells this player can use
         spells: [],
 
+        turnsEnded: 0,
+
         #For the avatar on the game board
         attack: 1,
         location: [0,0]
     }
 
     initialize: ()=>
+        #Listen for events
+        @on('turn:end', @turnEnd)
+
         return @
+
+    #------------------------------------
+    #Game helper functions
+    #------------------------------------
+    turnEnd: ()=>
+        #Called when a player's turn is finished
+        #TODO: Any other things that happen - creature cleanup,
+        #   spell effects, etc.
+        @set({turnsEnded: @get('turnsEnded') + 1})

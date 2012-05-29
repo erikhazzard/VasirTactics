@@ -32,6 +32,7 @@
     __extends(Player, _super);
 
     function Player() {
+      this.turnEnd = __bind(this.turnEnd, this);
       this.initialize = __bind(this.initialize, this);
       Player.__super__.constructor.apply(this, arguments);
     }
@@ -44,12 +45,20 @@
       regenRate: 0.5,
       target: {},
       spells: [],
+      turnsEnded: 0,
       attack: 1,
       location: [0, 0]
     };
 
     Player.prototype.initialize = function() {
+      this.on('turn:end', this.turnEnd);
       return this;
+    };
+
+    Player.prototype.turnEnd = function() {
+      return this.set({
+        turnsEnded: this.get('turnsEnded') + 1
+      });
     };
 
     return Player;
