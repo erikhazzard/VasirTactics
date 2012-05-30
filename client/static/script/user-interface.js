@@ -1,33 +1,33 @@
 (function() {
-  ' ========================================================================    \ninteraction.coffee\n\nCotains the game\'s Interface.  The interaction controls all user interaciton\nwith the game / UI\n\n======================================================================== ';
+  ' ========================================================================    \nuser-interface.coffee\n\nCotains the game\'s Interface.  The userInterface controls all user \ninteraciton with the game / UI\n\n======================================================================== ';
   ' ========================================================================    \nAdd logging types\n======================================================================== ';
   var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
     __hasProp = Object.prototype.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor; child.__super__ = parent.prototype; return child; };
 
-  GAME_NAME.logger.options.log_types.push('Interface');
+  GAME_NAME.logger.options.log_types.push('UserInterface');
 
   GAME_NAME.logger.options.setup_log_types();
 
   ' ========================================================================    \n\nVIEW \n\n======================================================================== ';
 
-  GAME_NAME.Views.Interface = (function(_super) {
+  GAME_NAME.Views.UserInterface = (function(_super) {
 
-    __extends(Interface, _super);
+    __extends(UserInterface, _super);
 
-    function Interface() {
+    function UserInterface() {
       this.renderTarget = __bind(this.renderTarget, this);
       this.unTargetTiles = __bind(this.unTargetTiles, this);
       this.target = __bind(this.target, this);
       this.endTurn = __bind(this.endTurn, this);
       this.render = __bind(this.render, this);
       this.initialize = __bind(this.initialize, this);
-      Interface.__super__.constructor.apply(this, arguments);
+      UserInterface.__super__.constructor.apply(this, arguments);
     }
 
-    'Renders the interaction and handles firing off / listening for events';
+    'Renders the interface and handles firing off / listening for events';
 
-    Interface.prototype.initialize = function() {
+    UserInterface.prototype.initialize = function() {
       this.model = this.options.model;
       this.model.on('change:target', this.target);
       this.model.on('change:targetHtml', this.renderTarget);
@@ -35,11 +35,11 @@
       return this.$targetEl = $('#game_target_wrapper .game_target');
     };
 
-    Interface.prototype.render = function() {
+    UserInterface.prototype.render = function() {
       return this;
     };
 
-    Interface.prototype.endTurn = function() {
+    UserInterface.prototype.endTurn = function() {
       GAME_NAME.game.get('activePlayer').trigger('turn:end');
       GAME_NAME.game.get('activePlayer').get('creatures').trigger('creatures:turn:end');
       return this.model.set({
@@ -47,7 +47,7 @@
       });
     };
 
-    Interface.prototype.target = function() {
+    UserInterface.prototype.target = function() {
       var target;
       target = this.model.get('target');
       this.unTargetTiles();
@@ -60,42 +60,42 @@
       }
     };
 
-    Interface.prototype.unTargetTiles = function() {
+    UserInterface.prototype.unTargetTiles = function() {
       d3.select('.map_tile_selected').classed('map_tile_selected', false);
       return d3.selectAll('.tile_disabled').classed('tile_disabled', false);
     };
 
-    Interface.prototype.renderTarget = function(params) {
+    UserInterface.prototype.renderTarget = function(params) {
       var html;
       html = this.model.get('targetHtml') || '';
       return this.$targetEl.html(html);
     };
 
-    return Interface;
+    return UserInterface;
 
   })(Backbone.View);
 
   ' ========================================================================    \n\nModel    \n\n======================================================================== ';
 
-  GAME_NAME.Models.Interface = (function(_super) {
+  GAME_NAME.Models.UserInterface = (function(_super) {
 
-    __extends(Interface, _super);
+    __extends(UserInterface, _super);
 
-    function Interface() {
+    function UserInterface() {
       this.initialize = __bind(this.initialize, this);
-      Interface.__super__.constructor.apply(this, arguments);
+      UserInterface.__super__.constructor.apply(this, arguments);
     }
 
-    Interface.prototype.defaults = {
+    UserInterface.prototype.defaults = {
       target: void 0,
       targetHtml: ''
     };
 
-    Interface.prototype.initialize = function() {
+    UserInterface.prototype.initialize = function() {
       return this;
     };
 
-    return Interface;
+    return UserInterface;
 
   })(Backbone.Model);
 

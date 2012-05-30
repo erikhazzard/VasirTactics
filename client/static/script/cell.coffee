@@ -46,7 +46,7 @@ class GAME_NAME.Views.Cell extends Backbone.View
         #Create the element (but don't add it yet)
         @x = @model.get('x') * @cellSize.width
         @y = @model.get('y') * @cellSize.height
-        @interaction = GAME_NAME.game.get('interaction')
+        @userInterface = GAME_NAME.game.get('userInterface')
 
         #Set el as an empty element, we'll create it in render()
         @el = {}
@@ -134,17 +134,17 @@ class GAME_NAME.Views.Cell extends Backbone.View
     click: ()=>
         #Called when the cell:clicked event is triggered
 
-        if not @interaction.get('target') or @interaction.get('target').get('className') != 'creature'
+        if not @userInterface.get('target') or @userInterface.get('target').get('className') != 'creature'
             #If no creature is targeted already, we can straight up target 
             #   the cell
-            @interaction.set({
+            @userInterface.set({
                 target: @model
                 targetHtml: @targetHtml()
             })
         else
             #If a creature is already targeted, we need to do special logic
             #   e.g., move
-            @interaction.get('target').trigger('creature:move', {
+            @userInterface.get('target').trigger('creature:move', {
                 cell: @model
             })
 

@@ -10,7 +10,7 @@
       Models: {},
       Collections: {},
       game: {},
-      interaction: {},
+      userInterface: {},
       logger: {},
       init: function() {
         return {};

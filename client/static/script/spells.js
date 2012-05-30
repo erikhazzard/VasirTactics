@@ -24,7 +24,7 @@
       Spell.__super__.constructor.apply(this, arguments);
     }
 
-    'Handles the UI / interaction';
+    'Handles the spell renderering / user interface';
 
     Spell.prototype.type = 'li';
 
@@ -57,7 +57,7 @@
     Spell.prototype.spellCast = function() {
       var target;
       if (!true) return false;
-      target = GAME_NAME.game.get('interaction').get('target');
+      target = GAME_NAME.game.get('userInterface').get('target');
       if (target) {
         target.trigger('spell:cast', {
           spell: this.model

@@ -1,15 +1,15 @@
 ''' ========================================================================    
-    interaction.coffee
+    user-interface.coffee
 
-    Cotains the game's Interface.  The interaction controls all user interaciton
-    with the game / UI
+    Cotains the game's Interface.  The userInterface controls all user 
+    interaciton with the game / UI
 
     ======================================================================== '''
 ''' ========================================================================    
     Add logging types
     ======================================================================== '''
 #Add a log type
-GAME_NAME.logger.options.log_types.push('Interface')
+GAME_NAME.logger.options.log_types.push('UserInterface')
 #Add it as a log type
 GAME_NAME.logger.options.setup_log_types()
 ''' ========================================================================    
@@ -17,8 +17,8 @@ GAME_NAME.logger.options.setup_log_types()
     VIEW 
 
     ======================================================================== '''
-class GAME_NAME.Views.Interface extends Backbone.View
-    '''Renders the interaction and handles firing off / listening for events'''
+class GAME_NAME.Views.UserInterface extends Backbone.View
+    '''Renders the interface and handles firing off / listening for events'''
 
     initialize: ()=>
         #Setup events to listen on
@@ -104,7 +104,7 @@ class GAME_NAME.Views.Interface extends Backbone.View
     Model    
 
     ======================================================================== '''
-class GAME_NAME.Models.Interface extends Backbone.Model
+class GAME_NAME.Models.UserInterface extends Backbone.Model
     defaults: {
         target: undefined
         targetHtml: ''

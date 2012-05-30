@@ -39,7 +39,7 @@ class GAME_NAME.Views.Creature extends Backbone.View
         @renderer = @options.game.get('renderer')
         @cellSize = @renderer.model.get('cellSize')
         @group = @options.group
-        @interaction = GAME_NAME.game.get('interaction')
+        @userInterface = GAME_NAME.game.get('userInterface')
 
         #Listen for events
         #--------------------------------
@@ -129,19 +129,19 @@ class GAME_NAME.Views.Creature extends Backbone.View
     #Events - User Interaction
     #
     #------------------------------------
-    #Note: events are triggered on the game's interaction model
+    #Note: events are triggered on the game's userInterface model
     creatureClicked: ()=>
         '''Fired off when the user clicks on a creature'''
 
         #If this creature is already targeted, we want to 
         #   fire off an event to set the target to null
-        if @interaction.get('target') == @model
-            @interaction.set({
+        if @userInterface.get('target') == @model
+            @userInterface.set({
                 target: undefined
             })
         else
             #This creature isn't already targeted, so target it
-            @interaction.set({
+            @userInterface.set({
                 target: @model
             })
             @updateTargetHtml()
@@ -215,7 +215,7 @@ class GAME_NAME.Views.Creature extends Backbone.View
         html = ''
 
         #Only do this if this creature is the selected one
-        if not (@model == @interaction.get('target'))
+        if not (@model == @userInterface.get('target'))
             return false
         else
             #We can update the target UI html, since this model is
@@ -237,7 +237,7 @@ class GAME_NAME.Views.Creature extends Backbone.View
                 })
 
 
-            @interaction.set({targetHtml: html})
+            @userInterface.set({targetHtml: html})
             return @
 
     #------------------------------------
@@ -272,8 +272,8 @@ class GAME_NAME.Views.Creature extends Backbone.View
                     .remove()
 
         #Untarget the creature, if it was already targeted
-        if @model == @interaction.get('target')
-            @interaction.set({
+        if @model == @userInterface.get('target')
+            @userInterface.set({
                 target: undefined
             })
 
@@ -408,8 +408,8 @@ class GAME_NAME.Models.Creature extends Backbone.Model
 
     canUpdateTargetUI: ()=>
         #Returns true or false if this model is the currently selected target
-        #   of the interaction model
-        if @.belongsToActivePlayer() and @ == GAME_NAME.game.get('interaction').get('target')
+        #   of the userInterface model
+        if @.belongsToActivePlayer() and @ == GAME_NAME.game.get('userInterface').get('target')
             return true
         else
             return false

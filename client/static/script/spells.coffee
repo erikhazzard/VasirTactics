@@ -18,7 +18,7 @@ GAME_NAME.logger.options.setup_log_types()
 
     ======================================================================== '''
 class GAME_NAME.Views.Spell extends Backbone.View
-    '''Handles the UI / interaction'''
+    '''Handles the spell renderering / user interface'''
     type: 'li'
 
     initialize: ()=>
@@ -84,7 +84,7 @@ class GAME_NAME.Views.Spell extends Backbone.View
         #   need one)
         #TODO: cast without target
         #TODO: support multiple targets
-        target = GAME_NAME.game.get('interaction').get('target')
+        target = GAME_NAME.game.get('userInterface').get('target')
 
         #Make sure the target exists
         if target

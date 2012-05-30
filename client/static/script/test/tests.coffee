@@ -152,4 +152,31 @@ $(document).ready( ()->
             'turn:end increments turnsEnded property properly')
         return @
     )
+
+    ''' ====================================================================
+        USER INTERFACE
+
+        Testing the user interface 
+        ==================================================================== '''
+    module('INTERACTION: model',{
+        setup: ()->
+            @userInterface= new GAME_NAME.Models.UserInterface({})
+
+            ok(@userInterface != undefined,
+                'Empty player created successfully in setup()')
+            return @
+
+        teardown: ()->
+            return @
+    })
+
+    test('properties are set', ()->
+        equal(
+            @userInterface.get('target')
+            undefined,
+            'default target is undefined')
+        return @
+    )
+
+
 )

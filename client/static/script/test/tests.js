@@ -61,7 +61,7 @@
       equal(this.player.get('health') > -1, true, 'Player starts with > -1 health');
       return this;
     });
-    return test('Turns completed is updated when a turn is made', function() {
+    test('Turns completed is updated when a turn is made', function() {
       var origTurns, turnSpy;
       turnSpy = this.spy();
       origTurns = this.player.get('turnsEnded');
@@ -69,6 +69,21 @@
       this.player.trigger('turn:end');
       equal(turnSpy.callCount, 1, 'turn:end fires off event');
       equal(this.player.get('turnsEnded'), origTurns + 1, 'turn:end increments turnsEnded property properly');
+      return this;
+    });
+    ' ====================================================================\nUSER INTERFACE\n\nTesting the user interface \n==================================================================== ';
+    module('INTERACTION: model', {
+      setup: function() {
+        this.userInterface = new GAME_NAME.Models.UserInterface({});
+        ok(this.userInterface !== void 0, 'Empty player created successfully in setup()');
+        return this;
+      },
+      teardown: function() {
+        return this;
+      }
+    });
+    return test('properties are set', function() {
+      equal(this.userInterface.get('target'), void 0, 'default target is undefined');
       return this;
     });
   });

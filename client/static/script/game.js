@@ -37,11 +37,11 @@
       'Set everything up';
       var gameSetup;
       gameSetup = {};
-      gameSetup.interaction = new GAME_NAME.Models.Interface();
-      gameSetup.interactionView = new GAME_NAME.Views.Interface({
-        model: gameSetup.interaction
+      gameSetup.userInterface = new GAME_NAME.Models.UserInterface();
+      gameSetup.userInterfaceView = new GAME_NAME.Views.UserInterface({
+        model: gameSetup.userInterface
       });
-      gameSetup.interactionView.render();
+      gameSetup.userInterfaceView.render();
       gameSetup.map = new GAME_NAME.Models.Map();
       gameSetup.renderer = new GAME_NAME.Views.Renderer({
         game: this

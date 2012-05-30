@@ -46,7 +46,7 @@
       this.group = this.options.group;
       this.x = this.model.get('x') * this.cellSize.width;
       this.y = this.model.get('y') * this.cellSize.height;
-      this.interaction = GAME_NAME.game.get('interaction');
+      this.userInterface = GAME_NAME.game.get('userInterface');
       this.el = {};
       return this;
     };
@@ -85,13 +85,13 @@
     };
 
     Cell.prototype.click = function() {
-      if (!this.interaction.get('target') || this.interaction.get('target').get('className') !== 'creature') {
-        return this.interaction.set({
+      if (!this.userInterface.get('target') || this.userInterface.get('target').get('className') !== 'creature') {
+        return this.userInterface.set({
           target: this.model,
           targetHtml: this.targetHtml()
         });
       } else {
-        return this.interaction.get('target').trigger('creature:move', {
+        return this.userInterface.get('target').trigger('creature:move', {
           cell: this.model
         });
       }

@@ -45,12 +45,12 @@ class GAME_NAME.Models.Game extends Backbone.Model
         '''Set everything up'''
         gameSetup = {}
 
-        #Setup interaction (game interface, UI)
-        gameSetup.interaction = new GAME_NAME.Models.Interface()
-        gameSetup.interactionView = new GAME_NAME.Views.Interface({
-            model: gameSetup.interaction
+        #Setup userInterface (game interface, UI)
+        gameSetup.userInterface = new GAME_NAME.Models.UserInterface()
+        gameSetup.userInterfaceView = new GAME_NAME.Views.UserInterface({
+            model: gameSetup.userInterface
         })
-        gameSetup.interactionView.render()
+        gameSetup.userInterfaceView.render()
         
         #Setup map
         gameSetup.map = new GAME_NAME.Models.Map()

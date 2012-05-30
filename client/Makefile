@@ -22,7 +22,7 @@ build:
 	@coffee --compile --output static/script static/script
 	@echo "Compiled coffeescript...	${CHECK} Done\n"
 	@echo "${HR}\nRunning uglify\n${HR}"
-	@cat static/script/namespace.js static/script/logger.js static/script/util.js static/script/game.js static/script/cell.js static/script/creature.js static/script/interaction.js static/script/map.js static/script/player.js static/script/renderer.js static/script/spells.js static/script/init.js > static/script/vasirtactics.js
+	@cat static/script/namespace.js static/script/logger.js static/script/util.js static/script/game.js static/script/cell.js static/script/creature.js static/script/user-interface.js static/script/map.js static/script/player.js static/script/renderer.js static/script/spells.js static/script/init.js > static/script/vasirtactics.js
 	@echo "Compiling Our Scripts ${CHECK} Done"
 	@uglifyjs -nc static/script/vasirtactics.js > static/script/vasirtactics.min.tmp.js
 	@cat static/script/copyright.txt static/script/vasirtactics.min.tmp.js > static/script/vasirtactics.min.js
