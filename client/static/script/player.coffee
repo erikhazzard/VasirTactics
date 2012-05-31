@@ -45,15 +45,23 @@ class GAME_NAME.Models.Player extends Backbone.Model
 
         turnsEnded: 0,
 
-        #For the avatar on the game board
-        attack: 1,
-        location: [0,0]
+        #The player has a 'creature' representation on the game board
+        #   this references it
+        creature: undefined
     }
 
     initialize: ()=>
         #Listen for events
         @on('turn:end', @turnEnd)
 
+        if @get('creature')
+            @get('creature').on('change:health', @updateHealthFromCreature)
+
+        return @
+
+    updateHealthFromCreature: ()=>
+        #When the creature's health is changed, update the player's health
+        @set({ health: @get('creature').get('health') })
         return @
 
     #------------------------------------
@@ -64,3 +72,4 @@ class GAME_NAME.Models.Player extends Backbone.Model
         #TODO: Any other things that happen - creature cleanup,
         #   spell effects, etc.
         @set({turnsEnded: @get('turnsEnded') + 1})
+        return @

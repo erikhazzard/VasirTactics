@@ -33,6 +33,7 @@
 
     function Player() {
       this.turnEnd = __bind(this.turnEnd, this);
+      this.updateHealthFromCreature = __bind(this.updateHealthFromCreature, this);
       this.initialize = __bind(this.initialize, this);
       Player.__super__.constructor.apply(this, arguments);
     }
@@ -46,19 +47,29 @@
       target: {},
       spells: [],
       turnsEnded: 0,
-      attack: 1,
-      location: [0, 0]
+      creature: void 0
     };
 
     Player.prototype.initialize = function() {
       this.on('turn:end', this.turnEnd);
+      if (this.get('creature')) {
+        this.get('creature').on('change:health', this.updateHealthFromCreature);
+      }
+      return this;
+    };
+
+    Player.prototype.updateHealthFromCreature = function() {
+      this.set({
+        health: this.get('creature').get('health')
+      });
       return this;
     };
 
     Player.prototype.turnEnd = function() {
-      return this.set({
+      this.set({
         turnsEnded: this.get('turnsEnded') + 1
       });
+      return this;
     };
 
     return Player;

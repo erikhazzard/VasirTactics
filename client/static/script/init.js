@@ -5,7 +5,7 @@
 
   GAME_NAME.init = function() {
     'Kick off the game creation';
-    var game_state, magicMissile, renderer;
+    var creatureEnjalot, creatureEnoex, game_state, magicMissile, renderer;
     magicMissile = function(params) {
       var cellSize, model, target;
       params = params || {};
@@ -15,6 +15,20 @@
       target = params.target.append('svg:circle').attr('r', 0).attr('cx', cellSize.width / 2).attr('cy', cellSize.height / 2).style('opacity', .8);
       return target.transition().duration(1000).attr('r', 40).style('fill', '#dd2222').transition().delay(1000).duration(700).style('fill', '#ff0000').attr('r', 0).transition().delay(1700).attr('r', 0).style('fill', 'none').remove();
     };
+    creatureEnoex = new GAME_NAME.Models.Creature({
+      name: 'Enoex',
+      location: {
+        x: 2,
+        y: 1
+      }
+    });
+    creatureEnjalot = new GAME_NAME.Models.Creature({
+      name: 'Enjalot',
+      location: {
+        x: 15,
+        y: 1
+      }
+    });
     game_state = {
       players: {
         'enoex': new GAME_NAME.Models.Player({
@@ -29,29 +43,15 @@
               name: 'Summon Creature'
             })
           },
-          creatures: new GAME_NAME.Collections.Creatures([
-            new GAME_NAME.Models.Creature({
-              name: 'Toestubber_Goblin_1',
-              location: {
-                x: 2,
-                y: 1
-              }
-            })
-          ])
+          creatures: new GAME_NAME.Collections.Creatures([creatureEnoex]),
+          creature: creatureEnoex
         }),
         'enjalot': new GAME_NAME.Models.Player({
           name: 'Enjalot',
           id: 'u90r2h180f80n',
           spells: {},
-          creatures: new GAME_NAME.Collections.Creatures([
-            new GAME_NAME.Models.Creature({
-              name: 'Toestubber_Goblin_1',
-              location: {
-                x: 15,
-                y: 1
-              }
-            })
-          ])
+          creatures: new GAME_NAME.Collections.Creatures([creatureEnjalot]),
+          creature: creatureEnjalot
         })
       }
     };

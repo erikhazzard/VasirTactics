@@ -45,7 +45,25 @@ GAME_NAME.init = ()=>
                             .remove()
 
     #TODO: Get game state
+    #creature objects
+    creatureEnoex = new GAME_NAME.Models.Creature({
+        name: 'Enoex'
+        location: {
+            x: 2,
+            y: 1
+        }
+    })
+
+    creatureEnjalot = new GAME_NAME.Models.Creature({
+        name: 'Enjalot'
+        location: {
+            x: 15,
+            y: 1
+        }
+    })
+
     #Fake game state for now
+    #------------------------------------
     game_state = {
         players: {
             'enoex': new GAME_NAME.Models.Player({
@@ -61,14 +79,10 @@ GAME_NAME.init = ()=>
                     })
                 },
                 creatures: new GAME_NAME.Collections.Creatures([
-                    new GAME_NAME.Models.Creature({
-                        name: 'Toestubber_Goblin_1'
-                        location: {
-                            x: 2,
-                            y: 1
-                        }
-                    })
-                ])
+                    creatureEnoex
+                ]),
+                #creature the representation of the player on the game board
+                creature: creatureEnoex
             }),
             'enjalot': new GAME_NAME.Models.Player({
                 name: 'Enjalot'
@@ -77,14 +91,9 @@ GAME_NAME.init = ()=>
 
                 },
                 creatures: new GAME_NAME.Collections.Creatures([
-                    new GAME_NAME.Models.Creature({
-                        name: 'Toestubber_Goblin_1'
-                        location: {
-                            x: 15,
-                            y: 1
-                        }
-                    })
-                ])
+                    creatureEnjalot
+                ]),
+                creature: creatureEnjalot
             })
         }
     }

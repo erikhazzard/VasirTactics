@@ -118,7 +118,9 @@ $(document).ready( ()->
         ==================================================================== '''
     module('PLAYER: model',{
         setup: ()->
-            @player = new GAME_NAME.Models.Player({})
+            @player = new GAME_NAME.Models.Player({
+                creature: new GAME_NAME.Models.Creature({})
+            })
 
             ok(@player != undefined,
                 'Empty player created successfully in setup()')
@@ -153,6 +155,18 @@ $(document).ready( ()->
         return @
     )
 
+    test('Player health is updated when their creature is hurt', ()->
+        @creature = @player.get('creature')
+        creatureHealth = @creature.get('health')
+        @creature.set({ health: creatureHealth - 1 })
+        console.log(@player.get('health'), @creature.get('health'))
+
+        equal(
+            @creature.get('health'),
+            @player.get('health'),
+            'Creature health and player health are same after creature takes damage')
+        return @
+    )
     ''' ====================================================================
         USER INTERFACE
 

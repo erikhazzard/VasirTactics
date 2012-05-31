@@ -49,7 +49,9 @@
     ' ====================================================================\nPLAYER\n\nTesting a player\n==================================================================== ';
     module('PLAYER: model', {
       setup: function() {
-        this.player = new GAME_NAME.Models.Player({});
+        this.player = new GAME_NAME.Models.Player({
+          creature: new GAME_NAME.Models.Creature({})
+        });
         ok(this.player !== void 0, 'Empty player created successfully in setup()');
         return this;
       },
@@ -69,6 +71,17 @@
       this.player.trigger('turn:end');
       equal(turnSpy.callCount, 1, 'turn:end fires off event');
       equal(this.player.get('turnsEnded'), origTurns + 1, 'turn:end increments turnsEnded property properly');
+      return this;
+    });
+    test('Player health is updated when their creature is hurt', function() {
+      var creatureHealth;
+      this.creature = this.player.get('creature');
+      creatureHealth = this.creature.get('health');
+      this.creature.set({
+        health: creatureHealth - 1
+      });
+      console.log(this.player.get('health'), this.creature.get('health'));
+      equal(this.creature.get('health'), this.player.get('health'), 'Creature health and player health are same after creature takes damage');
       return this;
     });
     ' ====================================================================\nUSER INTERFACE\n\nTesting the user interface \n==================================================================== ';
