@@ -37,7 +37,7 @@
       this.model = new GAME_NAME.Models.Renderer({
         game: this.options.game
       });
-      this.svgEl = d3.select('#game_canvas');
+      this.d3El = d3.select('#game_canvas');
       return this;
     };
 
@@ -63,7 +63,7 @@
     };
 
     Renderer.prototype.render = function() {
-      'This draws all the elements of the game to the screen';      $(this.svgEl.node()).empty();
+      'This draws all the elements of the game to the screen';      $(this.d3El.node()).empty();
       this.drawMap({
         map: this.model.get('game').get('map')
       });
@@ -75,7 +75,7 @@
       'Draw all the creatures for each player';
       var creature, creatures, key, player, players, _fn, _i, _len, _ref,
         _this = this;
-      this.creaturesGroup = this.svgEl.append('svg:g').attr('class', 'creatures_group');
+      this.creaturesGroup = this.d3El.append('svg:g').attr('class', 'creatures_group');
       players = this.model.get('game').get('players');
       for (key in players) {
         player = players[key];
@@ -98,7 +98,7 @@
     Renderer.prototype.drawMap = function(map) {
       'This draws the map by rendering each map tile individually';
       var cell, cells, key, mapTileGroup, val;
-      this.mapGroup = this.svgEl.append('svg:g').attr('class', 'game_map');
+      this.mapGroup = this.d3El.append('svg:g').attr('class', 'game_map');
       mapTileGroup = this.mapGroup.append('svg:g').attr('class', 'map_tiles');
       cells = this.model.get('game').get('map').get('cells');
       for (key in cells) {

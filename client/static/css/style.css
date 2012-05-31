@@ -205,6 +205,12 @@ rect {
   stroke-width: 4;
   z-index: 999;
 }
+.map_tiles .map_tile_selected {
+  fill: rgba(50, 100, 150, 0.6) !important;
+  stroke: rgba(250, 250, 250, 0.7);
+  stroke-width: 1;
+  z-index: 999;
+}
 /* ========================================================================    
  *
  *                              LAYOUT
@@ -409,6 +415,19 @@ rect {
   height: 120px;
 }
 /* ===================================================================== 
+ * Player Info 
+ * ===================================================================== */
+#game_player_mana_wrapper {
+  bottom: 0;
+  left: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: auto !important;
+  height: 100px;
+  top: 120px;
+}
+/* ===================================================================== 
  * Target info
  * ===================================================================== */
 #game_target_wrapper {
@@ -419,7 +438,7 @@ rect {
   top: 0;
   bottom: auto !important;
   height: 100px;
-  top: 120px;
+  top: 220px;
 }
 /* ===================================================================== 
  * Game actions
@@ -432,7 +451,7 @@ rect {
   top: 0;
   bottom: auto !important;
   height: 100px;
-  top: 220px;
+  top: 320px;
 }
 /* ----------------------------------------------------------------------
  *

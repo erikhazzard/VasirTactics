@@ -28,6 +28,8 @@ class GAME_NAME.Views.Spell extends Backbone.View
 
         #Set the model
         @model = @options.model
+        #Store ref to the userInterface object
+        @userInterface = GAME_NAME.game.get('userInterface')
 
         #Create this element
         @el = $('<li class="button">' + @model.get(
@@ -76,15 +78,27 @@ class GAME_NAME.Views.Spell extends Backbone.View
         #   5. a function in the target's view gets called, and calls
         #       this model's effect() function, passing in the view's
         #       element
+        activePlayer = GAME_NAME.game.get('activePlayer')
+
         #Make sure user has enough mana, etc.
-        if not true
+        if activePlayer.get('mana') < @model.get('cost')
+            GAME_NAME.logger.Spell('Could not cast spell, not enough mana',
+                'Player mana:',
+                GAME_NAME.game.get('activePlayer').get('mana'),
+                'Spell cost:',
+                @model.get('cost')
+            )
             return false
+
+        #We can cast the spell, so do it
+        #Update player's mana
+        activePlayer.set({ mana: activePlayer.get('mana') - @model.get('cost') })
 
         #Make sure there is a target (unless the spell doesn't
         #   need one)
         #TODO: cast without target
         #TODO: support multiple targets
-        target = GAME_NAME.game.get('userInterface').get('target')
+        target = @userInterface.get('target')
 
         #Make sure the target exists
         if target
@@ -113,7 +127,7 @@ class GAME_NAME.Models.Spell extends Backbone.Model
         #current target will (usually) point to a creature or player object
         target: {},
 
-        effect: (target)->
+        effect: (params)->
             #this is a callback returned from the server which will do 
             #   something to the target
             return @

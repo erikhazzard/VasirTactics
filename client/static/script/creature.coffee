@@ -62,7 +62,7 @@ class GAME_NAME.Views.Creature extends Backbone.View
     delegateSVGEvents: ()=>
         #Use d3.on to set events
         for key, val of @events
-            @svgEl.on(key, @[val])
+            @d3El.on(key, @[val])
 
         return @
 
@@ -80,12 +80,12 @@ class GAME_NAME.Views.Creature extends Backbone.View
 
         #When using SVG we only need to draw the entity once
         #The mapGroup will be set from drawMap
-        creature_group = @group.append('svg:g')
+        creatureGroup = @group.append('svg:g')
             .attr('class', 'creature_' + @model.cid)
             .attr('transform', 'translate(' + [@x,@y] + ')')
 
         #Draw the background rect 
-        bg_rect = creature_group.append('svg:rect')
+        bg_rect = creatureGroup.append('svg:rect')
             .attr('class', 'creature_background_rect')
             .attr('x', 0)
             .attr('y', 0)
@@ -95,7 +95,7 @@ class GAME_NAME.Views.Creature extends Backbone.View
             .attr('height', @cellSize.height)
 
         #Draw the creature image
-        creature_group.append('svg:image')
+        creatureGroup.append('svg:image')
             .attr('x', 0)
             .attr('y', 0)
             .attr('width', @cellSize.width)
@@ -103,9 +103,9 @@ class GAME_NAME.Views.Creature extends Backbone.View
             .attr('xlink:href', @renderer.model.get('sprites')[@model.get('sprite')])
 
         #Store ref to DOM node
-        @el = creature_group.node()
+        @el = creatureGroup.node()
         #Store ref to d3 selection 
-        @svgEl = creature_group
+        @d3El = creatureGroup
         #Setup events, using the events listed above
         @delegateSVGEvents()
 
@@ -120,7 +120,7 @@ class GAME_NAME.Views.Creature extends Backbone.View
         @y = @model.get('location').y * @cellSize.height
 
         #Animate the movement with transition
-        @svgEl.transition()
+        @d3El.transition()
             .duration(900)
             .attr('transform', 'translate(' + [@x,@y] + ')')
 
@@ -167,7 +167,7 @@ class GAME_NAME.Views.Creature extends Backbone.View
             .classed('map_tile_selected', false)
 
         #Highlight this creature's background rect
-        rect = @svgEl.select('rect')
+        rect = @d3El.select('rect')
         rect.classed('map_tile_selected', true)
 
         #If this creature doesn't belong to the active player, don't 
@@ -196,13 +196,13 @@ class GAME_NAME.Views.Creature extends Backbone.View
         return @
 
     mouseEnter: ()=>
-        rect = @svgEl.select('rect')
+        rect = @d3El.select('rect')
         rect.classed('map_tile_mouse_over', true)
         return @
 
     mouseLeave: ()=>
         #TODO: Fix this
-        rect = @svgEl.select('rect')
+        rect = @d3El.select('rect')
         rect.classed('map_tile_mouse_over', false)
         return @
 
@@ -254,7 +254,7 @@ class GAME_NAME.Views.Creature extends Backbone.View
                 'params: ', params)
 
         #Call the spell effect
-        params.spell.get('effect')({target: @svgEl, model: @model})
+        params.spell.get('effect')({target: @d3El, model: @model})
 
         return @
 
@@ -264,7 +264,7 @@ class GAME_NAME.Views.Creature extends Backbone.View
         #TODO: There is a delay with the animation, because
         #   the spell uses transition. figure out how to use multiple
         #   transitions in parallel
-        @svgEl.selectAll('*').
+        @d3El.selectAll('*').
             transition()
                 .duration(1000)
                 .style('opacity',0)

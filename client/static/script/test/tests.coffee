@@ -155,6 +155,26 @@ $(document).ready( ()->
         return @
     )
 
+    test('Mana updates when player ends their move', ()->
+        turnSpy = @spy()
+        origMana = @player.get('mana')
+        @player.set({mana: origMana - 1})
+
+        equal(
+            origMana-1,
+            @player.get('mana'),
+            'mana updates properly when one mana point is removed')
+
+        #End turn, mana should reset
+        @player.on('turn:end', turnSpy)
+        @player.trigger('turn:end')
+
+        equal(
+            @player.get('mana'),
+            @player.get('totalMana'),
+            'Mana is reset to totalMana at end of turn')
+        return @
+    )
     test('Player health is updated when their creature is hurt', ()->
         @creature = @player.get('creature')
         creatureHealth = @creature.get('health')
@@ -167,6 +187,7 @@ $(document).ready( ()->
             'Creature health and player health are same after creature takes damage')
         return @
     )
+
     ''' ====================================================================
         USER INTERFACE
 

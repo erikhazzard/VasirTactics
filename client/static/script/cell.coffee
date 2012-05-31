@@ -38,6 +38,7 @@ class GAME_NAME.Views.Cell extends Backbone.View
         #--------------------------------
         @model.on('cell:targeted', @target)
         @model.on('cell:enableCell', @enableCell)
+        @model.on('spell:cast', @handleSpell)
         
         #Store reference to passed in vars
         @cellSize = @options.cellSize
@@ -59,7 +60,7 @@ class GAME_NAME.Views.Cell extends Backbone.View
     delegateSVGEvents: ()=>
         #Use d3.on to set events
         for key, val of @events
-            @svgEl.on(key, @[val])
+            @d3El.on(key, @[val])
 
         return @
 
@@ -80,15 +81,15 @@ class GAME_NAME.Views.Cell extends Backbone.View
         
         #Draw the map cell
         #--------------------------------
-        @tile_group = @group.append('svg:g')
-            .attr('class', 'tile_group tile_group_' + @x + ',' + @y)
+        cellGroup = @group.append('svg:g')
+            .attr('class', 'cellGroup cellGroup_' + @x + ',' + @y)
             .attr('transform', 'translate(' + [@x, @y] + ')')
 
 
         #--------------------------------
         #Draw the graphic
         #--------------------------------
-        @baseSprite = @tile_group.append('svg:image')
+        @baseSprite = cellGroup.append('svg:image')
             .attr('class', 'map_tile_image')
             .attr('x', 0)
             .attr('y', 0)
@@ -98,7 +99,7 @@ class GAME_NAME.Views.Cell extends Backbone.View
 
         #If there is an overlay or top sprite on top of the base sprite
         if @model.get('topSprite')
-            @topSprite = @tile_group.append('svg:image')
+            @topSprite = cellGroup.append('svg:image')
                 .attr('class', 'map_tile_image_overlay')
                 .attr('x', 0)
                 .attr('y', 0)
@@ -110,7 +111,7 @@ class GAME_NAME.Views.Cell extends Backbone.View
         #--------------------------------
         #el and @el will be the background rect (it may be invisible), which will take up
         #   100% width and height of the cell
-        el = @tile_group.append('svg:rect')
+        @cellRect = cellGroup.append('svg:rect')
             .attr('class', 'map_tile tile_' + @x + ',' + @y)
             .attr('x', 0)
             .attr('y', 0)
@@ -118,9 +119,9 @@ class GAME_NAME.Views.Cell extends Backbone.View
             .attr('height', @options.cellSize.height)
 
         #Store ref to DOM node
-        @el = el.node()
+        @el = cellGroup.node()
         #Store ref to d3 selection 
-        @svgEl = el
+        @d3El = cellGroup
         #Setup events, using the events listed above
         @delegateSVGEvents()
 
@@ -129,7 +130,7 @@ class GAME_NAME.Views.Cell extends Backbone.View
     #------------------------------------
     enableCell: ()=>
         #Turns off the tile_disabled class
-        @svgEl.classed('tile_disabled', false)
+        @cellRect.classed('tile_disabled', false)
 
     click: ()=>
         #Called when the cell:clicked event is triggered
@@ -150,14 +151,18 @@ class GAME_NAME.Views.Cell extends Backbone.View
 
     target: ()=>
         #Called when user clicks on a cell
+        console.log('clicked')
+        #Highlight this creature's background rect
+        rect = @d3El.select('rect')
+        rect.classed('map_tile_selected', true)
         return @
 
     mouseEnter: ()=>
-        @svgEl.classed('map_tile_mouse_over', true)
+        @cellRect.classed('map_tile_mouse_over', true)
         return @
 
     mouseLeave: ()=>
-        @svgEl.classed('map_tile_mouse_over', false)
+        @cellRect.classed('map_tile_mouse_over', false)
         return @
 
     #------------------------------------
@@ -170,6 +175,24 @@ class GAME_NAME.Views.Cell extends Backbone.View
             health: ''
         })
         return html
+
+    #------------------------------------
+    #Spell handling
+    #------------------------------------
+    handleSpell: (params)=>
+        #Called when a spell is casted on this creature,
+        #   called from the spell:cast event
+        #make sure the spell is passed in
+        params = params || {}
+        if not params.spell
+            visually.logger.error('cell:handleSpell():',
+                'no spell passed into handleSpell',
+                'params: ', params)
+
+        #Call the spell effect
+        params.spell.get('effect')({target: @d3El, model: @model})
+
+        return @
 
 ''' ========================================================================
     

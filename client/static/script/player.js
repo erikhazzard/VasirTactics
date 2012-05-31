@@ -33,6 +33,7 @@
 
     function Player() {
       this.turnEnd = __bind(this.turnEnd, this);
+      this.turnBegin = __bind(this.turnBegin, this);
       this.updateHealthFromCreature = __bind(this.updateHealthFromCreature, this);
       this.initialize = __bind(this.initialize, this);
       Player.__super__.constructor.apply(this, arguments);
@@ -42,7 +43,9 @@
       name: 'Soandso',
       id: 'some_long_string',
       health: 20,
-      mana: 1,
+      mana: 3,
+      totalMana: 3,
+      baseMana: 3,
       regenRate: 0.5,
       target: {},
       spells: [],
@@ -51,6 +54,7 @@
     };
 
     Player.prototype.initialize = function() {
+      this.on('turn:start', this.turnStart);
       this.on('turn:end', this.turnEnd);
       if (this.get('creature')) {
         this.get('creature').on('change:health', this.updateHealthFromCreature);
@@ -65,9 +69,16 @@
       return this;
     };
 
+    Player.prototype.turnBegin = function() {
+      return this;
+    };
+
     Player.prototype.turnEnd = function() {
       this.set({
         turnsEnded: this.get('turnsEnded') + 1
+      });
+      this.set({
+        mana: this.get('totalMana')
       });
       return this;
     };

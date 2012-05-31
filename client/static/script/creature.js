@@ -62,21 +62,21 @@
       _ref = this.events;
       for (key in _ref) {
         val = _ref[key];
-        this.svgEl.on(key, this[val]);
+        this.d3El.on(key, this[val]);
       }
       return this;
     };
 
     Creature.prototype.render = function(params) {
       'Handles the actual rendering / drawing of the creature';
-      var bg_rect, creature_group;
+      var bg_rect, creatureGroup;
       this.x = this.model.get('location').x * this.cellSize.width;
       this.y = this.model.get('location').y * this.cellSize.height;
-      creature_group = this.group.append('svg:g').attr('class', 'creature_' + this.model.cid).attr('transform', 'translate(' + [this.x, this.y] + ')');
-      bg_rect = creature_group.append('svg:rect').attr('class', 'creature_background_rect').attr('x', 0).attr('y', 0).attr('rx', 6).attr('ry', 6).attr('width', this.cellSize.width).attr('height', this.cellSize.height);
-      creature_group.append('svg:image').attr('x', 0).attr('y', 0).attr('width', this.cellSize.width).attr('height', this.cellSize.height).attr('xlink:href', this.renderer.model.get('sprites')[this.model.get('sprite')]);
-      this.el = creature_group.node();
-      this.svgEl = creature_group;
+      creatureGroup = this.group.append('svg:g').attr('class', 'creature_' + this.model.cid).attr('transform', 'translate(' + [this.x, this.y] + ')');
+      bg_rect = creatureGroup.append('svg:rect').attr('class', 'creature_background_rect').attr('x', 0).attr('y', 0).attr('rx', 6).attr('ry', 6).attr('width', this.cellSize.width).attr('height', this.cellSize.height);
+      creatureGroup.append('svg:image').attr('x', 0).attr('y', 0).attr('width', this.cellSize.width).attr('height', this.cellSize.height).attr('xlink:href', this.renderer.model.get('sprites')[this.model.get('sprite')]);
+      this.el = creatureGroup.node();
+      this.d3El = creatureGroup;
       this.delegateSVGEvents();
       return this;
     };
@@ -84,7 +84,7 @@
     Creature.prototype.update = function() {
       this.x = this.model.get('location').x * this.cellSize.width;
       this.y = this.model.get('location').y * this.cellSize.height;
-      return this.svgEl.transition().duration(900).attr('transform', 'translate(' + [this.x, this.y] + ')');
+      return this.d3El.transition().duration(900).attr('transform', 'translate(' + [this.x, this.y] + ')');
     };
 
     Creature.prototype.creatureClicked = function() {
@@ -106,7 +106,7 @@
       creature_i = this.model.get('location').x;
       creature_j = this.model.get('location').y;
       selectedEls = d3.selectAll('.map_tile_selected').classed('map_tile_selected', false);
-      rect = this.svgEl.select('rect');
+      rect = this.d3El.select('rect');
       rect.classed('map_tile_selected', true);
       if (!this.model.canUpdateTargetUI()) return this;
       mapTiles = d3.selectAll('.map_tile').classed('tile_disabled', true);
@@ -121,14 +121,14 @@
 
     Creature.prototype.mouseEnter = function() {
       var rect;
-      rect = this.svgEl.select('rect');
+      rect = this.d3El.select('rect');
       rect.classed('map_tile_mouse_over', true);
       return this;
     };
 
     Creature.prototype.mouseLeave = function() {
       var rect;
-      rect = this.svgEl.select('rect');
+      rect = this.d3El.select('rect');
       rect.classed('map_tile_mouse_over', false);
       return this;
     };
@@ -164,14 +164,14 @@
         visually.logger.error('creature:handleSpell():', 'no spell passed into handleSpell', 'params: ', params);
       }
       params.spell.get('effect')({
-        target: this.svgEl,
+        target: this.d3El,
         model: this.model
       });
       return this;
     };
 
     Creature.prototype.creatureDeath = function() {
-      this.svgEl.selectAll('*').transition().duration(1000).style('opacity', 0).delay(1500).remove();
+      this.d3El.selectAll('*').transition().duration(1000).style('opacity', 0).delay(1500).remove();
       if (this.model === this.userInterface.get('target')) {
         this.userInterface.set({
           target: void 0

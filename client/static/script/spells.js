@@ -34,6 +34,7 @@
         return false;
       }
       this.model = this.options.model;
+      this.userInterface = GAME_NAME.game.get('userInterface');
       this.el = $('<li class="button">' + this.model.get('name') + '</li>');
       this.el.click(this.click);
       this.model.on('spell:cast', this.spellCast);
@@ -55,9 +56,16 @@
     };
 
     Spell.prototype.spellCast = function() {
-      var target;
-      if (!true) return false;
-      target = GAME_NAME.game.get('userInterface').get('target');
+      var activePlayer, target;
+      activePlayer = GAME_NAME.game.get('activePlayer');
+      if (activePlayer.get('mana') < this.model.get('cost')) {
+        GAME_NAME.logger.Spell('Could not cast spell, not enough mana', 'Player mana:', GAME_NAME.game.get('activePlayer').get('mana'), 'Spell cost:', this.model.get('cost'));
+        return false;
+      }
+      activePlayer.set({
+        mana: activePlayer.get('mana') - this.model.get('cost')
+      });
+      target = this.userInterface.get('target');
       if (target) {
         target.trigger('spell:cast', {
           spell: this.model
@@ -89,7 +97,7 @@
       name: 'Magic Missle',
       cost: 1,
       target: {},
-      effect: function(target) {
+      effect: function(params) {
         return this;
       }
     };

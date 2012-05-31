@@ -73,6 +73,19 @@
       equal(this.player.get('turnsEnded'), origTurns + 1, 'turn:end increments turnsEnded property properly');
       return this;
     });
+    test('Mana updates when player ends their move', function() {
+      var origMana, turnSpy;
+      turnSpy = this.spy();
+      origMana = this.player.get('mana');
+      this.player.set({
+        mana: origMana - 1
+      });
+      equal(origMana - 1, this.player.get('mana'), 'mana updates properly when one mana point is removed');
+      this.player.on('turn:end', turnSpy);
+      this.player.trigger('turn:end');
+      equal(this.player.get('mana'), this.player.get('totalMana'), 'Mana is reset to totalMana at end of turn');
+      return this;
+    });
     test('Player health is updated when their creature is hurt', function() {
       var creatureHealth;
       this.creature = this.player.get('creature');

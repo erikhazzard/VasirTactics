@@ -16,6 +16,7 @@
     __extends(Cell, _super);
 
     function Cell() {
+      this.handleSpell = __bind(this.handleSpell, this);
       this.targetHtml = __bind(this.targetHtml, this);
       this.mouseLeave = __bind(this.mouseLeave, this);
       this.mouseEnter = __bind(this.mouseEnter, this);
@@ -42,6 +43,7 @@
       this.model = this.options.model;
       this.model.on('cell:targeted', this.target);
       this.model.on('cell:enableCell', this.enableCell);
+      this.model.on('spell:cast', this.handleSpell);
       this.cellSize = this.options.cellSize;
       this.group = this.options.group;
       this.x = this.model.get('x') * this.cellSize.width;
@@ -56,32 +58,32 @@
       _ref = this.events;
       for (key in _ref) {
         val = _ref[key];
-        this.svgEl.on(key, this[val]);
+        this.d3El.on(key, this[val]);
       }
       return this;
     };
 
     Cell.prototype.render = function(params) {
       'Render creates the map tile cells and the group containing them\nExpects a renderer model object to be passed in';
-      var el;
+      var cellGroup;
       params = params || {};
       if (params.renderer === void 0) {
         GAME_NAME.logger.error('ERROR', 'cell render(): renderer not passed in');
         return false;
       }
-      this.tile_group = this.group.append('svg:g').attr('class', 'tile_group tile_group_' + this.x + ',' + this.y).attr('transform', 'translate(' + [this.x, this.y] + ')');
-      this.baseSprite = this.tile_group.append('svg:image').attr('class', 'map_tile_image').attr('x', 0).attr('y', 0).attr('width', this.options.cellSize.width).attr('height', this.options.cellSize.height).attr('xlink:href', params.renderer.get('sprites')[this.model.get('baseSprite')]);
+      cellGroup = this.group.append('svg:g').attr('class', 'cellGroup cellGroup_' + this.x + ',' + this.y).attr('transform', 'translate(' + [this.x, this.y] + ')');
+      this.baseSprite = cellGroup.append('svg:image').attr('class', 'map_tile_image').attr('x', 0).attr('y', 0).attr('width', this.options.cellSize.width).attr('height', this.options.cellSize.height).attr('xlink:href', params.renderer.get('sprites')[this.model.get('baseSprite')]);
       if (this.model.get('topSprite')) {
-        this.topSprite = this.tile_group.append('svg:image').attr('class', 'map_tile_image_overlay').attr('x', 0).attr('y', 0).attr('width', this.options.cellSize.width).attr('height', this.options.cellSize.height).attr('xlink:href', params.renderer.get('sprites')[this.model.get('topSprite')]);
+        this.topSprite = cellGroup.append('svg:image').attr('class', 'map_tile_image_overlay').attr('x', 0).attr('y', 0).attr('width', this.options.cellSize.width).attr('height', this.options.cellSize.height).attr('xlink:href', params.renderer.get('sprites')[this.model.get('topSprite')]);
       }
-      el = this.tile_group.append('svg:rect').attr('class', 'map_tile tile_' + this.x + ',' + this.y).attr('x', 0).attr('y', 0).attr('width', this.options.cellSize.width).attr('height', this.options.cellSize.height);
-      this.el = el.node();
-      this.svgEl = el;
+      this.cellRect = cellGroup.append('svg:rect').attr('class', 'map_tile tile_' + this.x + ',' + this.y).attr('x', 0).attr('y', 0).attr('width', this.options.cellSize.width).attr('height', this.options.cellSize.height);
+      this.el = cellGroup.node();
+      this.d3El = cellGroup;
       return this.delegateSVGEvents();
     };
 
     Cell.prototype.enableCell = function() {
-      return this.svgEl.classed('tile_disabled', false);
+      return this.cellRect.classed('tile_disabled', false);
     };
 
     Cell.prototype.click = function() {
@@ -98,16 +100,20 @@
     };
 
     Cell.prototype.target = function() {
+      var rect;
+      console.log('clicked');
+      rect = this.d3El.select('rect');
+      rect.classed('map_tile_selected', true);
       return this;
     };
 
     Cell.prototype.mouseEnter = function() {
-      this.svgEl.classed('map_tile_mouse_over', true);
+      this.cellRect.classed('map_tile_mouse_over', true);
       return this;
     };
 
     Cell.prototype.mouseLeave = function() {
-      this.svgEl.classed('map_tile_mouse_over', false);
+      this.cellRect.classed('map_tile_mouse_over', false);
       return this;
     };
 
@@ -118,6 +124,18 @@
         health: ''
       });
       return html;
+    };
+
+    Cell.prototype.handleSpell = function(params) {
+      params = params || {};
+      if (!params.spell) {
+        visually.logger.error('cell:handleSpell():', 'no spell passed into handleSpell', 'params: ', params);
+      }
+      params.spell.get('effect')({
+        target: this.d3El,
+        model: this.model
+      });
+      return this;
     };
 
     return Cell;

@@ -30,7 +30,7 @@ class GAME_NAME.Views.Renderer extends Backbone.View
     #Functions
     #
     #------------------------------------
-    #TODO: Remove @svgEl, use some other thing instead
+    #TODO: Remove @d3El, use some other thing instead
     initialize: ()=>
         '''Create the renderer view.  This should be called from game.js'''
         #Game must be passed in from options
@@ -44,7 +44,7 @@ class GAME_NAME.Views.Renderer extends Backbone.View
         })
 
         #Setup this element
-        @svgEl = d3.select('#game_canvas')
+        @d3El = d3.select('#game_canvas')
 
         return @
 
@@ -87,7 +87,7 @@ class GAME_NAME.Views.Renderer extends Backbone.View
     render: ()=>
         '''This draws all the elements of the game to the screen'''
         #Remove everything in the SVG
-        $(@svgEl.node()).empty()
+        $(@d3El.node()).empty()
 
         #Draw the background map
         @drawMap({
@@ -102,7 +102,7 @@ class GAME_NAME.Views.Renderer extends Backbone.View
     drawCreatures: ()=>
         '''Draw all the creatures for each player'''
         #Create the group which will hold the creature 
-        @creaturesGroup = @svgEl.append('svg:g')
+        @creaturesGroup = @d3El.append('svg:g')
             .attr('class', 'creatures_group')
         
         #For each player, draw their creatures
@@ -131,7 +131,7 @@ class GAME_NAME.Views.Renderer extends Backbone.View
         #TODO: Abstract this out?
         
         #Create the map group
-        @mapGroup = @svgEl.append('svg:g')
+        @mapGroup = @d3El.append('svg:g')
             .attr('class', 'game_map')
         mapTileGroup = @mapGroup.append('svg:g')
             .attr('class', 'map_tiles')

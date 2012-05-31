@@ -41,6 +41,7 @@
  * ------------------------------------------------------------------------ */
 @game_right_side_width: 24%;
 @game_player_info_height: 120px; 
+@game_player_mana_height: 100px;
 @game_player_target_height: 100px;
 @game_actions_height: 100px;
 
@@ -254,6 +255,12 @@ rect {
         stroke-width:4;
         z-index: 999;
     }
+    .map_tiles .map_tile_selected {
+        fill: rgba(50,100,150,.6) !important;
+        stroke: rgba(250,250,250,.7);
+        stroke-width:1;
+        z-index: 999;
+    }
 
 /* ========================================================================    
  *
@@ -435,13 +442,22 @@ rect {
     height: @game_player_info_height;
 }
 /* ===================================================================== 
+ * Player Info 
+ * ===================================================================== */
+#game_player_mana_wrapper {
+    .absolute_full_layout;
+    bottom: auto !important;
+    height: @game_player_mana_height;
+    top: @game_player_info_height;
+}
+/* ===================================================================== 
  * Target info
  * ===================================================================== */
 #game_target_wrapper {
     .absolute_full_layout;
     bottom: auto !important;
     height: @game_player_target_height;
-    top: @game_player_info_height;
+    top: @game_player_info_height + @game_player_mana_height;
 }
 
 /* ===================================================================== 
@@ -451,7 +467,7 @@ rect {
     .absolute_full_layout;
     bottom: auto !important;
     height: @game_actions_height;
-    top: @game_player_info_height + @game_player_target_height;
+    top: @game_player_info_height + @game_player_mana_height + @game_player_target_height;
 }
 
 /* ----------------------------------------------------------------------

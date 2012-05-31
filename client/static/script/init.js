@@ -5,15 +5,30 @@
 
   GAME_NAME.init = function() {
     'Kick off the game creation';
-    var creatureEnjalot, creatureEnoex, game_state, magicMissile, renderer;
+    var creatureEnjalot, creatureEnoex, game_state, magicMissile, renderer, summonCreature;
     magicMissile = function(params) {
       var cellSize, model, target;
       params = params || {};
       model = params.model;
+      if (model.get('className') !== 'creature') {
+        GAME_NAME.logger.log('Spell', 'Could not cast magic missle. Invalid target');
+        return false;
+      }
       model.dealDamage(1);
       cellSize = GAME_NAME.Models.Renderer.prototype.defaults.cellSize;
       target = params.target.append('svg:circle').attr('r', 0).attr('cx', cellSize.width / 2).attr('cy', cellSize.height / 2).style('opacity', .8);
       return target.transition().duration(1000).attr('r', 40).style('fill', '#dd2222').transition().delay(1000).duration(700).style('fill', '#ff0000').attr('r', 0).transition().delay(1700).attr('r', 0).style('fill', 'none').remove();
+    };
+    summonCreature = function(params) {
+      var cellSize, model, target;
+      params = params || {};
+      model = params.model;
+      if (model.get('className') !== 'cell') {
+        GAME_NAME.logger.log('Spell', 'Could not cast summon creature. Invalid target');
+        return false;
+      }
+      cellSize = GAME_NAME.Models.Renderer.prototype.defaults.cellSize;
+      return target = params.target.append('svg:circle').attr('r', cellSize.width / 1.8).attr('cx', cellSize.width / 2).attr('cy', cellSize.height / 2).style('opacity', .9).style('fill', '#6699cc').transition().duration(1000).attr('r', 0).style('fill', '#336699').transition().delay(1000).duration(700).style('fill', '#ffffff').attr('r', 0).transition().delay(1700).attr('r', 0).style('fill', 'none').remove();
     };
     creatureEnoex = new GAME_NAME.Models.Creature({
       name: 'Enoex',
@@ -40,7 +55,8 @@
               effect: magicMissile
             }),
             'summon_knight': new GAME_NAME.Models.Spell({
-              name: 'Summon Creature'
+              name: 'Summon Creature',
+              effect: summonCreature
             })
           },
           creatures: new GAME_NAME.Collections.Creatures([creatureEnoex]),

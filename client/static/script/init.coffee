@@ -5,13 +5,20 @@
     ========================================================================'''
 GAME_NAME.init = ()=>
     '''Kick off the game creation'''
-    #Example spell effect
+
+    #TODO: Get game state from server (or start it fresh?
+    #------------------------------------
+    #SPELLS
     magicMissile = (params)=>
         #TODO: this would come from server
         #Todo: do some filter
         params = params || {}
         #get model
         model = params.model
+
+        if model.get('className') != 'creature'
+            GAME_NAME.logger.log('Spell', 'Could not cast magic missle. Invalid target')
+            return false
         
         #Do 1 point of damage
         model.dealDamage(1)
@@ -43,8 +50,46 @@ GAME_NAME.init = ()=>
                             .attr('r', 0)
                             .style('fill', 'none')
                             .remove()
+    #Summon creature
+    summonCreature = (params)=>
+        #TODO: this would come from server
+        #Params are passed in from spells.coffee
+        #Todo: do some filter
+        params = params || {}
+        #get model
+        model = params.model
 
-    #TODO: Get game state
+        if model.get('className') != 'cell'
+            GAME_NAME.logger.log('Spell', 'Could not cast summon creature. Invalid target')
+            return false
+        
+        #--------------------------------
+        #cell size
+        cellSize = GAME_NAME.Models.Renderer.prototype.defaults.cellSize
+
+        #Do the animation on the view
+        target = params.target.append('svg:circle')
+            .attr('r', cellSize.width/1.8)
+            .attr('cx', cellSize.width/2)
+            .attr('cy', cellSize.height/2)
+            .style('opacity', .9)
+            .style('fill', '#6699cc')
+            .transition()
+                .duration(1000)
+                .attr('r', 0)
+                .style('fill', '#336699')
+                    .transition()
+                        .delay(1000)
+                        .duration(700)
+                        .style('fill', '#ffffff')
+                        .attr('r', 0)
+                            .transition()
+                                .delay(1700)
+                                .attr('r', 0)
+                                .style('fill', 'none')
+                                .remove()
+
+    #------------------------------------
     #creature objects
     creatureEnoex = new GAME_NAME.Models.Creature({
         name: 'Enoex'
@@ -76,6 +121,7 @@ GAME_NAME.init = ()=>
                     }),
                     'summon_knight': new GAME_NAME.Models.Spell({
                         name: 'Summon Creature'
+                        effect: summonCreature
                     })
                 },
                 creatures: new GAME_NAME.Collections.Creatures([
