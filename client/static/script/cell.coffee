@@ -134,24 +134,49 @@ class GAME_NAME.Views.Cell extends Backbone.View
 
     click: ()=>
         #Called when the cell:clicked event is triggered
+        #TODO: Make this more event driven, so we don't need to handle
+        #   creature move logic checks here? Could maybe move the
+        #   creauture move stuff to the creature class, listen on events
+        #TODO: Need to unit the shit out of this, lots of if's
+        
+        #See if we can target the cell
+        canSetInterfaceTarget = false
 
-        if not @userInterface.get('target') or @userInterface.get('target').get('className') != 'creature'
-            #If no creature is targeted already, we can straight up target 
-            #   the cell
+        #Do checks
+        #   Breaking on multiple lines to make it easier to follow
+        if not @userInterface.get('target')
+            canSetInterfaceTarget = true
+
+        #Check based on target
+        if @userInterface.get('target')
+            #We can switch to a new target if the existing on was a cell
+            if @userInterface.get('target').get('className') == 'cell'
+                canSetInterfaceTarget = true
+
+            else if @userInterface.get('target').get('className') == 'creature'
+                if not @userInterface.get('target').belongsToActivePlayer()
+                    #If no creature is targeted already or an oppnent creature is 
+                    #   targeteted, we can straight up target the cell
+                    canSetInterfaceTarget = true
+
+        #Set the game interface target if we can
+        if canSetInterfaceTarget
             @userInterface.set({
                 target: @model
                 targetHtml: @targetHtml()
             })
         else
+            #OTHERWISE, we need to do special logic
             #If a creature is already targeted, we need to do special logic
             #   e.g., move
             @userInterface.get('target').trigger('creature:move', {
                 cell: @model
             })
+        
+        return canSetInterfaceTarget
 
     target: ()=>
         #Called when user clicks on a cell
-        console.log('clicked')
         #Highlight this creature's background rect
         rect = @d3El.select('rect')
         rect.classed('map_tile_selected', true)

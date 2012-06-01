@@ -63,7 +63,12 @@ class GAME_NAME.Models.Player extends Backbone.Model
         #Listen for events
         @on('turn:start', @turnStart)
         @on('turn:end', @turnEnd)
+        #Mana update
+        @on('change:mana', @updateManaUI)
 
+        #If the player is instaniated with a creature (it should be, but we
+        #   can allow for different mechanics (e.g., when all your creatures
+        #   die you die)
         if @get('creature')
             @get('creature').on('change:health', @updateHealthFromCreature)
 
@@ -93,4 +98,15 @@ class GAME_NAME.Models.Player extends Backbone.Model
         @set({mana: @get('totalMana')})
         
         #DO OTHER STUFF
+        return @
+
+    #------------------------------------
+    #Interface related
+    #------------------------------------
+    updateManaUI: ()=>
+        #Called when the player's mana is changed.
+        #   Only update the UI if the active player is this player
+        if GAME_NAME.game and GAME_NAME.game.get('activePlayer') is @
+            GAME_NAME.game.get('userInterface').set({manaHtml: @get('mana') })
+
         return @

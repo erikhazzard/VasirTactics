@@ -17,18 +17,22 @@
       model.dealDamage(1);
       cellSize = GAME_NAME.Models.Renderer.prototype.defaults.cellSize;
       target = params.target.append('svg:circle').attr('r', 0).attr('cx', cellSize.width / 2).attr('cy', cellSize.height / 2).style('opacity', .8);
-      return target.transition().duration(1000).attr('r', 40).style('fill', '#dd2222').transition().delay(1000).duration(700).style('fill', '#ff0000').attr('r', 0).transition().delay(1700).attr('r', 0).style('fill', 'none').remove();
+      return target.transition().duration(1000).attr('r', 40).style('fill', '#dd2222').each('end', function() {
+        return target.transition().duration(700).style('fill', '#ff0000').attr('r', 0).each('end', function() {
+          return target.transition().attr('r', 0).style('fill', 'none').remove();
+        });
+      });
     };
     summonCreature = function(params) {
       var cellSize, model, target;
       params = params || {};
       model = params.model;
-      if (model.get('className') !== 'cell') {
-        GAME_NAME.logger.log('Spell', 'Could not cast summon creature. Invalid target');
-        return false;
-      }
       cellSize = GAME_NAME.Models.Renderer.prototype.defaults.cellSize;
-      return target = params.target.append('svg:circle').attr('r', cellSize.width / 1.8).attr('cx', cellSize.width / 2).attr('cy', cellSize.height / 2).style('opacity', .9).style('fill', '#6699cc').transition().duration(1000).attr('r', 0).style('fill', '#336699').transition().delay(1000).duration(700).style('fill', '#ffffff').attr('r', 0).transition().delay(1700).attr('r', 0).style('fill', 'none').remove();
+      return target = params.target.append('svg:circle').attr('r', cellSize.width / 1.8).attr('cx', cellSize.width / 2).attr('cy', cellSize.height / 2).style('opacity', .9).style('fill', '#6699cc').transition().duration(1000).attr('r', 0).style('fill', '#336699').each('end', function() {
+        return target.transition().duration(700).style('fill', '#ffffff').attr('r', 0).each('end', function() {
+          return target.transition().attr('r', 0).style('fill', 'none').remove();
+        });
+      });
     };
     creatureEnoex = new GAME_NAME.Models.Creature({
       name: 'Enoex',
@@ -52,11 +56,30 @@
           spells: {
             'magic_missile': new GAME_NAME.Models.Spell({
               name: 'Magic Missile',
-              effect: magicMissile
+              effect: magicMissile,
+              contract: function(params) {
+                var contract;
+                if (params.model.get('className') !== 'creature') {
+                  contract = {
+                    canCast: false,
+                    message: 'Can only cast on creatures or players'
+                  };
+                  return contract;
+                } else {
+                  return true;
+                }
+              }
             }),
             'summon_knight': new GAME_NAME.Models.Spell({
               name: 'Summon Creature',
-              effect: summonCreature
+              effect: summonCreature,
+              contract: function(params) {
+                if (params.model.get('className') !== 'cell') {
+                  return false;
+                } else {
+                  return true;
+                }
+              }
             })
           },
           creatures: new GAME_NAME.Collections.Creatures([creatureEnoex]),

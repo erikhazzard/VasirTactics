@@ -56,23 +56,42 @@
     };
 
     Spell.prototype.spellCast = function() {
-      var activePlayer, target;
+      var activePlayer, canCast, spellContract, spellMessage, target;
       activePlayer = GAME_NAME.game.get('activePlayer');
       if (activePlayer.get('mana') < this.model.get('cost')) {
+        this.userInterface.trigger('spell:insufficientMana');
         GAME_NAME.logger.Spell('Could not cast spell, not enough mana', 'Player mana:', GAME_NAME.game.get('activePlayer').get('mana'), 'Spell cost:', this.model.get('cost'));
         return false;
       }
-      activePlayer.set({
-        mana: activePlayer.get('mana') - this.model.get('cost')
-      });
       target = this.userInterface.get('target');
-      if (target) {
+      if (!target) {
+        this.userInterface.trigger('spell:noTarget');
+        GAME_NAME.logger.Spell('spellCast(): Interaction model has no target');
+        return false;
+      }
+      spellContract = this.model.get('contract')({
+        model: target,
+        activePlayer: GAME_NAME.game.get('activePlayer')
+      });
+      if (typeof spellContract === 'boolean') {
+        canCast = spellContract;
+        spellMessage = 'Cannot cast spell';
+      } else {
+        canCast = spellContract.canCast || false;
+        spellMessage = spellContract.message || 'Cannot cast spell';
+      }
+      if (target && canCast) {
+        activePlayer.set({
+          mana: activePlayer.get('mana') - this.model.get('cost')
+        });
         target.trigger('spell:cast', {
           spell: this.model
         });
       } else {
-        GAME_NAME.logger.Spell('spellCast(): Interaction model has no target');
-        return false;
+        this.userInterface.trigger('spell:cannotCast', {
+          message: spellMessage
+        });
+        GAME_NAME.logger.Spell('Cannot cast ' + this.model.get('name'), 'spell contract returned false', 'message: ', spellMessage);
       }
       return this;
     };
@@ -88,7 +107,6 @@
     __extends(Spell, _super);
 
     function Spell() {
-      this.renderEffect = __bind(this.renderEffect, this);
       this.initialize = __bind(this.initialize, this);
       Spell.__super__.constructor.apply(this, arguments);
     }
@@ -99,15 +117,17 @@
       target: {},
       effect: function(params) {
         return this;
+      },
+      contract: function(params) {
+        return {
+          canCast: true,
+          message: ''
+        };
       }
     };
 
     Spell.prototype.initialize = function() {
       return this;
-    };
-
-    Spell.prototype.renderEffect = function() {
-      'This function is called by the renderer and will affect\nthe visible game state somehow';      return this;
     };
 
     return Spell;

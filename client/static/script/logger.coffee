@@ -6,6 +6,7 @@
 #NOTE: We can access all the history of each logger type by calling
 #   logger.history (will show a dict of all log types and their 
 #   history)
+window.GAME_NAME.logger = window.GAME_NAME.logger || {}
 logger = window.GAME_NAME.logger
 
 #----------------------------------------

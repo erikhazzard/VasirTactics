@@ -27,12 +27,19 @@ class GAME_NAME.Views.UserInterface extends Backbone.View
         #Setup events
         @model.on('change:target', @target)
         @model.on('change:targetHtml', @renderTarget)
+        #player mana
+        #   Note: We don't listen on the active player, because that player
+        #       may change each turn (in a hotseat game)
+        @model.on('change:manaHtml', @changeMana)
 
         #TODO: turn this into a view
         $('#game_actions_wrapper .end_turn').click(@endTurn)
 
         #Store refs to dom nodes
+        #-------------------------
         @$targetEl = $('#game_target_wrapper .game_target')
+        @$manaEl = $('#game_player_mana_wrapper .mana_amount')
+        return @
 
     render: ()=>
         #Render the UI
@@ -45,7 +52,8 @@ class GAME_NAME.Views.UserInterface extends Backbone.View
     #------------------------------------
     endTurn: ()=>
         #Next turn, do stuff
-        #TODO!!!!!!!!!!!!!!!!!!!!!
+        #TODO: More stuff needs to happen here. 
+        #   -Send data to server
 
         #Fire off turn:end event on player
         GAME_NAME.game.get('activePlayer').trigger('turn:end')
@@ -60,6 +68,7 @@ class GAME_NAME.Views.UserInterface extends Backbone.View
         @model.set({
             target: undefined
         })
+        return @
 
     #------------------------------------
     #
@@ -84,6 +93,7 @@ class GAME_NAME.Views.UserInterface extends Backbone.View
             #   targetHTML
             #Bad target html
             @model.set({targetHtml: ''})
+        return @
             
     unTargetTiles: ()=>
         #Remove any classes added when creatures get targeted
@@ -93,11 +103,29 @@ class GAME_NAME.Views.UserInterface extends Backbone.View
         #Reneable all map tiles
         d3.selectAll('.tile_disabled')
             .classed('tile_disabled', false)
+        return @
 
     renderTarget: (params)=>
         #Updates the target box UI HTML
         html = @model.get('targetHtml') || ''
         @$targetEl.html(html)
+        return @
+
+    #------------------------------------
+    #
+    #Update Mana HTML
+    #
+    #------------------------------------
+    changeMana: (params)=>
+        #TODO: Make this more extensible? General function for updating
+        #   individual templates?
+        #Updates the mana displayed in the interface
+        #params:
+        #   (required) mana: number to show
+            
+        html = @model.get('manaHtml')
+        @$manaEl.html(html)
+        return @
 
 ''' ========================================================================    
     
@@ -108,6 +136,8 @@ class GAME_NAME.Models.UserInterface extends Backbone.Model
     defaults: {
         target: undefined
         targetHtml: ''
+
+        manaHtml: ''
     }
 
     initialize: ()=>

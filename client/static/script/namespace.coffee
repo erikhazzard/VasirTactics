@@ -18,23 +18,21 @@ GAME_NAME = (()=>
 
         #Game stuff
         #   game will contain the game model
-        game: { },
+        game: undefined,
         
         #Interface related stuff 
         #   (elements user interacts with on page, including
         #  engine action buttons)
-        userInterface: {
-
-        },
+        userInterface: undefined,
 
         #Logger util
-        logger: {},
+        logger: undefined,
 
         #Init function called to kick everything off,
         #  overridden in init.js
-        init: ()->{}
+        init: undefined,
 
-        util: {}
+        util: undefined
 
         #Store HTML template text.
         #   Will be pulled from DOM when the page loads

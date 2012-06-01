@@ -87,21 +87,33 @@
     };
 
     Cell.prototype.click = function() {
-      if (!this.userInterface.get('target') || this.userInterface.get('target').get('className') !== 'creature') {
-        return this.userInterface.set({
+      var canSetInterfaceTarget;
+      canSetInterfaceTarget = false;
+      if (!this.userInterface.get('target')) canSetInterfaceTarget = true;
+      if (this.userInterface.get('target')) {
+        if (this.userInterface.get('target').get('className') === 'cell') {
+          canSetInterfaceTarget = true;
+        } else if (this.userInterface.get('target').get('className') === 'creature') {
+          if (!this.userInterface.get('target').belongsToActivePlayer()) {
+            canSetInterfaceTarget = true;
+          }
+        }
+      }
+      if (canSetInterfaceTarget) {
+        this.userInterface.set({
           target: this.model,
           targetHtml: this.targetHtml()
         });
       } else {
-        return this.userInterface.get('target').trigger('creature:move', {
+        this.userInterface.get('target').trigger('creature:move', {
           cell: this.model
         });
       }
+      return canSetInterfaceTarget;
     };
 
     Cell.prototype.target = function() {
       var rect;
-      console.log('clicked');
       rect = this.d3El.select('rect');
       rect.classed('map_tile_selected', true);
       return this;

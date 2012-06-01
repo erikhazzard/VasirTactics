@@ -9,13 +9,11 @@
       Views: {},
       Models: {},
       Collections: {},
-      game: {},
-      userInterface: {},
-      logger: {},
-      init: function() {
-        return {};
-      },
-      util: {},
+      game: void 0,
+      userInterface: void 0,
+      logger: void 0,
+      init: void 0,
+      util: void 0,
       templates: {}
     };
   })();

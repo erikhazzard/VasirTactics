@@ -2,6 +2,8 @@
   ' ========================================================================    \n\nLogging System\n    \n======================================================================== ';
   var logger;
 
+  window.GAME_NAME.logger = window.GAME_NAME.logger || {};
+
   logger = window.GAME_NAME.logger;
 
   logger.options = {

@@ -32,6 +32,7 @@
     __extends(Player, _super);
 
     function Player() {
+      this.updateManaUI = __bind(this.updateManaUI, this);
       this.turnEnd = __bind(this.turnEnd, this);
       this.turnBegin = __bind(this.turnBegin, this);
       this.updateHealthFromCreature = __bind(this.updateHealthFromCreature, this);
@@ -56,6 +57,7 @@
     Player.prototype.initialize = function() {
       this.on('turn:start', this.turnStart);
       this.on('turn:end', this.turnEnd);
+      this.on('change:mana', this.updateManaUI);
       if (this.get('creature')) {
         this.get('creature').on('change:health', this.updateHealthFromCreature);
       }
@@ -80,6 +82,15 @@
       this.set({
         mana: this.get('totalMana')
       });
+      return this;
+    };
+
+    Player.prototype.updateManaUI = function() {
+      if (GAME_NAME.game && GAME_NAME.game.get('activePlayer') === this) {
+        GAME_NAME.game.get('userInterface').set({
+          manaHtml: this.get('mana')
+        });
+      }
       return this;
     };
 

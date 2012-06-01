@@ -82,6 +82,10 @@ class GAME_NAME.Views.Spell extends Backbone.View
 
         #Make sure user has enough mana, etc.
         if activePlayer.get('mana') < @model.get('cost')
+            #Trigger event
+            @userInterface.trigger('spell:insufficientMana')
+
+            #Log message
             GAME_NAME.logger.Spell('Could not cast spell, not enough mana',
                 'Player mana:',
                 GAME_NAME.game.get('activePlayer').get('mana'),
@@ -89,25 +93,54 @@ class GAME_NAME.Views.Spell extends Backbone.View
                 @model.get('cost')
             )
             return false
-
-        #We can cast the spell, so do it
-        #Update player's mana
-        activePlayer.set({ mana: activePlayer.get('mana') - @model.get('cost') })
-
         #Make sure there is a target (unless the spell doesn't
         #   need one)
-        #TODO: cast without target
-        #TODO: support multiple targets
         target = @userInterface.get('target')
 
-        #Make sure the target exists
-        if target
+        #TODO: support multiple targets
+        #TODO: cast without target
+        if not target
+            @userInterface.trigger('spell:noTarget')
+            GAME_NAME.logger.Spell('spellCast(): Interaction model has no target')
+            return false
+
+        #Check if the spell can be cast
+        #--------------------------------
+        #   The spellContract returns an object containing a canCast { boolean }
+        #       indicating if the spell can be cast, and a message { string }
+        #       containing the error message if it can't
+        #TODO: make the params more robust, pass in more things
+        spellContract = @model.get('contract')({
+            model: target,
+            activePlayer: GAME_NAME.game.get('activePlayer')
+        })
+
+        #Note: contract can just return a boolean.  If it does, we 
+        #   need to check for it
+        if typeof spellContract == 'boolean'
+            canCast = spellContract
+            spellMessage = 'Cannot cast spell'
+        else
+            canCast = spellContract.canCast || false
+            spellMessage = spellContract.message || 'Cannot cast spell'
+
+        #Check it
+        if target and canCast
+            #We can cast the spell, so do it
+            #Update player's mana
+            activePlayer.set({ mana: activePlayer.get('mana') - @model.get('cost') })
             target.trigger('spell:cast', {
                 spell: @model
             })
         else
-            GAME_NAME.logger.Spell('spellCast(): Interaction model has no target')
-            return false
+            @userInterface.trigger('spell:cannotCast', {
+                message: spellMessage
+            })
+            GAME_NAME.logger.Spell(
+                'Cannot cast ' + @model.get('name'),
+                'spell contract returned false',
+                'message: ',
+                spellMessage)
 
         return @
 
@@ -131,14 +164,12 @@ class GAME_NAME.Models.Spell extends Backbone.Model
             #this is a callback returned from the server which will do 
             #   something to the target
             return @
+
+        contract: (params)->
+            return {canCast: true, message: ''}
     }
 
     initialize: ()=>
-        return @
-
-    renderEffect: ()=>
-        '''This function is called by the renderer and will affect
-        the visible game state somehow'''
         return @
 
 ''' ========================================================================    

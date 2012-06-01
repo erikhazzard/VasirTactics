@@ -40,16 +40,18 @@ GAME_NAME.init = ()=>
             .duration(1000)
             .attr('r', 40)
             .style('fill', '#dd2222')
-                .transition()
-                    .delay(1000)
-                    .duration(700)
-                    .style('fill', '#ff0000')
-                    .attr('r', 0)
-                        .transition()
-                            .delay(1700)
-                            .attr('r', 0)
-                            .style('fill', 'none')
-                            .remove()
+            .each('end', ()->
+                target.transition()
+                .duration(700)
+                .style('fill', '#ff0000')
+                .attr('r', 0)
+                .each('end', ()->
+                    target.transition()
+                        .attr('r', 0)
+                        .style('fill', 'none')
+                        .remove()
+                )
+            )
     #Summon creature
     summonCreature = (params)=>
         #TODO: this would come from server
@@ -58,11 +60,7 @@ GAME_NAME.init = ()=>
         params = params || {}
         #get model
         model = params.model
-
-        if model.get('className') != 'cell'
-            GAME_NAME.logger.log('Spell', 'Could not cast summon creature. Invalid target')
-            return false
-        
+ 
         #--------------------------------
         #cell size
         cellSize = GAME_NAME.Models.Renderer.prototype.defaults.cellSize
@@ -78,16 +76,18 @@ GAME_NAME.init = ()=>
                 .duration(1000)
                 .attr('r', 0)
                 .style('fill', '#336699')
-                    .transition()
-                        .delay(1000)
-                        .duration(700)
-                        .style('fill', '#ffffff')
+                .each('end', ()->
+                    target.transition()
+                    .duration(700)
+                    .style('fill', '#ffffff')
+                    .attr('r', 0)
+                    .each('end', ()->
+                        target.transition()
                         .attr('r', 0)
-                            .transition()
-                                .delay(1700)
-                                .attr('r', 0)
-                                .style('fill', 'none')
-                                .remove()
+                        .style('fill', 'none')
+                        .remove()
+                    )
+                )
 
     #------------------------------------
     #creature objects
@@ -118,10 +118,25 @@ GAME_NAME.init = ()=>
                     'magic_missile': new GAME_NAME.Models.Spell({
                         name: 'Magic Missile'
                         effect: magicMissile
+                        contract: (params)=>
+                            if params.model.get('className') != 'creature'
+                                contract = {
+                                    canCast: false,
+                                    message: 'Can only cast on creatures or players'
+                                }
+
+                                return contract
+                            else
+                                return true
                     }),
                     'summon_knight': new GAME_NAME.Models.Spell({
                         name: 'Summon Creature'
                         effect: summonCreature
+                        contract: (params)=>
+                            if params.model.get('className') != 'cell'
+                                return false
+                            else
+                                return true
                     })
                 },
                 creatures: new GAME_NAME.Collections.Creatures([

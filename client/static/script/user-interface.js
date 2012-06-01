@@ -16,6 +16,7 @@
     __extends(UserInterface, _super);
 
     function UserInterface() {
+      this.changeMana = __bind(this.changeMana, this);
       this.renderTarget = __bind(this.renderTarget, this);
       this.unTargetTiles = __bind(this.unTargetTiles, this);
       this.target = __bind(this.target, this);
@@ -31,8 +32,11 @@
       this.model = this.options.model;
       this.model.on('change:target', this.target);
       this.model.on('change:targetHtml', this.renderTarget);
+      this.model.on('change:manaHtml', this.changeMana);
       $('#game_actions_wrapper .end_turn').click(this.endTurn);
-      return this.$targetEl = $('#game_target_wrapper .game_target');
+      this.$targetEl = $('#game_target_wrapper .game_target');
+      this.$manaEl = $('#game_player_mana_wrapper .mana_amount');
+      return this;
     };
 
     UserInterface.prototype.render = function() {
@@ -42,9 +46,10 @@
     UserInterface.prototype.endTurn = function() {
       GAME_NAME.game.get('activePlayer').trigger('turn:end');
       GAME_NAME.game.get('activePlayer').get('creatures').trigger('creatures:turn:end');
-      return this.model.set({
+      this.model.set({
         target: void 0
       });
+      return this;
     };
 
     UserInterface.prototype.target = function() {
@@ -52,23 +57,33 @@
       target = this.model.get('target');
       this.unTargetTiles();
       if (target !== void 0) {
-        return target.target();
+        target.target();
       } else {
-        return this.model.set({
+        this.model.set({
           targetHtml: ''
         });
       }
+      return this;
     };
 
     UserInterface.prototype.unTargetTiles = function() {
       d3.select('.map_tile_selected').classed('map_tile_selected', false);
-      return d3.selectAll('.tile_disabled').classed('tile_disabled', false);
+      d3.selectAll('.tile_disabled').classed('tile_disabled', false);
+      return this;
     };
 
     UserInterface.prototype.renderTarget = function(params) {
       var html;
       html = this.model.get('targetHtml') || '';
-      return this.$targetEl.html(html);
+      this.$targetEl.html(html);
+      return this;
+    };
+
+    UserInterface.prototype.changeMana = function(params) {
+      var html;
+      html = this.model.get('manaHtml');
+      this.$manaEl.html(html);
+      return this;
     };
 
     return UserInterface;
@@ -88,7 +103,8 @@
 
     UserInterface.prototype.defaults = {
       target: void 0,
-      targetHtml: ''
+      targetHtml: '',
+      manaHtml: ''
     };
 
     UserInterface.prototype.initialize = function() {

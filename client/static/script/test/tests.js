@@ -73,7 +73,7 @@
       equal(this.player.get('turnsEnded'), origTurns + 1, 'turn:end increments turnsEnded property properly');
       return this;
     });
-    test('Mana updates when player ends their move', function() {
+    test('Mana updates properly', function() {
       var origMana, turnSpy;
       turnSpy = this.spy();
       origMana = this.player.get('mana');
@@ -93,7 +93,6 @@
       this.creature.set({
         health: creatureHealth - 1
       });
-      console.log(this.player.get('health'), this.creature.get('health'));
       equal(this.creature.get('health'), this.player.get('health'), 'Creature health and player health are same after creature takes damage');
       return this;
     });
