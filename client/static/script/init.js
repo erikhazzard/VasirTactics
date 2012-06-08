@@ -36,6 +36,7 @@
     };
     creatureEnoex = new GAME_NAME.Models.Creature({
       name: 'Enoex',
+      health: 20,
       location: {
         x: 2,
         y: 1
@@ -43,6 +44,7 @@
     });
     creatureEnjalot = new GAME_NAME.Models.Creature({
       name: 'Enjalot',
+      health: 20,
       location: {
         x: 15,
         y: 1

@@ -42,6 +42,14 @@ class GAME_NAME.Views.Spell extends Backbone.View
         #Listen for events on the model
         @model.on('spell:cast', @spellCast)
 
+        #When turn ends, reset spell cast this time counter
+        #   Should be turn:begin
+        GAME_NAME.game.get('activePlayer').on('turn:end', ()=>
+            @model.set({
+                timesCastThisTurn: 0
+            })
+        )
+
         return @
 
     render: ()=>
@@ -127,12 +135,20 @@ class GAME_NAME.Views.Spell extends Backbone.View
         #Check it
         if target and canCast
             #We can cast the spell, so do it
+            
             #Update player's mana
             activePlayer.set({ mana: activePlayer.get('mana') - @model.get('cost') })
+            #The spell was successfully cast, so trigger the event which updates
+            #   the spell counters (and other things)
+            @model.trigger('spell:castSuccess')
+
+            #Activate the actual spell effect
             target.trigger('spell:cast', {
                 spell: @model
             })
+            console.log(@model.get('totalTimesCast'), @model.get('timesCastThisTurn'))
         else
+            #Spell can't be cast, so notify the userInterface and log a message
             @userInterface.trigger('spell:cannotCast', {
                 message: spellMessage
             })
@@ -160,6 +176,12 @@ class GAME_NAME.Models.Spell extends Backbone.Model
         #current target will (usually) point to a creature or player object
         target: {},
 
+        #Keep track of how many times a spell has been cast ( in case we use
+        #   it for something)
+        #Note: we only increase this if the spell was cast SUCCESSFULLY
+        totalTimesCast: 0
+        timesCastThisTurn: 0
+
         effect: (params)->
             #this is a callback returned from the server which will do 
             #   something to the target
@@ -170,6 +192,16 @@ class GAME_NAME.Models.Spell extends Backbone.Model
     }
 
     initialize: ()=>
+        #Events
+        #------
+        @on('spell:castSuccess', @castSuccess)
+        return @
+
+    castSuccess: ()=>
+        #Called when a spell was successfully cast
+        @set({ totalTimesCast: @get('totalTimesCast') + 1 })
+        @set({ timesCastThisTurn: @get('timesCastThisTurn') + 1 })
+
         return @
 
 ''' ========================================================================    

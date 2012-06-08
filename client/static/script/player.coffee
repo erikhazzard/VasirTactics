@@ -71,7 +71,7 @@ class GAME_NAME.Models.Player extends Backbone.Model
         #   die you die)
         if @get('creature')
             @get('creature').on('change:health', @updateHealthFromCreature)
-
+            
         return @
 
     updateHealthFromCreature: ()=>
@@ -110,3 +110,12 @@ class GAME_NAME.Models.Player extends Backbone.Model
             GAME_NAME.game.get('userInterface').set({manaHtml: @get('mana') })
 
         return @
+
+#========================================================================    
+# 
+#   Players Collection
+#
+#========================================================================
+#TODO: Implement this
+class GAME_NAME.Collections.Players extends Backbone.Collection
+    model: GAME_NAME.Models.Player

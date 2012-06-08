@@ -167,7 +167,6 @@ $(document).ready( ()->
             @player.get('mana'),
             'mana updates properly when one mana point is removed')
 
-
         #End turn, mana should reset
         @player.on('turn:end', turnSpy)
         @player.trigger('turn:end')
@@ -196,7 +195,7 @@ $(document).ready( ()->
 
         Testing the user interface 
         ==================================================================== '''
-    module('INTERACTION: model',{
+    module('USER INTERFACE: model',{
         setup: ()->
             @userInterface= new GAME_NAME.Models.UserInterface({})
 
@@ -213,6 +212,62 @@ $(document).ready( ()->
             @userInterface.get('target')
             undefined,
             'default target is undefined')
+        return @
+    )
+
+    ''' ====================================================================
+        SPELLS
+
+        Testing the spells
+        ==================================================================== '''
+    module('SPELLS: model',{
+        setup: ()->
+            #Note: Here we'll create an example spell (magic missle) to use to
+            #   test the spell class against.  Eventually, on the server side,
+            #   we'll need to unit test all spells
+            @spell = new GAME_NAME.Models.Spell({
+                name: 'Magic Missile'
+                effect: (params)=>
+                    #No need for an effect, since we're just testing the model 
+                    return @
+                contract: (params)=>
+                    if params.model.get('className') != 'creature'
+                        contract = {
+                            canCast: false,
+                            message: 'Can only cast on creatures or players'
+                        }
+                        return contract
+                    else
+                        return true
+            })
+            ok(@spell != undefined,
+                'Magic missile spell created successfully in setup()')
+            return @
+
+        teardown: ()->
+            return @
+    })
+
+    test('spells cast counters update', ()->
+        castSpy = @spy()
+        counterAll = @spell.get('totalTimesCast')
+        counterTurn = @spell.get('timesCastThisTurn')
+
+        @spell.on('spell:castSuccess', castSpy)
+
+        @spell.trigger('spell:castSuccess')
+
+        #Make sure event fired
+        equal(
+            castSpy.callCount,
+            1,
+            'spell:castSuccess triggers event successfully')
+        
+        equal(
+            @spell.get('totalTimesCast'),
+            counterAll + 1,
+            'totalTimesCast counter is correct after casting spell')
+
         return @
     )
 

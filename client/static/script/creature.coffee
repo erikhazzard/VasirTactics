@@ -536,15 +536,17 @@ class GAME_NAME.Collections.Creatures extends Backbone.Collection
 
     initialize: ()=>
         #Listen for events
-        #   Whenever the creatures:turn:end event is fired, fire off the event
-        #   for all creatures in this collection
-        #   NOTE: The creatureS:turn:end event is for this collection,
-        #   the creature:turn:end (no s) is for an individual creature
+        #TODO: Should each creature model just listen for these events instead?
+        #   Whenever the turn:end event is triggered on the activePlayer model,
+        #   trigger each creature's turn:end event
         @on('creatures:turn:end', @turnEnd)
+        @on('creatures:turn:begin', @turnBegin)
 
+    turnBegin: ()=>
+        #Fire off the corresponding event for each creature
+        for creature in @models
+            creature.trigger('creature:turn:begin')
     turnEnd: ()=>
-        #Called when creature:turn:end is fired on this collection 
-        #   Fire off the corresponding event for each creature
+        #Fire off the corresponding event for each creature
         for creature in @models
             creature.trigger('creature:turn:end')
-

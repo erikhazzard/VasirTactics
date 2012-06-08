@@ -98,4 +98,18 @@
 
   })(Backbone.Model);
 
+  GAME_NAME.Collections.Players = (function(_super) {
+
+    __extends(Players, _super);
+
+    function Players() {
+      Players.__super__.constructor.apply(this, arguments);
+    }
+
+    Players.prototype.model = GAME_NAME.Models.Player;
+
+    return Players;
+
+  })(Backbone.Collection);
+
 }).call(this);

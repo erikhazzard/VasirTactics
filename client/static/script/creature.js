@@ -370,6 +370,7 @@
 
     function Creatures() {
       this.turnEnd = __bind(this.turnEnd, this);
+      this.turnBegin = __bind(this.turnBegin, this);
       this.initialize = __bind(this.initialize, this);
       Creatures.__super__.constructor.apply(this, arguments);
     }
@@ -377,7 +378,19 @@
     Creatures.prototype.model = GAME_NAME.Models.Creature;
 
     Creatures.prototype.initialize = function() {
-      return this.on('creatures:turn:end', this.turnEnd);
+      this.on('creatures:turn:end', this.turnEnd);
+      return this.on('creatures:turn:begin', this.turnBegin);
+    };
+
+    Creatures.prototype.turnBegin = function() {
+      var creature, _i, _len, _ref, _results;
+      _ref = this.models;
+      _results = [];
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        creature = _ref[_i];
+        _results.push(creature.trigger('creature:turn:begin'));
+      }
+      return _results;
     };
 
     Creatures.prototype.turnEnd = function() {

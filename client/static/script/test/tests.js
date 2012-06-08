@@ -97,7 +97,7 @@
       return this;
     });
     ' ====================================================================\nUSER INTERFACE\n\nTesting the user interface \n==================================================================== ';
-    module('INTERACTION: model', {
+    module('USER INTERFACE: model', {
       setup: function() {
         this.userInterface = new GAME_NAME.Models.UserInterface({});
         ok(this.userInterface !== void 0, 'Empty player created successfully in setup()');
@@ -107,8 +107,48 @@
         return this;
       }
     });
-    return test('properties are set', function() {
+    test('properties are set', function() {
       equal(this.userInterface.get('target'), void 0, 'default target is undefined');
+      return this;
+    });
+    ' ====================================================================\nSPELLS\n\nTesting the spells\n==================================================================== ';
+    module('SPELLS: model', {
+      setup: function() {
+        var _this = this;
+        this.spell = new GAME_NAME.Models.Spell({
+          name: 'Magic Missile',
+          effect: function(params) {
+            return _this;
+          },
+          contract: function(params) {
+            var contract;
+            if (params.model.get('className') !== 'creature') {
+              contract = {
+                canCast: false,
+                message: 'Can only cast on creatures or players'
+              };
+              return contract;
+            } else {
+              return true;
+            }
+          }
+        });
+        ok(this.spell !== void 0, 'Magic missile spell created successfully in setup()');
+        return this;
+      },
+      teardown: function() {
+        return this;
+      }
+    });
+    return test('spells cast counters update', function() {
+      var castSpy, counterAll, counterTurn;
+      castSpy = this.spy();
+      counterAll = this.spell.get('totalTimesCast');
+      counterTurn = this.spell.get('timesCastThisTurn');
+      this.spell.on('spell:castSuccess', castSpy);
+      this.spell.trigger('spell:castSuccess');
+      equal(castSpy.callCount, 1, 'spell:castSuccess triggers event successfully');
+      equal(this.spell.get('totalTimesCast'), counterAll + 1, 'totalTimesCast counter is correct after casting spell');
       return this;
     });
   });

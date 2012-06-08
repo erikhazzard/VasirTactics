@@ -1,21 +1,21 @@
-''' ========================================================================    
-    cell.coffee
-
-    Contains the definition for individual cells that make up the map 
-    ======================================================================== '''
-''' ========================================================================    
-    Add logging types
-    ======================================================================== '''
+# ============================================================================
+# cell.coffee
+#
+# Contains the definition for individual cells that make up the map 
+# ============================================================================
+# ============================================================================
+# Add logging types
+# ============================================================================
 #Add a log type
 GAME_NAME.logger.options.log_types.push('Cell')
 #Add it as a log type
 GAME_NAME.logger.options.setup_log_types()
 
-''' ========================================================================    
-    
-    View
-
-    ======================================================================== '''
+# ============================================================================
+#    
+#    View
+#
+# ============================================================================
 class GAME_NAME.Views.Cell extends Backbone.View
     events: {
         'click': 'click'
@@ -70,8 +70,8 @@ class GAME_NAME.Views.Cell extends Backbone.View
     #
     #------------------------------------
     render: (params)=>
-        '''Render creates the map tile cells and the group containing them
-        Expects a renderer model object to be passed in'''
+        #Render creates the map tile cells and the group containing them
+        #   Expects a renderer model object to be passed in
         params = params || {}
         if params.renderer == undefined
             GAME_NAME.logger.error('ERROR', 'cell render(): renderer not passed in')
@@ -139,8 +139,9 @@ class GAME_NAME.Views.Cell extends Backbone.View
         #   creauture move stuff to the creature class, listen on events
         #TODO: Need to unit the shit out of this, lots of if's
         
-        #See if we can target the cell
+        #See if we can target the cell or creature
         canSetInterfaceTarget = false
+        moveCreature = false
 
         #Do checks
         #   Breaking on multiple lines to make it easier to follow
@@ -158,6 +159,9 @@ class GAME_NAME.Views.Cell extends Backbone.View
                     #If no creature is targeted already or an oppnent creature is 
                     #   targeteted, we can straight up target the cell
                     canSetInterfaceTarget = true
+                else
+                    canSetInterfaceTarget = false
+                    moveCreature = true
 
         #Set the game interface target if we can
         if canSetInterfaceTarget
@@ -165,7 +169,8 @@ class GAME_NAME.Views.Cell extends Backbone.View
                 target: @model
                 targetHtml: @targetHtml()
             })
-        else
+
+        if moveCreature
             #OTHERWISE, we need to do special logic
             #If a creature is already targeted, we need to do special logic
             #   e.g., move
@@ -219,11 +224,11 @@ class GAME_NAME.Views.Cell extends Backbone.View
 
         return @
 
-''' ========================================================================
-    
-    Model
-
-    ======================================================================== '''
+# ============================================================================
+#    
+# Model
+#
+# ============================================================================
 class GAME_NAME.Models.Cell extends Backbone.Model
     defaults: {
         #Default properties

@@ -29,6 +29,7 @@
     Spell.prototype.type = 'li';
 
     Spell.prototype.initialize = function() {
+      var _this = this;
       if (this.options.model === void 0) {
         GAME_NAME.logger.error('ERROR', 'creature view init(): params not properly passed in');
         return false;
@@ -38,6 +39,11 @@
       this.el = $('<li class="button">' + this.model.get('name') + '</li>');
       this.el.click(this.click);
       this.model.on('spell:cast', this.spellCast);
+      GAME_NAME.game.get('activePlayer').on('turn:end', function() {
+        return _this.model.set({
+          timesCastThisTurn: 0
+        });
+      });
       return this;
     };
 
@@ -84,9 +90,11 @@
         activePlayer.set({
           mana: activePlayer.get('mana') - this.model.get('cost')
         });
+        this.model.trigger('spell:castSuccess');
         target.trigger('spell:cast', {
           spell: this.model
         });
+        console.log(this.model.get('totalTimesCast'), this.model.get('timesCastThisTurn'));
       } else {
         this.userInterface.trigger('spell:cannotCast', {
           message: spellMessage
@@ -107,6 +115,7 @@
     __extends(Spell, _super);
 
     function Spell() {
+      this.castSuccess = __bind(this.castSuccess, this);
       this.initialize = __bind(this.initialize, this);
       Spell.__super__.constructor.apply(this, arguments);
     }
@@ -115,6 +124,8 @@
       name: 'Magic Missle',
       cost: 1,
       target: {},
+      totalTimesCast: 0,
+      timesCastThisTurn: 0,
       effect: function(params) {
         return this;
       },
@@ -127,6 +138,17 @@
     };
 
     Spell.prototype.initialize = function() {
+      this.on('spell:castSuccess', this.castSuccess);
+      return this;
+    };
+
+    Spell.prototype.castSuccess = function() {
+      this.set({
+        totalTimesCast: this.get('totalTimesCast') + 1
+      });
+      this.set({
+        timesCastThisTurn: this.get('timesCastThisTurn') + 1
+      });
       return this;
     };
 

@@ -93,6 +93,7 @@ GAME_NAME.init = ()=>
     #creature objects
     creatureEnoex = new GAME_NAME.Models.Creature({
         name: 'Enoex'
+        health: 20
         location: {
             x: 2,
             y: 1
@@ -101,6 +102,7 @@ GAME_NAME.init = ()=>
 
     creatureEnjalot = new GAME_NAME.Models.Creature({
         name: 'Enjalot'
+        health: 20
         location: {
             x: 15,
             y: 1
