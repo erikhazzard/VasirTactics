@@ -94,7 +94,6 @@
         target.trigger('spell:cast', {
           spell: this.model
         });
-        console.log(this.model.get('totalTimesCast'), this.model.get('timesCastThisTurn'));
       } else {
         this.userInterface.trigger('spell:cannotCast', {
           message: spellMessage

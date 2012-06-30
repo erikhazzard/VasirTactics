@@ -83,8 +83,7 @@
         _ref = creatures.models;
         _fn = function(creature) {
           return _this.drawCreature({
-            creature: creature,
-            group: _this.creaturesGroup
+            creature: creature
           });
         };
         for (_i = 0, _len = _ref.length; _i < _len; _i++) {
@@ -117,7 +116,7 @@
 
     Renderer.prototype.drawCreature = function(params) {
       'Draws the passed in entity on the screen. Params expects a\ncreature model to be passed in';      params = params || {};
-      if (params.creature === void 0 || params.group === void 0) {
+      if (params.creature === void 0) {
         GAME_NAME.logger.error('ERROR! renderer view: drawCreature(): creature not passed in');
         return false;
       }
@@ -126,13 +125,13 @@
           'view': new GAME_NAME.Views.Creature({
             model: params.creature,
             game: this.model.get('game'),
-            group: params.group
+            group: this.creaturesGroup
           })
         });
       }
       params.creature.get('view').render({
         renderer: this,
-        group: params.group
+        group: this.creaturesGroup
       });
       return this;
     };

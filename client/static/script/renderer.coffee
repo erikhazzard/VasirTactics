@@ -116,7 +116,6 @@ class GAME_NAME.Views.Renderer extends Backbone.View
                 do (creature)=>
                     @drawCreature({
                         creature: creature
-                        group: @creaturesGroup
                     })
 
         #TODO: Draw creatures, entities, etc. based on game state
@@ -160,7 +159,7 @@ class GAME_NAME.Views.Renderer extends Backbone.View
         creature model to be passed in'''
         #Params should take in a Creature model
         params = params || {}
-        if params.creature == undefined or params.group == undefined
+        if params.creature == undefined
             GAME_NAME.logger.error('ERROR! renderer view: drawCreature(): creature not passed in')
             return false
 
@@ -169,14 +168,14 @@ class GAME_NAME.Views.Renderer extends Backbone.View
             params.creature.set({'view': new GAME_NAME.Views.Creature({
                 model: params.creature,
                 game: @model.get('game'),
-                group: params.group
+                group: @creaturesGroup
                 })
             })
 
         #Render the passed in creature
         params.creature.get('view').render({
             renderer: @,
-            group: params.group
+            group: @creaturesGroup
         })
 
         #Finished!

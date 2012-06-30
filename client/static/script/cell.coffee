@@ -137,7 +137,7 @@ class GAME_NAME.Views.Cell extends Backbone.View
         #TODO: Make this more event driven, so we don't need to handle
         #   creature move logic checks here? Could maybe move the
         #   creauture move stuff to the creature class, listen on events
-        #TODO: Need to unit the shit out of this, lots of if's
+        #TODO: Need to unit the shit out of this
         
         #See if we can target the cell or creature
         canSetInterfaceTarget = false
@@ -153,6 +153,11 @@ class GAME_NAME.Views.Cell extends Backbone.View
             #We can switch to a new target if the existing on was a cell
             if @userInterface.get('target').get('className') == 'cell'
                 canSetInterfaceTarget = true
+
+            #If the target is the currently targeted cell, untarget it
+            if @userInterface.get('target') == @model
+                canSetInterfaceTarget = false
+                @userInterface.set({ target: undefined })
 
             else if @userInterface.get('target').get('className') == 'creature'
                 if not @userInterface.get('target').belongsToActivePlayer()
@@ -170,8 +175,8 @@ class GAME_NAME.Views.Cell extends Backbone.View
                 targetHtml: @targetHtml()
             })
 
+        #OTHERWISE, we need to do special logic
         if moveCreature
-            #OTHERWISE, we need to do special logic
             #If a creature is already targeted, we need to do special logic
             #   e.g., move
             @userInterface.get('target').trigger('creature:move', {
@@ -235,8 +240,9 @@ class GAME_NAME.Models.Cell extends Backbone.Model
         name: 'cell_i,j'
         className: 'cell'
 
-        i: 0
-        j: 0
+        #Position of cell
+        x: 0
+        y: 0
 
         baseSprite: ''
         topSprite: ''

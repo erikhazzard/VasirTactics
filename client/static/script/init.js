@@ -24,14 +24,29 @@
       });
     };
     summonCreature = function(params) {
-      var cellSize, model, target;
+      var cellSize, model, summonedCreature, targetCell;
       params = params || {};
       model = params.model;
       cellSize = GAME_NAME.Models.Renderer.prototype.defaults.cellSize;
-      return target = params.target.append('svg:circle').attr('r', cellSize.width / 1.8).attr('cx', cellSize.width / 2).attr('cy', cellSize.height / 2).style('opacity', .9).style('fill', '#6699cc').transition().duration(1000).attr('r', 0).style('fill', '#336699').each('end', function() {
-        return target.transition().duration(700).style('fill', '#ffffff').attr('r', 0).each('end', function() {
-          return target.transition().attr('r', 0).style('fill', 'none').remove();
+      targetCell = params.target.append('svg:circle').attr('r', cellSize.width / 1.8).attr('cx', cellSize.width / 2).attr('cy', cellSize.height / 2).style('opacity', .9).style('fill', '#6699cc').transition().duration(1000).attr('r', 0).style('fill', '#336699').each('end', function() {
+        return targetCell.transition().duration(700).style('fill', '#ffffff').attr('r', 0).each('end', function() {
+          return targetCell.transition().attr('r', 0).style('fill', 'none').remove();
         });
+      });
+      GAME_NAME.game.get('userInterface').set({
+        target: void 0
+      });
+      summonedCreature = new GAME_NAME.Models.Creature({
+        name: (Math.random()).toString(32),
+        health: 10,
+        location: {
+          x: model.get('x'),
+          y: model.get('y')
+        }
+      });
+      GAME_NAME.game.get('activePlayer').get('creatures').add(summonedCreature);
+      return GAME_NAME.game.get('renderer').drawCreature({
+        creature: summonedCreature
       });
     };
     creatureEnoex = new GAME_NAME.Models.Creature({

@@ -138,6 +138,7 @@ class GAME_NAME.Views.Spell extends Backbone.View
             
             #Update player's mana
             activePlayer.set({ mana: activePlayer.get('mana') - @model.get('cost') })
+
             #The spell was successfully cast, so trigger the event which updates
             #   the spell counters (and other things)
             @model.trigger('spell:castSuccess')
@@ -146,7 +147,7 @@ class GAME_NAME.Views.Spell extends Backbone.View
             target.trigger('spell:cast', {
                 spell: @model
             })
-            console.log(@model.get('totalTimesCast'), @model.get('timesCastThisTurn'))
+
         else
             #Spell can't be cast, so notify the userInterface and log a message
             @userInterface.trigger('spell:cannotCast', {

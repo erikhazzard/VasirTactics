@@ -66,7 +66,7 @@ GAME_NAME.init = ()=>
         cellSize = GAME_NAME.Models.Renderer.prototype.defaults.cellSize
 
         #Do the animation on the view
-        target = params.target.append('svg:circle')
+        targetCell = params.target.append('svg:circle')
             .attr('r', cellSize.width/1.8)
             .attr('cx', cellSize.width/2)
             .attr('cy', cellSize.height/2)
@@ -77,17 +77,39 @@ GAME_NAME.init = ()=>
                 .attr('r', 0)
                 .style('fill', '#336699')
                 .each('end', ()->
-                    target.transition()
+                    targetCell.transition()
                     .duration(700)
                     .style('fill', '#ffffff')
                     .attr('r', 0)
                     .each('end', ()->
-                        target.transition()
+                        targetCell.transition()
                         .attr('r', 0)
                         .style('fill', 'none')
                         .remove()
                     )
                 )
+
+        #Untarget everything
+        #TODO: Could trigger a global event
+        GAME_NAME.game.get('userInterface').set({target: undefined});
+
+        #Create a create at the target
+        summonedCreature = new GAME_NAME.Models.Creature({
+            name: (Math.random()).toString(32)
+            health: 10
+            location: {
+                x: model.get('x')
+                y: model.get('y')
+            }
+        })
+        #Add creature
+        GAME_NAME.game.get('activePlayer').get('creatures').add(summonedCreature)
+
+        #Render the creature
+        #TODO: should happen automatically on add events
+        #TODO: should unrender automatically 
+        GAME_NAME.game.get('renderer').drawCreature({ creature: summonedCreature })
+
 
     #------------------------------------
     #creature objects

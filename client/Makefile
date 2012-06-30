@@ -10,7 +10,33 @@ HR= ==================================================
 # @jshint static/script/*[^min].js --config static/script/.jshintrc
 # @echo "Running JSHint on javascript...	${CHECK} Done"
 
-build:
+
+#LESS_FILES = static/less/less-variables.less \
+#			 static/less/third-party-bootstrap.less \
+#			 static/less/third-party-font-awesome.less \
+#			 static/less/third-party-jqueryui.less \
+#			 static/less/base-elements.less \
+#			 static/less/buttons.less \
+#			 static/less/layout.less \
+#			 static/less/facets.less \
+#			 static/less/responsive-800.less \
+#			 static/less/responsive-600.less
+
+#less: 
+#	@echo "\n${HR}"
+#	@echo "Combining Less Files"
+#	cat $(LESS_FILES) > static/less/all.less
+#	@echo "${CHECK} Done"
+#	@echo "\n${HR}"
+#	@echo "Compiling CSS"
+#	@./node_modules/less/bin/lessc static/less/all.less static/css/style-all.css
+#	@rm static/less/all.less
+#	@echo "Running Less compiler... ${CHECK} Done"
+
+# Build all coffeescript templates by default
+all: js 
+
+js:
 	@echo "\n${HR}"
 	@echo "Compiling CSS"
 	@echo "${HR}\n"
