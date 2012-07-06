@@ -306,9 +306,10 @@ class GAME_NAME.Models.Creature extends Backbone.Model
 
         #How far creature can move
         moves: 3
+
         #How many cells are left to move after creature is moved
         #   (In case creature is removed)
-        movesLeft: 3
+        movesLeft: undefined
         
         #Position properties
         #   Stores x,y
@@ -331,6 +332,10 @@ class GAME_NAME.Models.Creature extends Backbone.Model
     #Init
     #------------------------------------
     initialize: ()=>
+        #Set some initial values
+        if @get('movesLeft') is undefined
+            @set({movesLeft: @get('moves')})
+
         #Listen for events
         @on('creature:move', @move)
 

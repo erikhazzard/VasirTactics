@@ -139,6 +139,10 @@ class GAME_NAME.Views.Cell extends Backbone.View
         #   creauture move stuff to the creature class, listen on events
         #TODO: Need to unit the shit out of this
         
+        #TODO: (7/4) - Need to come up with concept of different selection
+        #   modes (cell selection, unit selection, attack selection, etc.)
+        #   Store this selection mode in the user interface, do logic there
+
         #See if we can target the cell or creature
         canSetInterfaceTarget = false
         moveCreature = false

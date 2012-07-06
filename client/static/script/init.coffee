@@ -101,6 +101,8 @@ GAME_NAME.init = ()=>
                 x: model.get('x')
                 y: model.get('y')
             }
+            moves: 2
+            movesLeft: 0
         })
         #Add creature
         GAME_NAME.game.get('activePlayer').get('creatures').add(summonedCreature)

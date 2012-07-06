@@ -42,7 +42,9 @@
         location: {
           x: model.get('x'),
           y: model.get('y')
-        }
+        },
+        moves: 2,
+        movesLeft: 0
       });
       GAME_NAME.game.get('activePlayer').get('creatures').add(summonedCreature);
       return GAME_NAME.game.get('renderer').drawCreature({
