@@ -2,70 +2,79 @@ DATE=$(shell date +%I:%M%p)
 CHECK=\033[32m✔\033[39m
 HR= ==================================================
 
-# @echo "Combining Third Party CSS"
-# @cat static/css/bootstrap.css static/css/bootstrap-responsive.css > static/css/bootstrap.all.css
-# No more jshint since coffeescript doesn't output valid JS
-# @echo "Running JSHint"
-# @echo "${HR}\n"
-# @jshint static/script/*[^min].js --config static/script/.jshintrc
-# @echo "Running JSHint on javascript...	${CHECK} Done"
+JS_TARGETS = static/js/namespace.js \
+			 static/js/logger.js \
+			 static/js/util.js \
+			 static/js/game.js \
+			 static/js/cell.js \
+			 static/js/creature.js \
+			 static/js/user-interface.js \
+			 static/js/map.js \
+			 static/js/player.js \
+			 static/js/renderer.js \
+			 static/js/spells.js \
+			 static/js/init.js 
 
+THIRD_PARTY = static/js/libs/underscore.js \
+			  static/js/libs/json2.js \
+			  static/js/libs/jquery.js \
+			  static/js/libs/backbone.js \
+			  static/js/libs/d3.js
 
-#LESS_FILES = static/less/less-variables.less \
-#			 static/less/third-party-bootstrap.less \
-#			 static/less/third-party-font-awesome.less \
-#			 static/less/third-party-jqueryui.less \
-#			 static/less/base-elements.less \
-#			 static/less/buttons.less \
-#			 static/less/layout.less \
-#			 static/less/facets.less \
-#			 static/less/responsive-800.less \
-#			 static/less/responsive-600.less
+JS_COMPILER = ./node_modules/uglify-js/bin/uglifyjs
 
-#less: 
-#	@echo "\n${HR}"
-#	@echo "Combining Less Files"
-#	cat $(LESS_FILES) > static/less/all.less
-#	@echo "${CHECK} Done"
-#	@echo "\n${HR}"
-#	@echo "Compiling CSS"
-#	@./node_modules/less/bin/lessc static/less/all.less static/css/style-all.css
-#	@rm static/less/all.less
-#	@echo "Running Less compiler... ${CHECK} Done"
+# Build all coffeejs templates by default
 
-# Build all coffeescript templates by default
-all: js 
+all: coffee js less
+
+less: 
+	@echo "\n${HR}"
+	@echo "Combining Less Files"
+	@cat $(LESS_FILES) > static/css/all.less
+	@echo "${CHECK} Done"
+	@echo "\n${HR}"
+	@echo "Compiling CSS"
+	@./node_modules/less/bin/lessc static/css/all.less static/css/style-all.css
+	@rm static/css/all.less
+	@echo "Running Less compiler... ${CHECK} Done"
+	@echo "\n${HR}"
+
+coffee:
+	@echo "\n${HR}"
+	@echo "Compiling Coffeejs"
+	@echo "${HR}"
+	@coffee --compile --output static/coffee static/js
+	@coffee --compile --output static/coffee/tests static/js/tests
+	@echo "Compiled coffeejs...	${CHECK} Done\n"
+	@echo "${HR}"
+	@echo "\n${HR}"
 
 js:
 	@echo "\n${HR}"
-	@echo "Compiling CSS"
-	@echo "${HR}\n"
-	@./node_modules/less/bin/lessc static/css/*.less static/css/style.css
-	@echo "Running Less compiler... ${CHECK} Done"
-	@echo "\n${HR}"
-	@echo "Compiling Coffeescript"
-	@echo "${HR}"
-	@coffee --compile --output static/script static/script
-	@echo "Compiled coffeescript...	${CHECK} Done\n"
 	@echo "${HR}\nRunning uglify\n${HR}"
-	@cat static/script/namespace.js static/script/logger.js static/script/util.js static/script/game.js static/script/cell.js static/script/creature.js static/script/user-interface.js static/script/map.js static/script/player.js static/script/renderer.js static/script/spells.js static/script/init.js > static/script/vasirtactics.js
+
+	@cat $(JS_TARGETS) > static/js/build/vasirtactics.js
+	@uglifyjs -nc static/js/build/vasirtactics.js > static/js/build/vasirtactics.min.tmp.js
+	@cat static/coffee/copyright.txt static/js/build/vasirtactics.min.tmp.js > static/js/build/vasirtactics.min.js
 	@echo "Compiling Our Scripts ${CHECK} Done"
-	@uglifyjs -nc static/script/vasirtactics.js > static/script/vasirtactics.min.tmp.js
-	@cat static/script/copyright.txt static/script/vasirtactics.min.tmp.js > static/script/vasirtactics.min.js
-	@rm static/script/vasirtactics.min.tmp.js
-	@rm static/script/vasirtactics.js
-	@echo "Compiling and minifying javascript...	${CHECK} Done"
+	@rm static/js/build/vasirtactics.min.tmp.js
+	@rm static/js/build/vasirtactics.js
+	@echo "Cleaned up files...	${CHECK} Done"
 	@echo "\n${HR}"
 	@echo "Files successfully built at ${DATE}."
-	@echo "Files: static/css/bootstrap.all.css, static/script/lucid.min.js, static/script/all.min.js, static/script/libs/all3rd.min.js"
 	@echo "${HR}\n"
 
 third:
+	@echo "${HR}\n"
 	@echo "Compiling Third Party JS"
-	@cat static/script/libs/underscore.js static/script/libs/json2.js static/script/libs/jquery.js static/script/libs/backbone.js static/script/libs/d3.js > static/script/libs/all3rdjs.js
-	@uglifyjs -nc static/script/libs/all3rdjs.js > static/script/libs/all3rdjs.min.js
-	@rm static/script/libs/all3rdjs.js
+	@cat  $(THIRD_PARTY) > static/js/libs/all3rdjs.js
+	@uglifyjs -nc static/js/libs/all3rdjs.js > static/js/libs/all3rdjs.min.js
+	@rm static/js/libs/all3rdjs.js
+	@echo "Third party files successfully built at ${DATE}."
 
 watch:
 	echo "Watching Less and Coffee files..."; \
-	watchr -e "watch('static/script/.*\.coffee') { system 'make' }"
+	watchr -e "watch('static/js/.*\.coffee') { system 'make' }"
+
+mongo:
+	@mongoimport -d mtg -c models server/data.json
