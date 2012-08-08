@@ -1,6 +1,12 @@
 DATE=$(shell date +%I:%M%p)
 CHECK=\033[32m✔\033[39m
 HR= ==================================================
+LESS_FILES = static/less/less-variables.less \
+			 static/less/third-party-bootstrap.less \
+			 static/less/third-party-font-awesome.less \
+			 static/less/base-elements.less \
+			 static/less/buttons.less \
+			 static/less/layout.less
 
 JS_TARGETS = static/js/namespace.js \
 			 static/js/logger.js \
