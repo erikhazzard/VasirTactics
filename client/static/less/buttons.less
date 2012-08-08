@@ -127,3 +127,155 @@
   font-size: 11px;
   line-height: 14px;
 }
+
+/* ========================================================================    
+ * Google-like buttons
+ * ======================================================================== */
+.buttons {
+    float: left;
+    padding-bottom: 20px;
+    clear: both;
+}
+a.button, li.button, .help, .button, button {
+    border-radius: 2px;
+    -webkit-border-radius: 2px;
+    -moz-border-radius: 2px;
+    -webkit-transition: border-color .218s;
+    -moz-transition: border .218s;
+    -o-transition: border-color .218s;
+    transition: border-color .218s;
+    /*
+    font: bold 12px 'Questrial', Helvetica, Arial, sans-serif;
+    */
+    border: 1px solid #ACACAC;
+    border-top-color: #BDBDBD;
+    border-bottom-color: #949494;
+
+    color: @color_black;
+    cursor: pointer;
+    display: inline-block;
+    font-size:.9em;
+    font-weight:bold;
+    margin-right: 10px;
+    padding: 7px 12px;
+    position: relative;
+    text-decoration: none;
+    text-shadow: 0 1px 0 #fff;
+
+
+    /* Darker buttons */
+    .normal_button_background;
+}
+a.button:hover, li.button:hover, .button_hover, .hover, button:hover {
+    color: #111;
+    border-color: #999;
+    -moz-box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+    -webkit-box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+}
+a.button:active, li.button:active, .tab_active, button:active, .active {
+    color: #000 !important;
+    border-color: #444 !important;
+    border:1px solid #979797 !important;
+    border-top:1px solid #707070 !important;
+    background: #000!important;
+    background: -webkit-gradient(linear, left top, left bottom, from(#c3c3c3), to(#ebebeb)) !important;
+    background: -moz-linear-gradient(top, #c3c3c3, #ebebeb) !important;
+    box-shadow: inset 2px 2px 2px rgba(0,0,0,.1) !important;
+    -webkit-box-shadow: inset 2px 2px 2px rgba(0,0,0,.1) !important;
+    -moz-box-shadow: inset 2px 2px 2px rgba(0,0,0,.1) !important;
+    -o-box-shadow:  inset 2px 2px 2px rgba(0,0,0,.1) !important;
+}
+a.left {
+    -webkit-border-top-right-radius: 0;
+    -moz-border-radius-topright: 0;
+    border-top-right-radius: 0;
+    -webkit-border-bottom-right-radius: 0;
+    -moz-border-radius-bottomright: 0;
+    border-bottom-right-radius: 0;
+    margin: 0;
+}
+a.middle {
+    border-radius: 0;
+    -webkit-border-radius: 0;
+    -moz-border-radius: 0;
+    border-left: solid 1px #f3f3f3;
+    margin: 0;
+    border-left: solid 1px rgba(255, 255, 255, 0);
+}
+a.middle:hover,
+a.right:hover { border-left: solid 1px #999 }
+a.right {
+    -webkit-border-top-left-radius: 0;
+    -moz-border-radius-topleft: 0;
+    border-top-left-radius: 0;
+    -webkit-border-bottom-left-radius: 0;
+    -moz-border-radius-bottomleft: 0;
+    border-bottom-left-radius: 0;
+    border-left: solid 1px #f3f3f3;
+    border-left: solid 1px rgba(255, 255, 255, 0);
+}
+a.big {
+    font-size: 16px;
+    padding: 10px 15px;
+}
+a.supersize {
+    font-size: 20px;
+    padding: 15px 20px;
+}
+a.save {
+    background: url(../image/sprite.png) 10px 7px no-repeat #f3f3f3;
+    padding-left: 30px;
+}
+a.add {
+    background: url(../image/sprite.png)  10px -27px no-repeat #f3f3f3;
+    padding-left: 30px;
+}
+a.delete {
+    background: url(../image/sprite.png)  10px -61px no-repeat #f3f3f3;
+    padding-left: 30px;
+}
+a.flag {
+    background: url(../image/sprite.png)  10px -96px no-repeat #f3f3f3;
+    padding-left: 30px;
+}
+a.up {
+    background: url(../image/sprite.png)  13px -133px no-repeat #f3f3f3;
+    width: 18px;
+}
+a.down {
+    background: url(../image/sprite.png)  13px -168px no-repeat #f3f3f3;
+    width: 18px;
+}
+a.save-big {
+    background: url(../image/sprite.png) 15px 11px no-repeat #f3f3f3;
+    font-size: 16px;
+    padding: 10px 15px 10px 35px;
+}
+a.add-big {
+    background: url(../image/sprite.png)  15px -23px no-repeat #f3f3f3;
+    font-size: 16px;
+    padding: 10px 15px 10px 35px;
+}
+a.delete-big {
+    background: url(../image/sprite.png)  15px -57px no-repeat #f3f3f3;
+    font-size: 16px;
+    padding: 10px 15px 10px 35px;
+}
+a.flag-big {
+    background: url(../image/sprite.png)  15px -92px no-repeat #f3f3f3;
+    font-size: 16px;
+    padding: 10px 15px 10px 35px;
+}
+a.up-big {
+    background: url(../image/sprite.png)  15px -128px no-repeat #f3f3f3;
+    width: 18px;
+    font-size: 16px;
+    padding: 10px 15px;
+}
+a.down-big {
+    background: url(../image/sprite.png)  15px -163px no-repeat #f3f3f3;
+    width: 18px;
+    font-size: 16px;
+    padding: 10px 15px;
+}
