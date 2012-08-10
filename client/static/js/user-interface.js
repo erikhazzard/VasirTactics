@@ -67,8 +67,17 @@
     };
 
     UserInterface.prototype.unTargetTiles = function() {
+      var cells,
+        _this = this;
       d3.select('.map_tile_selected').classed('map_tile_selected', false);
       d3.selectAll('.tile_disabled').classed('tile_disabled', false);
+      cells = GAME_NAME.game.get('map').get('cells');
+      _.each(cells, function(cell) {
+        return cell.set({
+          'cellEnabled': true
+        });
+      });
+      GAME_NAME.logger.log('UserInterface', 'unTargetTiles(): enabled all cells');
       return this;
     };
 

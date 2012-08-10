@@ -179,6 +179,14 @@ class GAME_NAME.Views.Creature extends Backbone.View
         #Darken all the map cells
         mapTiles = d3.selectAll('.map_tile')
             .classed('tile_disabled', true)
+        #TODO: need more elegant / less cpu intense way to do this.
+        #   Keep in mind, this happens also in user-interface.coffee whenever
+        #   something is targeted
+        #Disable all map cells
+        cells = @map.get('cells')
+        _.each(cells, (cell)=>
+            cell.set({'cellEnabled': false})
+        )
 
         #Highlight the map cells that the creature can move to
         #TODO: Put this in web worker
@@ -192,6 +200,9 @@ class GAME_NAME.Views.Creature extends Backbone.View
             mapCells[cell.get('x') + ',' + cell.get('y')].trigger(
                 'cell:enableCell'
             )
+            #Set the cell to be enabled on the cell model
+            cell.set({'cellEnabled': true})
+        GAME_NAME.logger.log('Creature', 'Creature - Target - enabled and disabled cells')
 
         return @
 

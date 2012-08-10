@@ -1693,7 +1693,11 @@ rect {
   stroke-width: 2px;
 }
 .game_map .tile_disabled {
+  cursor: not-allowed !important;
   fill: rgba(0, 0, 0, 0.9);
+}
+.game_map .map_tile_mouse_over.tile_disabled {
+  fill: rgba(245, 100, 100, 0.7) !important;
 }
 /* CREATURES */
 .creatures_group {

@@ -49,8 +49,8 @@ coffee:
 	@echo "\n${HR}"
 	@echo "Compiling Coffeejs"
 	@echo "${HR}"
-	@coffee --compile --output static/coffee static/js
-	@coffee --compile --output static/coffee/tests static/js/tests
+	@coffee --compile --output static/js static/coffee
+	@coffee --compile --output static/js/tests static/coffee/tests
 	@echo "Compiled coffeejs...	${CHECK} Done\n"
 	@echo "${HR}"
 	@echo "\n${HR}"

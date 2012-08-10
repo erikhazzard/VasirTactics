@@ -93,6 +93,7 @@ class GAME_NAME.Views.UserInterface extends Backbone.View
             #   targetHTML
             #Bad target html
             @model.set({targetHtml: ''})
+
         return @
             
     unTargetTiles: ()=>
@@ -103,6 +104,15 @@ class GAME_NAME.Views.UserInterface extends Backbone.View
         #Reneable all map tiles
         d3.selectAll('.tile_disabled')
             .classed('tile_disabled', false)
+
+        #Enable all cells
+        cells = GAME_NAME.game.get('map').get('cells')
+        #Set each cell to be enabledk
+        _.each(cells, (cell)=>
+            cell.set({'cellEnabled': true})
+        )
+
+        GAME_NAME.logger.log('UserInterface', 'unTargetTiles(): enabled all cells')
         return @
 
     renderTarget: (params)=>

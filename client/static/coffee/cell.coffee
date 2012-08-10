@@ -85,7 +85,6 @@ class GAME_NAME.Views.Cell extends Backbone.View
             .attr('class', 'cellGroup cellGroup_' + @x + ',' + @y)
             .attr('transform', 'translate(' + [@x, @y] + ')')
 
-
         #--------------------------------
         #Draw the graphic
         #--------------------------------
@@ -131,6 +130,8 @@ class GAME_NAME.Views.Cell extends Backbone.View
     enableCell: ()=>
         #Turns off the tile_disabled class
         @cellRect.classed('tile_disabled', false)
+        #Enable the cell
+        @model.set({'cellEnabled': true})
 
     click: ()=>
         #Called when the cell:clicked event is triggered
@@ -142,7 +143,6 @@ class GAME_NAME.Views.Cell extends Backbone.View
         #TODO: (7/4) - Need to come up with concept of different selection
         #   modes (cell selection, unit selection, attack selection, etc.)
         #   Store this selection mode in the user interface, do logic there
-
         #See if we can target the cell or creature
         canSetInterfaceTarget = false
         moveCreature = false
@@ -158,8 +158,14 @@ class GAME_NAME.Views.Cell extends Backbone.View
             if @userInterface.get('target').get('className') == 'cell'
                 canSetInterfaceTarget = true
 
-            #If the target is the currently targeted cell, untarget it
-            if @userInterface.get('target') == @model
+            if @userInterface.get('target') == @model or not @model.get('cellEnabled')
+                #TODO: make this work when targeting cells that don't have the 
+                #   tile_disabled class (when all cells are enabled and you
+                #   click on a cell, that cell should have cellEnabled
+                #   as true. It does not right now.)
+                
+                #If the target is the currently targeted cell, untarget it
+                #OR, if the cell is disabled, untarget the current target
                 canSetInterfaceTarget = false
                 @userInterface.set({ target: undefined })
 
@@ -186,6 +192,7 @@ class GAME_NAME.Views.Cell extends Backbone.View
             @userInterface.get('target').trigger('creature:move', {
                 cell: @model
             })
+
         
         return canSetInterfaceTarget
 
@@ -255,6 +262,9 @@ class GAME_NAME.Models.Cell extends Backbone.Model
 
         #Graphic contains the image to use for this cell
         graphic: ''
+
+        #Determines if the cell is enabled or not
+        cellEnabled: false
     }
 
     initialize: ()=>
