@@ -217,8 +217,7 @@ class GAME_NAME.Views.Cell extends Backbone.View
     targetHtml: ()=>
         #Renders the target box
         html = _.template(GAME_NAME.templates.target_cell)({
-            name: @model.get('name').replace('_', ' ')
-            health: ''
+            model: @model
         })
         return html
 

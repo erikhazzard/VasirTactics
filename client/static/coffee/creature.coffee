@@ -144,6 +144,7 @@ class GAME_NAME.Views.Creature extends Backbone.View
             @userInterface.set({
                 target: @model
             })
+            #Update the corresponding HTML
             @updateTargetHtml()
 
         return @
@@ -236,18 +237,15 @@ class GAME_NAME.Views.Creature extends Backbone.View
             if @model.belongsToActivePlayer()
                 #This creature belongs to the active player, so show all stats
                 html = _.template(GAME_NAME.templates.target_creature_mine)({
-                    name: @model.get('name'),
-                    health: @model.get('health')
-                    movesLeft: @model.get('movesLeft')
+                    model: @model
                 })
             else
                 #They target an opponent
                 html = _.template(GAME_NAME.templates.target_creature_theirs)({
-                    name: @model.get('name'),
-                    health: @model.get('health')
+                    model: @model
                 })
 
-
+            #Update the interface's HTML
             @userInterface.set({targetHtml: html})
             return @
 

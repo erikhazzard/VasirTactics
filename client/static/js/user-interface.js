@@ -56,6 +56,7 @@
       var target;
       target = this.model.get('target');
       this.unTargetTiles();
+      GAME_NAME.logger.log('UserInterface', 'target()', 'Current target:', this.model.get('target'));
       if (target !== void 0) {
         target.target();
       } else {

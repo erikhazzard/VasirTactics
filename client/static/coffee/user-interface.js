@@ -55,6 +55,7 @@ GAME_NAME.Views.UserInterface = (function(_super) {
     var target;
     target = this.model.get('target');
     this.unTargetTiles();
+    GAME_NAME.logger.log('UserInterface', 'target()', 'Current target:', this.model.get('target'));
     if (target !== void 0) {
       target.target();
     } else {
@@ -76,6 +77,7 @@ GAME_NAME.Views.UserInterface = (function(_super) {
         'cellEnabled': true
       });
     });
+    GAME_NAME.logger.log('UserInterface', 'unTargetTiles(): enabled all cells');
     return this;
   };
 

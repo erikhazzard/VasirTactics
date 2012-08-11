@@ -58,9 +58,3 @@ window.requestAnimFrame = (()->
           (callback, element)->
             window.setTimeout(callback, 1000 / 60)
 )()
-
-$(document).ready(()=>
-    _.templateSettings = {
-      interpolate : /\{\{(.+?)\}\}/g
-    }
-)

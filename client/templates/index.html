@@ -160,23 +160,24 @@
 
 <!-- Target: Creature: Mine (User controlled) -->
 <script type='text/template' id='template_ui_target_creature_mine'>
-    {{ name }}
+    <%= model.get('name') %>
     <br />
-    Health: {{ health }}
+    Health: <%= model.get('health') %>
     <br />
-    Moves Left: {{ movesLeft }}
+    <%= model.get('movesLeft') %>
+    Moves Left: <%= model.get('movesLeft') %>
 </script>
 
 <!-- Target: Creature: Theirs (Opponent controlled) -->
 <script type='text/template' id='template_ui_target_creature_theirs'>
-{{ name }}
+    <%= name %>
 <br />
-Estimated Health: {{ health }}
+Estimated Health: <%= model.get('health') %>
 </script>
 
 <!-- Target: Cell -->
 <script type='text/template' id='template_ui_target_cell'>
-    {{ name }}
+    <%= model.get('name') %>
 </script>
 
 <!-- ======================================================================

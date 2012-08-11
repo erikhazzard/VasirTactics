@@ -140,8 +140,7 @@ GAME_NAME.Views.Cell = (function(_super) {
   Cell.prototype.targetHtml = function() {
     var html;
     html = _.template(GAME_NAME.templates.target_cell)({
-      name: this.model.get('name').replace('_', ' '),
-      health: ''
+      model: this.model
     });
     return html;
   };

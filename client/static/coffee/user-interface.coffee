@@ -81,6 +81,13 @@ class GAME_NAME.Views.UserInterface extends Backbone.View
 
         #Untarget everything else
         @unTargetTiles()
+
+        #Target the target
+        GAME_NAME.logger.log('UserInterface',
+            'target()',
+            'Current target:',
+            @model.get('target')
+        )
         
         #Check if target is not undefined
         if target != undefined

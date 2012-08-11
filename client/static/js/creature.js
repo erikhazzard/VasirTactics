@@ -152,14 +152,11 @@
       } else {
         if (this.model.belongsToActivePlayer()) {
           html = _.template(GAME_NAME.templates.target_creature_mine)({
-            name: this.model.get('name'),
-            health: this.model.get('health'),
-            movesLeft: this.model.get('movesLeft')
+            model: this.model
           });
         } else {
           html = _.template(GAME_NAME.templates.target_creature_theirs)({
-            name: this.model.get('name'),
-            health: this.model.get('health')
+            model: this.model
           });
         }
         this.userInterface.set({
