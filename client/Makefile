@@ -21,11 +21,11 @@ JS_TARGETS = static/js/namespace.js \
 			 static/js/spells.js \
 			 static/js/init.js 
 
-THIRD_PARTY = static/js/libs/underscore.js \
-			  static/js/libs/json2.js \
-			  static/js/libs/jquery.js \
-			  static/js/libs/backbone.js \
-			  static/js/libs/d3.js
+THIRD_PARTY = static/lib/underscore.js \
+			  static/lib/json2.js \
+			  static/lib/jquery.js \
+			  static/lib/backbone.js \
+			  static/lib/d3.js
 
 JS_COMPILER = ./node_modules/uglify-js/bin/uglifyjs
 
@@ -73,9 +73,9 @@ js:
 third:
 	@echo "${HR}\n"
 	@echo "Compiling Third Party JS"
-	@cat  $(THIRD_PARTY) > static/js/libs/all3rdjs.js
-	@uglifyjs -nc static/js/libs/all3rdjs.js > static/js/libs/all3rdjs.min.js
-	@rm static/js/libs/all3rdjs.js
+	@cat  $(THIRD_PARTY) > static/lib/all3rdjs.js
+	@uglifyjs -nc static/lib/all3rdjs.js > static/lib/all3rdjs.min.js
+	@rm static/lib/all3rdjs.js
 	@echo "Third party files successfully built at ${DATE}."
 
 watch:

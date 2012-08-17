@@ -87,6 +87,7 @@ GAME_NAME.Views.Cell = (function(_super) {
     var canSetInterfaceTarget, moveCreature;
     canSetInterfaceTarget = false;
     moveCreature = false;
+    console.log(this.userInterface.get('targetMode'));
     if (!this.userInterface.get('target')) canSetInterfaceTarget = true;
     if (this.userInterface.get('target')) {
       if (this.userInterface.get('target').get('className') === 'cell') {

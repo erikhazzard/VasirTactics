@@ -147,6 +147,10 @@ class GAME_NAME.Views.Cell extends Backbone.View
         canSetInterfaceTarget = false
         moveCreature = false
 
+        #TODO-------------------
+        #Target mode
+        console.log(@userInterface.get('targetMode'))
+
         #Do checks
         #   Breaking on multiple lines to make it easier to follow
         if not @userInterface.get('target')
