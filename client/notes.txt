@@ -23,4 +23,8 @@
     * You could publically tweet the link, for instance, and whoever clicks first becomes the player
 * If a player clicks on a link that someone else already clicked on, give them the option to start a new game
 
+## Accounts
 * Require account to play - can simply use twitter or facebook, and a game account wil be created for you
+    * Or, should anonymous play be allowed?  Could use a link to return state?o
+* You can play up to N games (say, 5) at a time per account.
+* Each game is independant, not linked other games
