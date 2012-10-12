@@ -16,8 +16,12 @@
       }
       model.dealDamage(1);
       cellSize = GAME_NAME.Models.Renderer.prototype.defaults.cellSize;
-      target = params.target.append('svg:circle').attr('r', 0).attr('cx', cellSize.width / 2).attr('cy', cellSize.height / 2).style('opacity', .8);
-      return target.transition().duration(1000).attr('r', 40).style('fill', '#dd2222').each('end', function() {
+      target = params.target.append('svg:circle').attr('r', 0).attr('cx', cellSize.width / 2).attr('cy', cellSize.height / 2).style({
+        opacity: 0.8
+      });
+      return target.transition().duration(1000).attr('r', 40).style({
+        fill: '#dd2222'
+      }).each('end', function() {
         return target.transition().duration(700).style('fill', '#ff0000').attr('r', 0).each('end', function() {
           return target.transition().attr('r', 0).style('fill', 'none').remove();
         });

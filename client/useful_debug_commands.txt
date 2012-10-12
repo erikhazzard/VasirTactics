@@ -1,0 +1,14 @@
+TODO: Need to make all this stuff not publically accessible
+
+
+
+SELECTED CREATURE
+=====================
+MOVES / LIFE
+----------
+    var props = {
+        moves: 40, 
+        movesLeft: 40, 
+        life: 20
+    }
+    GAME_NAME.game.get('userInterface').get('target').set(props)

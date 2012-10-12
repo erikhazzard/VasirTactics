@@ -32,14 +32,18 @@ GAME_NAME.init = ()=>
             .attr('r', 0)
             .attr('cx', cellSize.width/2)
             .attr('cy', cellSize.height/2)
-            .style('opacity', .8)
+            .style({
+                opacity: 0.8
+            })
 
         #Animate the 'missle'
         #TODO: Do a badass effect
         target.transition()
             .duration(1000)
             .attr('r', 40)
-            .style('fill', '#dd2222')
+            .style({
+                fill: '#dd2222'
+            })
             .each('end', ()->
                 target.transition()
                 .duration(700)

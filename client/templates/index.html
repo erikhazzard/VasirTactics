@@ -61,6 +61,107 @@
                 <div id='game'>
                     <div id='canvas_wrapper'>
                         <svg version='1.1' id='game_canvas' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'>
+                            
+                            <!-- Filters -->
+                                <defs id='filters'>
+
+                    <filter
+                           color-interpolation-filters="sRGB"
+                           id="jaggedEdge">
+                          <feTurbulence
+                             baseFrequency="0.08"
+                             type="fractalNoise"
+                             seed="0"
+                             numOctaves="5"
+                             id="feTurbulence5171" />
+                          <feGaussianBlur
+                             result="result91"
+                             stdDeviation="0.5"
+                             id="feGaussianBlur5173" />
+                          <feDisplacementMap
+                             in2="result91"
+                             scale="20"
+                             xChannelSelector="R"
+                             yChannelSelector="G"
+                             in="SourceGraphic"
+                             result="result1"
+                             id="feDisplacementMap5175" />
+                          <feComposite
+                             in2="SourceGraphic"
+                             operator="atop"
+                             in="result1"
+                             id="feComposite5177" />
+                        </filter>
+
+
+                                    <filter x="-0.30000001"
+                                       y="-0.5"
+                                       width="1.6"
+                                       height="2"
+                                       color-interpolation-filters="sRGB"
+                                       id="waterColor1">
+                                      <feGaussianBlur
+                                         result="result8"
+                                         stdDeviation="15"
+                                         id="feGaussianBlur3948" />
+                                      <feTurbulence
+                                         baseFrequency="0.028"
+                                         numOctaves="4"
+                                         type="fractalNoise"
+                                         result="result7"
+                                         seed="27"
+                                         id="feTurbulence3950" />
+                                      <feComposite
+                                         in2="result8"
+                                         operator="over"
+                                         in="result7"
+                                         result="result6"
+                                         id="feComposite3952" />
+                                      <feColorMatrix
+                                         values="1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 6 -4 "
+                                         result="result9"
+                                         id="feColorMatrix3954" />
+                                      <feDisplacementMap
+                                         in2="result9"
+                                         scale="50"
+                                         xChannelSelector="A"
+                                         yChannelSelector="A"
+                                         in="result7"
+                                         result="result4"
+                                         id="feDisplacementMap3956" />
+                                      <feComposite
+                                         in2="result4"
+                                         operator="in"
+                                         in="result8"
+                                         result="result2"
+                                         id="feComposite3958" />
+                                      <feComposite
+                                         in2="result9"
+                                         operator="in"
+                                         in="result2"
+                                         result="fbSourceGraphic"
+                                         id="feComposite3960" />
+                                      <feComposite
+                                         in2="fbSourceGraphic"
+                                         operator="arithmetic"
+                                         k1="0.5"
+                                         k2="1"
+                                         k3="0"
+                                         k4="0"
+                                         in="fbSourceGraphic"
+                                         result="result91"
+                                         id="feComposite3962" />
+                                      <feBlend
+                                         in2="result91"
+                                         mode="multiply"
+                                         in="fbSourceGraphic"
+                                         id="feBlend3964" />
+                                    </filter> 
+                                </def>
+                            </filters>
+
+
+                        </svg>
                     </div>
                 </div>
             </div>
@@ -201,22 +302,23 @@ Estimated Health: <%= model.get('health') %>
     Vasir Engine Scripts
 
     ======================================================================= -->
-<!-- DEV
-    <script src='/static/script/namespace.js'></script>
-    <script src='/static/script/logger.js'></script>
-    <script src='/static/script/util.js'></script>
+    <script src='/static/js/namespace.js'></script>
+    <script src='/static/js/logger.js'></script>
+    <script src='/static/js/util.js'></script>
 
-    <script src='/static/script/user-interface.js'></script>
-    <script src='/static/script/player.js'></script>
-    <script src='/static/script/creature.js'></script>
-    <script src='/static/script/spells.js'></script>
-    <script src='/static/script/map.js'></script>
-    <script src='/static/script/cell.js'></script>
-    <script src='/static/script/renderer.js'></script>
-    <script src='/static/script/game.js'></script>
-    <script src='/static/script/init.js'></script>
--->
+    <script src='/static/js/user-interface.js'></script>
+    <script src='/static/js/player.js'></script>
+    <script src='/static/js/creature.js'></script>
+    <script src='/static/js/spells.js'></script>
+    <script src='/static/js/map.js'></script>
+    <script src='/static/js/cell.js'></script>
+    <script src='/static/js/renderer.js'></script>
+    <script src='/static/js/game.js'></script>
+    <script src='/static/js/init.js'></script>
+
+<!-- PROD
 <script src='/static/js/build/vasirtactics.min.js'></script>
+-->
 
 </body>
 </html>

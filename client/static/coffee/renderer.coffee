@@ -87,7 +87,7 @@ class GAME_NAME.Views.Renderer extends Backbone.View
     render: ()=>
         '''This draws all the elements of the game to the screen'''
         #Remove everything in the SVG
-        $(@d3El.node()).empty()
+        #$(@d3El.node()).empty()
 
         #Draw the background map
         @drawMap({

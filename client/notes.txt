@@ -1,0 +1,26 @@
+# Ideas
+---
+* Turn based
+* Each player gets N creatures (say, 3)
+
+## Game is creature based
+* Revolves around fighting creatures. Like a mini shining force
+* After fighting a creature and defeating it, you gain ability to 'unlock' the creature
+
+### Player abilities
+* Players can unlock unlock abilities which will give them some boost
+* Players can level up.  Matches take place between similar leveled players, but should balanced enough that a low level might have a chance
+* Players can pick passive abilities like "all 'fire' creatures get +2 strength"
+* Could pick active abilities like "Heal all creatures for N health"
+
+## Creatures 
+* Creatures are instaniated from some base creature object and attribtues overwritten based on player stats
+
+## Initiating Games
+* You can initiate a game with anyone by starting a game and providing them a link to play
+    * E.g., connect via facebook or twitter and send link to friend
+* Whoever clicks on the link first will become the next player
+    * You could publically tweet the link, for instance, and whoever clicks first becomes the player
+* If a player clicks on a link that someone else already clicked on, give them the option to start a new game
+
+* Require account to play - can simply use twitter or facebook, and a game account wil be created for you

@@ -63,8 +63,7 @@
     };
 
     Renderer.prototype.render = function() {
-      'This draws all the elements of the game to the screen';      $(this.d3El.node()).empty();
-      this.drawMap({
+      'This draws all the elements of the game to the screen';      this.drawMap({
         map: this.model.get('game').get('map')
       });
       this.drawCreatures();

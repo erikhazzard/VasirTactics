@@ -74,7 +74,13 @@
       this.y = this.model.get('location').y * this.cellSize.height;
       creatureGroup = this.group.append('svg:g').attr('class', 'creature_' + this.model.cid).attr('transform', 'translate(' + [this.x, this.y] + ')');
       bg_rect = creatureGroup.append('svg:rect').attr('class', 'creature_background_rect').attr('x', 0).attr('y', 0).attr('rx', 6).attr('ry', 6).attr('width', this.cellSize.width).attr('height', this.cellSize.height);
-      creatureGroup.append('svg:image').attr('x', 0).attr('y', 0).attr('width', this.cellSize.width).attr('height', this.cellSize.height).attr('xlink:href', this.renderer.model.get('sprites')[this.model.get('sprite')]);
+      creatureGroup.append('svg:image').attr({
+        x: 0,
+        y: 0,
+        width: this.cellSize.width,
+        height: this.cellSize.height,
+        'xlink:href': this.renderer.model.get('sprites')[this.model.get('sprite')]
+      });
       this.el = creatureGroup.node();
       this.d3El = creatureGroup;
       this.delegateSVGEvents();

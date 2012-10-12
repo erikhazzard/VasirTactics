@@ -96,11 +96,14 @@ class GAME_NAME.Views.Creature extends Backbone.View
 
         #Draw the creature image
         creatureGroup.append('svg:image')
-            .attr('x', 0)
-            .attr('y', 0)
-            .attr('width', @cellSize.width)
-            .attr('height', @cellSize.height)
-            .attr('xlink:href', @renderer.model.get('sprites')[@model.get('sprite')])
+            .attr({
+                x: 0
+                y: 0
+                width: @cellSize.width
+                height: @cellSize.height
+                'xlink:href': @renderer.model.get('sprites')[@model.get('sprite')]
+            })
+         
 
         #Store ref to DOM node
         @el = creatureGroup.node()
