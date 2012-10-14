@@ -7,6 +7,6 @@ WORKER_CLASS=gevent
 LOGFILE=/var/log/gunicorn/gunicorn_vasirtactics.log
 
 cd /home/erik/Code/VasirTactics/client
-source /home/erik/Code/VasirTackets/client/env/bin/activate
+source /home/erik/Code/VasirTactics/client/env/bin/activate
 
 gunicorn app:app --pid=$PID_FILE --debug --log-level=debug --workers=$WORKERS --error-logfile=$LOGFILE --bind=$BIND_ADDRESS --worker-class=$WORKER_CLASS
