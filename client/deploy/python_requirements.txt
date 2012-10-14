@@ -1,5 +1,6 @@
 Flask==0.8
 xmldict==0.4
+requests==0.13.4
 pymongo==2.2.1
 redis==2.6.0
 gevent==0.13.7

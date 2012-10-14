@@ -1,0 +1,4 @@
+check process gunicorn-vasirtactics
+    with pidfile /var/run/upstart_vasirtactics.pid
+    start program = "/sbin/start vasirtactics"
+    stop program = "/sbin/stop vasirtactics"
