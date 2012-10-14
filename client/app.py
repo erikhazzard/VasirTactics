@@ -20,6 +20,7 @@ app = flask.Flask(__name__)
 
 #redisClient = redis.StrictRedis(host='localhost', port=6379, db=0)
 #CACHE_PREFIX = 'vasirTactics:'
+PORT = 7200
 # ==============================================================================
 #
 # Static Endpoints
@@ -48,4 +49,4 @@ def experiment():
 # ==============================================================================
 if __name__ == "__main__":
     app.debug = True
-    app.run(port=7000)
+    app.run(port=PORT)
